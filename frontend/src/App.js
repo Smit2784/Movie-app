@@ -76,7 +76,6 @@ const api = {
   // Bookings
   createBooking: async (bookingData, token) => {
     try {
-
       const response = await fetch(`${API_BASE_URL}/bookings`, {
         method: "POST",
         headers: {
@@ -129,7 +128,6 @@ const api = {
 
   walletPayment: async (bookingData, token) => {
     try {
-
       // Add timeout to prevent hanging
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
@@ -452,7 +450,7 @@ const AuthComponent = ({ setCurrentPage }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
-            <div className="absolute inset-0">
+      <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
         <div className="absolute top-40 right-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-40 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000"></div>
@@ -475,7 +473,7 @@ const AuthComponent = ({ setCurrentPage }) => {
               : "Create your account to get started"}
           </p>
         </div>
-         {/* Main Form Card */}
+        {/* Main Form Card */}
         <div className="relative group">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-3xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
 
@@ -507,7 +505,7 @@ const AuthComponent = ({ setCurrentPage }) => {
                 </button>
               </div>
 
-  {/* Form Fields */}
+              {/* Form Fields */}
               <div className="space-y-5">
                 {!isLogin && (
                   <>
@@ -694,7 +692,7 @@ const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
   return (
     <div className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-3xl shadow-2xl max-w-6xl mx-auto border border-gray-100">
       {/* Header */}
-      
+
       <div className="text-center mb-8">
         <h2 className="text-4xl font-black text-gray-800 mb-2">
           Select Your Seats
@@ -752,13 +750,13 @@ const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
         {Object.entries(seatsByRow).map(([row, rowSeats]) => (
           <div key={row} className="flex items-center justify-center space-x-2">
             {/* Row Label */}
-           
+
             <div className="w-8 h-8 flex items-center justify-center font-bold text-gray-600 text-lg mr-4">
               {row}
             </div>
-            
+
             {/* Seats in this row */}
-                        <div className="flex space-x-2">
+            <div className="flex space-x-2">
               {rowSeats.map((seat) => (
                 <button
                   key={seat.id}
@@ -855,7 +853,6 @@ const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
   );
 };
 // Show Times Component
-
 const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
   const showsByTheater = shows.reduce((acc, show) => {
     const theaterName = show.theater.name;
@@ -867,29 +864,108 @@ const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
   }, {});
 
   return (
-    <div className="bg-white p-6 rounded-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold">Select Show Time</h3>
+    <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      {/* Header with Date Selector */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+        <div className="mb-4 sm:mb-0">
+          <h3 className="text-3xl font-bold text-gray-800 mb-2">
+            Select Showtime
+          </h3>
+          <p className="text-gray-600">Choose your preferred show time</p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 text-gray-600">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span className="text-sm font-medium">Date:</span>
+          </div>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => onDateChange(e.target.value)}
+            min={new Date().toISOString().split("T")[0]}
+            className="border-2 border-gray-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300"
+          />
+        </div>
       </div>
 
+      {/* Theater Groups */}
       {Object.entries(showsByTheater).map(([theaterName, theaterShows]) => (
-        <div key={theaterName} className="mb-6">
-          <h4 className="font-semibold text-lg mb-3">{theaterName}</h4>
-          <div className="flex flex-wrap gap-3">
-            {theaterShows.map((show) => (
-              <button
-                key={show._id}
-                onClick={() => onShowSelect(show)}
-                className="border border-purple-300 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-50 transition-colors"
+        <div key={theaterName} className="mb-8 last:mb-0">
+          <div className="flex items-center mb-4 pb-2 border-b-2 border-purple-100">
+            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
+              <svg
+                className="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <div className="text-center">
-                  <div className="font-semibold">{show.time}</div>
-                  <div className="text-xs text-gray-600">
-                    {show.availableSeats} seats
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            </div>
+            <h4 className="text-xl font-bold text-gray-800">{theaterName}</h4>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {theaterShows.map((show) => {
+              const isSoldOut = show.availableSeats === 0;
+              const isLowSeats =
+                show.availableSeats > 0 && show.availableSeats <= 10;
+
+              return (
+                <button
+                  key={show._id}
+                  disabled={isSoldOut}
+                  onClick={() => onShowSelect(show)}
+                  className={`relative group p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-105 ${
+                    isSoldOut
+                      ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
+                      : "bg-white border-purple-200 hover:border-purple-400 hover:shadow-lg active:scale-95"
+                  }`}
+                >
+                  <div className="text-center">
+                    <div
+                      className={`text-lg font-bold mb-1 ${
+                        isSoldOut ? "text-gray-400" : "text-gray-800"
+                      }`}
+                    >
+                      {show.time}
+                    </div>
+                    <div
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        isSoldOut
+                          ? "bg-gray-200 text-gray-500"
+                          : isLowSeats
+                          ? "bg-orange-100 text-orange-700"
+                          : "bg-green-100 text-green-700"
+                      }`}
+                    >
+                      {isSoldOut ? "Sold Out" : `${show.availableSeats} seats`}
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+
+                  {!isSoldOut && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       ))}
@@ -1510,7 +1586,6 @@ const MyBookings = () => {
                     </div>
                     {/* Cancellation Info */}
 
-
                     {isCancelled && (
                       <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
                         <p className="text-red-700 text-sm font-medium">
@@ -1684,9 +1759,9 @@ const Home = ({ onMovieSelect }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
       {/* Enhanced Hero Section */}
-     <div className="relative bg-gradient-to-br from-purple-900 via-violet-900 to-indigo-900 text-white overflow-hidden">
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-900 to-indigo-900 text-white overflow-hidden">
         {/* Animated Background Elements */}
-<div className="absolute inset-0">
+        <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
           <div className="absolute top-40 right-20 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
           <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -2160,7 +2235,7 @@ const AboutUs = () => {
                   <div className="text-purple-100">Happy Customers</div>
                 </div>
                 <div>
-                  <div className="text-4xl font-black mb-2">100+</div>
+                  <div className="text-4xl font-black mb-2">7+</div>
                   <div className="text-purple-100">Theater Partners</div>
                 </div>
                 <div>
@@ -2309,9 +2384,7 @@ const Footer = ({ setCurrentPage }) => {
             <div className="flex space-x-4">
               <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer">
                 <span className="text-xl">📧</span>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer">
-                <span className="text-xl">🌐</span>
+                <span className=""> bookings@movietix.com</span>
               </div>
             </div>
           </div>
@@ -2349,12 +2422,18 @@ const Footer = ({ setCurrentPage }) => {
                 </button>
               </li>
               <li>
-                <button className="text-gray-300 hover:text-white transition-colors duration-300 text-left">
+                <button
+                  onClick={() => setCurrentPage("booking-guide")}
+                  className="text-gray-300 hover:text-white transition-colors duration-300 text-left"
+                >
                   Booking Guide
                 </button>
               </li>
               <li>
-                <button className="text-gray-300 hover:text-white transition-colors duration-300 text-left">
+                <button
+                  onClick={() => setCurrentPage("faq")}
+                  className="text-gray-300 hover:text-white transition-colors duration-300 text-left"
+                >
                   FAQs
                 </button>
               </li>
@@ -2612,7 +2691,6 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
         throw new Error(response?.message || "Payment failed");
       }
     } catch (error) {
-
       let errorMessage;
       if (error.message.includes("timeout")) {
         errorMessage =
@@ -2960,13 +3038,13 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           {[
-                            { id: "paytm", name: "Paytm", icon: "💜" },
-                            { id: "phonepe", name: "PhonePe", icon: "💙" },
-                            { id: "googlepay", name: "Google Pay", icon: "💚" },
+                            { id: "paytm", name: "Paytm", icon: "😎" },
+                            { id: "phonepe", name: "PhonePe", icon: "🤩" },
+                            { id: "googlepay", name: "Google Pay", icon: "🤠" },
                             {
                               id: "movietix",
                               name: "Amzon Pay",
-                              icon: "🎬",
+                              icon: "❤️",
                             },
                           ].map((wallet) => (
                             <label key={wallet.id} className="cursor-pointer">
@@ -3180,6 +3258,10 @@ const App = () => {
         return <AboutUs />;
       case "contact":
         return <ContactUs />;
+      case "booking-guide":
+        return <BookingGuide />;
+      case "faq":
+        return <FAQ />;
       case "movie-details":
         return (
           <MovieDetails
@@ -3238,6 +3320,576 @@ const MovieTicketBookingApp = () => {
     <AuthProvider>
       <App />
     </AuthProvider>
+  );
+};
+
+// BookingGuide Component
+const BookingGuide = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const bookingSteps = [
+    {
+      id: 1,
+      title: "Browse Movies",
+      description: "Explore currently showing movies",
+      icon: "🎬",
+      details: [
+        "Visit the MovieTix homepage to see all currently playing movies",
+        "Use the search bar to find specific movies",
+        "Filter by genre, rating, or release date",
+        "Click on any movie poster to view details",
+      ],
+      image: "movie-browse.png",
+    },
+    {
+      id: 2,
+      title: "Select Showtime",
+      description: "Choose your preferred date and time",
+      icon: "🕒",
+      details: [
+        "Select your preferred date from the calendar",
+        "Choose from available theaters near you",
+        "Pick a convenient showtime slot",
+        "Check seat availability before proceeding",
+      ],
+      image: "showtime-select.png",
+    },
+    {
+      id: 3,
+      title: "Choose Seats",
+      description: "Pick your perfect seats",
+      icon: "💺",
+      details: [
+        "View the theater seating layout",
+        "Available seats are shown in gray",
+        "Selected seats appear in green",
+        "Red seats are already booked",
+        "Maximum 10 seats per booking",
+      ],
+      image: "seat-selection.png",
+    },
+    {
+      id: 4,
+      title: "Make Payment",
+      description: "Complete your booking securely",
+      icon: "💳",
+      details: [
+        "Use MovieTix Wallet for instant payment",
+        "Pay with credit/debit cards or UPI",
+        "Split payment: wallet + other methods",
+        "All transactions are 100% secure",
+        "Receive booking confirmation immediately",
+      ],
+      image: "payment-process.png",
+    },
+    {
+      id: 5,
+      title: "Get Your Ticket",
+      description: "Download and enjoy your movie",
+      icon: "🎫",
+      details: [
+        "Download your PDF ticket instantly",
+        "Tickets are sent to your registered email",
+        "Show QR code at theater entrance",
+        "Arrive 15 minutes before showtime",
+        "Enjoy your movie experience!",
+      ],
+      image: "ticket-download.png",
+    },
+  ];
+
+  const nextStep = () => {
+    if (currentStep < bookingSteps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const goToStep = (stepIndex) => {
+    setCurrentStep(stepIndex);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-16">
+        <div className="container mx-auto px-6 text-center">
+          <h1 className="text-5xl lg:text-6xl font-black mb-6 leading-tight">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-400">
+              Booking Guide
+            </span>
+          </h1>
+          <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
+            Learn how to book your favorite movies in just 5 simple steps
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 py-16">
+        {/* Progress Indicator */}
+        <div className="flex justify-center mb-12">
+          <div className="flex items-center space-x-4">
+            {bookingSteps.map((step, index) => (
+              <div key={step.id} className="flex items-center">
+                <button
+                  onClick={() => goToStep(index)}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
+                    index === currentStep
+                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-110"
+                      : index < currentStep
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200 text-gray-500 hover:bg-gray-300"
+                  }`}
+                >
+                  {index < currentStep ? "✓" : index + 1}
+                </button>
+                {index < bookingSteps.length - 1 && (
+                  <div
+                    className={`w-8 h-1 mx-2 ${
+                      index < currentStep ? "bg-green-500" : "bg-gray-200"
+                    }`}
+                  ></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Current Step Content */}
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left Side - Content */}
+              <div className="p-8 lg:p-12">
+                <div className="flex items-center mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-3xl mr-4">
+                    {bookingSteps[currentStep].icon}
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-gray-800">
+                      Step {currentStep + 1}: {bookingSteps[currentStep].title}
+                    </h2>
+                    <p className="text-gray-600 text-lg">
+                      {bookingSteps[currentStep].description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {bookingSteps[currentStep].details.map((detail, index) => (
+                    <div key={index} className="flex items-start">
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                      <p className="text-gray-700 text-lg leading-relaxed">
+                        {detail}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between items-center mt-8">
+                  <button
+                    onClick={prevStep}
+                    disabled={currentStep === 0}
+                    className="flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                    <span>Previous</span>
+                  </button>
+
+                  <span className="text-gray-500 font-medium">
+                    {currentStep + 1} of {bookingSteps.length}
+                  </span>
+
+                  <button
+                    onClick={nextStep}
+                    disabled={currentStep === bookingSteps.length - 1}
+                    className="flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg"
+                  >
+                    <span>Next</span>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Side - Visual */}
+              <div className="bg-gradient-to-br from-purple-100 to-blue-100 p-8 lg:p-12 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-32 h-32 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-6xl mx-auto mb-6">
+                    {bookingSteps[currentStep].icon}
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                    {bookingSteps[currentStep].title}
+                  </h3>
+                  <div className="w-full max-w-md mx-auto bg-white rounded-2xl p-6 shadow-lg">
+                    <div className="animate-pulse">
+                      <div className="h-4 bg-gray-200 rounded mb-3"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-3"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Tips */}
+        <div className="mt-16 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-3xl p-8 border border-yellow-200">
+          <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            💡 Pro Tips for a Better Experience
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">⚡</span>
+              </div>
+              <h4 className="font-bold text-gray-800 mb-2">
+                Use MovieTix Wallet
+              </h4>
+              <p className="text-gray-600 text-sm">
+                Skip payment forms and book instantly with your wallet balance
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-green-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">📱</span>
+              </div>
+              <h4 className="font-bold text-gray-800 mb-2">Book in Advance</h4>
+              <p className="text-gray-600 text-sm">
+                Reserve your favorite seats early, especially for blockbuster
+                movies
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <h4 className="font-bold text-gray-800 mb-2">Check Reviews</h4>
+              <p className="text-gray-600 text-sm">
+                Read ratings and reviews before booking your tickets
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+// FAQ Component
+const FAQ = () => {
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const faqData = [
+    {
+      category: "Booking Process",
+      questions: [
+        {
+          q: "How do I book tickets online?",
+          a: "Select your movie and showtime, choose your preferred seats from the interactive seating chart, and complete payment using your MovieTix wallet, credit/debit card, or UPI. You'll receive your ticket instantly via email.",
+        },
+        {
+          q: "How many tickets can I book at once?",
+          a: "You can book a maximum of 10 tickets per transaction. For bulk bookings, please contact our customer support team for assistance.",
+        },
+        {
+          q: "Can I select specific seats?",
+          a: "Yes! MovieTix offers an interactive seat selection feature. You can view the theater layout and choose your preferred seats. Gray seats are available, green are your selections, and red are already booked.",
+        },
+        {
+          q: "Is advance booking available?",
+          a: "Yes, you can book tickets in advance for upcoming shows. Advance booking opens as soon as show times are announced by theaters.",
+        },
+      ],
+    },
+    {
+      category: "Payment & Wallet",
+      questions: [
+        {
+          q: "What payment methods are accepted?",
+          a: "MovieTix accepts multiple payment methods including MovieTix Wallet, credit/debit cards (Visa, MasterCard, American Express), UPI (Paytm, PhonePe, Google Pay), and net banking.",
+        },
+        {
+          q: "How does MovieTix Wallet work?",
+          a: "MovieTix Wallet allows you to store money securely for quick bookings. Add money to your wallet and use it for instant payments. You can also use wallet balance partially and pay the remaining amount through other methods.",
+        },
+        {
+          q: "Is my payment information secure?",
+          a: "Absolutely! All payments are processed using bank-level encryption and secure payment gateways. We never store your card details and follow strict security protocols.",
+        },
+        {
+          q: "What if payment fails but money is deducted?",
+          a: "If payment fails but money is deducted from your account, you'll receive an automatic refund within 5-7 working days. Contact support if you don't receive it within this timeframe.",
+        },
+      ],
+    },
+    {
+      category: "Tickets & Cancellation",
+      questions: [
+        {
+          q: "How do I get my booked tickets?",
+          a: "After successful payment, you can download your ticket as a PDF from the booking confirmation page. Tickets are also sent to your registered email address with a QR code.",
+        },
+        {
+          q: "Can I cancel my booking?",
+          a: "Cancellation depends on the theater's policy. Most theaters allow cancellation up to 20 minutes to 4 hours before showtime. Check your booking email for specific cancellation terms.",
+        },
+        {
+          q: "How do I get a refund?",
+          a: "For eligible cancellations, you can choose between refund to original payment method (5-7 working days) or instant credit to MovieTix Wallet. Refund amount may be subject to cancellation fees.",
+        },
+        {
+          q: "What if I lose my ticket?",
+          a: "Don't worry! Your tickets are stored in your MovieTix account under 'My Bookings'. You can also re-download the PDF or show the QR code from your booking confirmation email.",
+        },
+      ],
+    },
+    {
+      category: "Account & Support",
+      questions: [
+        {
+          q: "Do I need to create an account to book tickets?",
+          a: "Yes, creating a free MovieTix account is required for booking tickets. This helps us manage your bookings, send notifications, and provide better customer service.",
+        },
+        {
+          q: "How do I check my booking history?",
+          a: "Log into your MovieTix account and navigate to 'My Bookings' section to view all your past and upcoming bookings with complete details.",
+        },
+        {
+          q: "What is the minimum age for children?",
+          a: "Children aged 3 years and above require a separate ticket. Age restrictions may apply for certain movie ratings (A, U/A). Please check movie details before booking.",
+        },
+        {
+          q: "How can I contact customer support?",
+          a: "You can reach our customer support team via email at support@movietix.com, or use the 'Contact Us' section on our website. We're available 24/7 to assist you.",
+        },
+      ],
+    },
+  ];
+
+  const toggleAccordion = (categoryIndex, questionIndex) => {
+    const newIndex = `${categoryIndex}-${questionIndex}`;
+    setActiveIndex(activeIndex === newIndex ? null : newIndex);
+  };
+
+  const filteredFAQ = faqData
+    .map((category) => ({
+      ...category,
+      questions: category.questions.filter(
+        (item) =>
+          item.q.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.a.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    }))
+    .filter((category) => category.questions.length > 0);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-16">
+        <div className="container mx-auto px-6 text-center">
+          <h1 className="text-5xl lg:text-6xl font-black mb-6 leading-tight">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-400">
+              Frequently Asked Questions
+            </span>
+          </h1>
+          <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed max-w-4xl mx-auto mb-8">
+            Get instant answers to your movie booking questions
+          </p>
+
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto relative">
+            <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+              <svg
+                className="h-6 w-6 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-14 pr-6 py-4 text-lg rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/30 bg-white/95 backdrop-blur-sm border-0 shadow-2xl"
+              placeholder="Search for answers..."
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 py-16">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+          <div className="bg-white rounded-2xl shadow-lg p-6 text-center border border-purple-100">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl text-white">📋</span>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">25+</h3>
+            <p className="text-gray-600">Common Questions</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow-lg p-6 text-center border border-green-100">
+            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl text-white">⚡</span>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">24/7</h3>
+            <p className="text-gray-600">Support Available</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow-lg p-6 text-center border border-yellow-100">
+            <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl text-white">💬</span>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Instant</h3>
+            <p className="text-gray-600">Quick Answers</p>
+          </div>
+        </div>
+
+        {/* FAQ Categories */}
+        <div className="max-w-4xl mx-auto">
+          {filteredFAQ.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-12 h-12 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.469-1.009-5.927-2.709A8 8 0 119.172 16.172z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                No Results Found
+              </h3>
+              <p className="text-gray-600 text-lg">
+                Try adjusting your search terms or browse all categories
+              </p>
+            </div>
+          ) : (
+            filteredFAQ.map((category, categoryIndex) => (
+              <div key={categoryIndex} className="mb-12">
+                <h2 className="text-3xl font-bold text-gray-800 mb-8 flex items-center">
+                  <div className="w-2 h-8 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full mr-4"></div>
+                  {category.category}
+                </h2>
+
+                <div className="space-y-4">
+                  {category.questions.map((item, questionIndex) => {
+                    const isActive =
+                      activeIndex === `${categoryIndex}-${questionIndex}`;
+                    return (
+                      <div
+                        key={questionIndex}
+                        className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl"
+                      >
+                        <button
+                          onClick={() =>
+                            toggleAccordion(categoryIndex, questionIndex)
+                          }
+                          className="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors duration-200"
+                        >
+                          <h3 className="text-lg font-semibold text-gray-800 pr-4">
+                            {item.q}
+                          </h3>
+                          <div
+                            className={`w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white transition-transform duration-300 ${
+                              isActive ? "rotate-45" : ""
+                            }`}
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4v16m8-8H4"
+                              />
+                            </svg>
+                          </div>
+                        </button>
+
+                        <div
+                          className={`overflow-hidden transition-all duration-300 ${
+                            isActive ? "max-h-96" : "max-h-0"
+                          }`}
+                        >
+                          <div className="px-8 pb-6 pt-2">
+                            <div className="border-t border-gray-100 pt-4">
+                              <p className="text-gray-700 leading-relaxed text-base">
+                                {item.a}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Contact Support Section */}
+        <div className="mt-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl p-8 text-white text-center">
+          <h3 className="text-3xl font-bold mb-4">Still Need Help?</h3>
+          <p className="text-xl mb-3 opacity-90">
+            Can't find what you're looking for? Our support team is here to
+            help! 
+          </p><p className="text-xl mb-5 opacity-90">Go to Contect Us page and leave your query there..</p>
+        </div>
+      </div>
+    </div>
   );
 };
 
