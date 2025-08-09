@@ -104,6 +104,39 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+//theaters
+
+// Add Theater API Endpoint
+app.post("/api/theaters", authenticateToken, async (req, res) => {
+  try {
+    const { name, location, capacity, screens, facilities } = req.body;
+
+    const theater = new Theater({
+      name,
+      location,
+      capacity,
+      screens: screens || 1,
+      facilities: facilities || [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await theater.save();
+
+    res.status(201).json({
+      success: true,
+      theater,
+      message: "Theater created successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to create theater",
+      error: error.message,
+    });
+  }
+});
+
 // MOVIE ROUTES
 app.get("/api/movies", async (req, res) => {
   try {
@@ -336,11 +369,9 @@ app.delete("/api/bookings/:id", authenticateToken, async (req, res) => {
     showDateTime.setHours(parseInt(hours), parseInt(minutes));
 
     if (showDateTime <= now) {
-      return res
-        .status(400)
-        .json({
-          message: "Cannot cancel booking for a show that has already started",
-        });
+      return res.status(400).json({
+        message: "Cannot cancel booking for a show that has already started",
+      });
     }
 
     // Update the show to release the seats
@@ -530,41 +561,11 @@ app.post("/api/seed", async (req, res) => {
     const theaters = await Theater.insertMany(theaterData);
     console.log(`✅ ${theaters.length} theaters inserted`);
 
-    // 🎯 CREATE SHOWS FOR 1 FULL YEAR - THIS IS THE KEY CHANGE
     const shows = [];
     const times = ["10:00", "13:30", "17:00", "20:30"];
 
     console.log("🎭 Creating shows for 1 year (365 days)...");
     console.log("⏳ This might take 10-15 seconds - please wait...");
-
-    // Create shows for 365 days starting from today
-    for (let dayOffset = 0; dayOffset < 365; dayOffset++) {
-      let showDate = new Date();
-      showDate.setDate(showDate.getDate() + dayOffset);
-      showDate.setHours(0, 0, 0, 0);
-
-      // Create shows every day (full year coverage)
-      movies.forEach((movie) => {
-        theaters.forEach((theater) => {
-          times.forEach((time) => {
-            shows.push({
-              movie: movie._id,
-              theater: theater._id,
-              date: new Date(showDate),
-              time: time,
-              availableSeats: theater.capacity,
-              bookedSeats: [],
-              price: movie.price,
-            });
-          });
-        });
-      });
-
-      // Progress indicator every 30 days
-      if (dayOffset % 30 === 0) {
-        console.log(`📅 Created shows up to: ${showDate.toDateString()}`);
-      }
-    }
 
     console.log(`🎬 Inserting ${shows.length} shows into database...`);
     const insertedShows = await Show.insertMany(shows);
@@ -592,6 +593,92 @@ app.post("/api/seed", async (req, res) => {
       success: false,
       message: "Error seeding database",
       error: error.message,
+    });
+  }
+});
+
+app.get("/api/create-15day-400shows", async (req, res) => {
+  try {
+    const movies = await Movie.find();
+    const theaters = await Theater.find();
+    
+    if (movies.length === 0 || theaters.length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Need movies and theaters first" 
+      });
+    }
+
+    const showTimes = ["10:00", "13:30", "16:00", "19:30", "22:00"];
+    const daysToCreate = 365;
+    const expectedShowsPerDay = movies.length * theaters.length * showTimes.length;
+    const expectedTotal = expectedShowsPerDay * daysToCreate;
+    
+    console.log(`🎯 Creating ${expectedShowsPerDay} shows per day for ${daysToCreate} days`);
+    console.log(`📊 Target total: ${expectedTotal} shows`);
+    
+    const startDate = new Date();
+    let totalInserted = 0;
+    
+    for (let day = 0; day < daysToCreate; day++) {
+      const showDate = new Date(startDate);
+      showDate.setDate(showDate.getDate() + day);
+      const dateString = showDate.toISOString().split('T')[0];
+      
+      const dailyShows = [];
+      
+      // For each movie (ensures all 16 movies get shows)
+      movies.forEach((movie) => {
+        // For each theater (ensures all 5 theaters)
+        theaters.forEach((theater) => {
+          // For each time slot (ensures all 5 times)
+          showTimes.forEach((showTime) => {
+            dailyShows.push({
+              movie: movie._id,
+              theater: theater._id,
+              date: dateString,
+              time: showTime,
+              price: movie.price || 280,
+              availableSeats: theater.capacity || 200,
+              bookedSeats: [],
+              totalSeats: theater.capacity || 200,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          });
+        });
+      });
+      
+      // Insert daily shows
+      if (dailyShows.length > 0) {
+        await Show.insertMany(dailyShows);
+        totalInserted += dailyShows.length;
+        
+        console.log(`📅 Day ${day + 1}/${daysToCreate}: Created ${dailyShows.length} shows (Total: ${totalInserted})`);
+      }
+    }
+
+    console.log(`🎉 Complete! Created ${totalInserted} shows over ${daysToCreate} days`);
+
+    res.json({
+      success: true,
+      message: `Created ${totalInserted} shows for 15 days with 400 shows per day`,
+      showsCreated: totalInserted,
+      expectedTotal: expectedTotal,
+      showsPerDay: expectedShowsPerDay,
+      daysScheduled: daysToCreate,
+      moviesUsed: movies.length,
+      theatersUsed: theaters.length,
+      showTimesPerDay: showTimes.length,
+      coverage: "Complete: Every movie in every theater at every time slot every day"
+    });
+
+  } catch (error) {
+    console.error("❌ Error creating 15-day shows:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create shows",
+      error: error.message
     });
   }
 });
@@ -783,7 +870,6 @@ app.post("/api/fix-show-dates-now", async (req, res) => {
   }
 });
 
-// ADD THIS ROUTE TO UPDATE EXISTING SHOWS TO CURRENT DATES
 app.post("/api/update-show-dates", async (req, res) => {
   try {
     console.log("🔧 Updating all existing shows to current dates...");
