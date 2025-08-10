@@ -140,7 +140,44 @@ app.post("/api/theaters", authenticateToken, async (req, res) => {
 // MOVIE ROUTES
 app.get("/api/movies", async (req, res) => {
   try {
-    const movies = await Movie.find();
+    const { categories, search } = req.query;
+    
+    let query = {};
+    
+    // Handle multiple category filtering with current string format
+    if (categories) {
+      const categoryArray = Array.isArray(categories) ? categories : categories.split(',');
+      
+      if (categoryArray.length > 0) {
+        // Build regex query for each category
+        const categoryConditions = categoryArray.map(category => ({
+          genre: { $regex: category.trim(), $options: 'i' }
+        }));
+        
+        // Use $and to ensure ALL selected categories are present
+        query.$and = categoryConditions;
+      }
+    }
+    
+    // Add search filter
+    if (search) {
+      const searchCondition = {
+        $or: [
+          { title: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } }
+        ]
+      };
+      
+      if (query.$and) {
+        query.$and.push(searchCondition);
+      } else {
+        query = searchCondition;
+      }
+    }
+    
+    console.log('🔍 Movie query:', JSON.stringify(query, null, 2));
+    
+    const movies = await Movie.find(query);
     res.json(movies);
   } catch (error) {
     console.error("Error fetching movies:", error);

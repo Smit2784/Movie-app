@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from "react";
+import React, { useState, useEffect, createContext, useContext , useRef  } from "react";
 import {
   Search,
   Calendar,
@@ -70,6 +70,11 @@ const api = {
 
   getShow: async (id) => {
     const response = await fetch(`${API_BASE_URL}/shows/${id}`);
+    return response.json();
+  },
+
+  getTheaters: async () => {
+    const response = await fetch(`${API_BASE_URL}/theaters`);
     return response.json();
   },
 
@@ -873,31 +878,6 @@ const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
           </h3>
           <p className="text-gray-600">Choose your preferred show time</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2 text-gray-600">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <span className="text-sm font-medium">Date:</span>
-          </div>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => onDateChange(e.target.value)}
-            min={new Date().toISOString().split("T")[0]}
-            className="border-2 border-gray-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300"
-          />
-        </div>
       </div>
 
       {/* Theater Groups */}
@@ -1699,11 +1679,229 @@ const EnhancedMovieCard = ({ movie, onSelect, index }) => {
   );
 };
 
-// Enhanced Home Component
 
+// Category Dropdown Component
+const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const categories = [
+    { value: 'All', label: 'All Categories', icon: '🎬', color: 'from-gray-500 to-gray-600' },
+    { value: 'Action', label: 'Action', icon: '💥', color: 'from-red-500 to-orange-500' },
+    { value: 'Comedy', label: 'Comedy', icon: '😂', color: 'from-yellow-500 to-orange-500' },
+    { value: 'Drama', label: 'Drama', icon: '🎭', color: 'from-purple-500 to-pink-500' },
+    { value: 'Horror', label: 'Horror', icon: '👻', color: 'from-gray-800 to-black' },
+    { value: 'Romance', label: 'Romance', icon: '💕', color: 'from-pink-500 to-red-500' },
+    { value: 'Western', label: 'Western', icon: '🤠', color: 'from-amber-600 to-orange-700' },
+    { value: 'Thriller', label: 'Thriller', icon: '🔪', color: 'from-gray-700 to-red-800' },
+    { value: 'Adventure', label: 'Adventure', icon: '🗺️', color: 'from-green-500 to-teal-500' },
+    { value: 'Animation', label: 'Animation', icon: '🎨', color: 'from-blue-500 to-purple-500' },
+    { value: 'Sci-Fi', label: 'Sci-Fi', icon: '🚀', color: 'from-cyan-500 to-blue-500' },
+    { value: 'Fantasy', label: 'Fantasy', icon: '🧙‍♂️', color: 'from-indigo-500 to-purple-500' },
+  ];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Get selected category details
+  const selectedCategoryData = categories.find(cat => cat.value === selectedCategory) || categories[0];
+
+  const handleCategorySelect = (category) => {
+    onCategoryChange(category.value);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {/* Dropdown Trigger Button */}
+      <div className="relative group">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="relative w-72 bg-white/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl px-6 py-4 flex items-center justify-between hover:bg-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/30"
+        >
+          <div className="flex items-center space-x-3">
+            <div className={`w-8 h-8 bg-gradient-to-r ${selectedCategoryData.color} rounded-full flex items-center justify-center text-white shadow-lg`}>
+              <span className="text-sm">{selectedCategoryData.icon}</span>
+            </div>
+            <div className="text-left">
+              <div className="text-lg font-semibold text-gray-900">
+                {selectedCategoryData.label}
+              </div>
+              <div className="text-xs text-gray-500">
+                {selectedCategory === 'All' ? 'Browse all genres' : 'Movie category'}
+              </div>
+            </div>
+          </div>
+          
+          <div className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      {/* Enhanced Dropdown Menu (Without Search) */}
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-2 z-50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl overflow-hidden">
+            {/* Category Options */}
+            <div className="max-h-80 overflow-y-auto">
+              <div className="p-2">
+                {categories.map((category, index) => (
+                  <button
+                    key={category.value}
+                    onClick={() => handleCategorySelect(category)}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-gray-50 group ${
+                      selectedCategory === category.value ? 'bg-green-50 border-2 border-green-200' : ''
+                    }`}
+                    style={{
+                      animationDelay: `${index * 50}ms`,
+                      animation: isOpen ? 'fadeInUp 0.3s ease-out forwards' : 'none'
+                    }}
+                  >
+                    <div className={`w-10 h-10 bg-gradient-to-r ${category.color} rounded-full flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-200`}>
+                      <span className="text-lg">{category.icon}</span>
+                    </div>
+                    
+                    <div className="flex-1 text-left">
+                      <div className={`font-semibold ${selectedCategory === category.value ? 'text-green-700' : 'text-gray-900'}`}>
+                        {category.label}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {category.value === 'All' ? 'Show all movies' : `${category.label} movies`}
+                      </div>
+                    </div>
+
+                    {selectedCategory === category.value && (
+                      <div className="text-green-600">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer with stats */}
+            <div className="p-4 bg-gray-50 border-t border-gray-100">
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>{categories.length} categories available</span>
+                <span className="flex items-center space-x-1">
+                  <span>Press</span>
+                  <kbd className="px-2 py-1 bg-white rounded border text-xs">ESC</kbd>
+                  <span>to close</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add required CSS animations */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// SearchAndCategoryFilter Component with Enhanced Dropdown
+const SearchAndCategoryFilter = ({ searchTerm, onSearchChange, selectedCategory, onCategoryChange }) => {
+  return (
+    <div className="max-w-4xl mx-auto mb-16">
+      {/* Search and Category Container */}
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-center">
+        {/* Search Bar */}
+        <div className="relative group flex-1 max-w-2xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+          <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl p-2 border border-white/20 shadow-2xl">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 ml-4">
+                <Search className="h-6 w-6 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search for movies, genres, directors..."
+                className="flex-1 px-6 py-4 bg-transparent text-gray-900 text-lg placeholder-gray-500 border-none outline-none font-medium"
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+              />
+              <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-4 rounded-2xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 mr-2">
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Category Dropdown */}
+        <div className="flex-shrink-0">
+          <EnhancedCategoryDropdown
+            selectedCategory={selectedCategory}
+            onCategoryChange={onCategoryChange}
+          />
+        </div>
+      </div>
+
+      {/* Active Filters Display */}
+      {(selectedCategory !== 'All' || searchTerm) && (
+        <div className="flex items-center justify-center space-x-3 mt-6">
+          <span className="text-gray-300 text-sm">Active filters:</span>
+          {searchTerm && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-200 border border-blue-500/30">
+              Search: "{searchTerm}"
+              <button
+                onClick={() => onSearchChange('')}
+                className="ml-2 hover:text-blue-100 transition-colors duration-200"
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {selectedCategory !== 'All' && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-200 border border-green-500/30">
+              Category: {selectedCategory}
+              <button
+                onClick={() => onCategoryChange('All')}
+                className="ml-2 hover:text-green-100 transition-colors duration-200"
+              >
+                ×
+              </button>
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+// Complete Home Component
 const Home = ({ onMovieSelect }) => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1731,11 +1929,18 @@ const Home = ({ onMovieSelect }) => {
     }
   };
 
-  const filteredMovies = movies.filter(
-    (movie) =>
-      movie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      movie.genre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Enhanced filtering logic
+  const filteredMovies = movies.filter((movie) => {
+    // Filter by search term
+    const matchesSearch = movie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         movie.genre.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Filter by category
+    const matchesCategory = selectedCategory === 'All' || 
+                           movie.genre.toLowerCase().includes(selectedCategory.toLowerCase());
+    
+    return matchesSearch && matchesCategory;
+  });
 
   if (loading) {
     return (
@@ -1788,29 +1993,14 @@ const Home = ({ onMovieSelect }) => {
                 🎬 Your Ultimate Movie Experience
               </span>
             </div>
-            {/* Premium Search Bar */}
-            <div className="max-w-3xl mx-auto relative mb-16">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-                <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl p-2 border border-white/20 shadow-2xl">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 ml-4">
-                      <Search className="h-6 w-6 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Search for movies, genres, directors, or actors..."
-                      className="flex-1 px-6 py-4 bg-transparent text-gray-900 text-lg placeholder-gray-500 border-none outline-none font-medium"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-2xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 mr-2">
-                      Search
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+
+            {/* Search and Category Filter Component */}
+             <SearchAndCategoryFilter
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
 
             {/* Enhanced Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
@@ -1849,7 +2039,6 @@ const Home = ({ onMovieSelect }) => {
       </div>
 
       {/* Movies Section */}
-
       <div className="container mx-auto px-6 py-20">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
           <div className="mb-8 lg:mb-0">
@@ -1869,6 +2058,17 @@ const Home = ({ onMovieSelect }) => {
               Discover the most anticipated movies of the season, from
               action-packed adventures to heartwarming stories
             </p>
+
+            {/* Results Summary */}
+            {filteredMovies.length > 0 && (
+              <div className="mt-6">
+                <p className="text-gray-600">
+                  Showing <span className="font-semibold text-purple-600">{filteredMovies.length}</span> movies
+                  {selectedCategory !== 'All' && <span> in <span className="font-semibold">{selectedCategory}</span></span>}
+                  {searchTerm && <span> matching "<span className="font-semibold">{searchTerm}</span>"</span>}
+                </p>
+              </div>
+            )}
           </div>
 
           {movies.length === 0 && (
@@ -1909,13 +2109,21 @@ const Home = ({ onMovieSelect }) => {
                   : "Try adjusting your search terms or browse all available movies."}
               </p>
 
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
-                >
-                  Clear Search & Show All Movies
-                </button>
+              {(searchTerm || selectedCategory !== 'All') && (
+                <div className="space-x-4">
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                  >
+                    Clear Search
+                  </button>
+                  <button
+                    onClick={() => setSelectedCategory("All")}
+                    className="bg-gray-200 text-gray-800 px-6 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-300"
+                  >
+                    Show All Categories
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -2465,7 +2673,7 @@ const Footer = ({ setCurrentPage }) => {
               rights reserved.
             </p>
           </div>
-          <div className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
+          {/* <div className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
             <button className="text-gray-300 hover:text-white transition-colors duration-300">
               Privacy Policy
             </button>
@@ -2478,16 +2686,12 @@ const Footer = ({ setCurrentPage }) => {
             <button className="text-gray-300 hover:text-white transition-colors duration-300">
               Accessibility
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>
   );
 };
-
-// ##################################################################
-// ############# IMPORTANT CHANGE IS IN THIS COMPONENT ##############
-// ##################################################################
 
 // Booking Page Component
 const BookingPage = ({ show, onBack, onBookingComplete }) => {
@@ -2516,7 +2720,6 @@ const BookingPage = ({ show, onBack, onBookingComplete }) => {
       return;
     }
 
-    // ENSURE the booking object has the correct structure
     const bookingInfo = {
       show: show, // This contains the _id
       showId: show._id, // Also include direct showId
@@ -2535,7 +2738,9 @@ const BookingPage = ({ show, onBack, onBookingComplete }) => {
           onClick={onBack}
           className="mb-6 text-purple-600 hover:text-purple-800 flex items-center space-x-2"
         >
-          <span>← Back to Movie Details</span>
+          <span className="text-lg font-semibold transition-transform duration-300 hover:scale-105">
+            ⬅️ Back to Movie Details
+          </span>
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -2663,8 +2868,6 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
     const bookingDataForApi = { showId, seats, totalAmount };
 
     try {
-      console.log("🔍 Payment debug:", bookingDataForApi);
-
       let response;
       if (useWallet && walletAmountUsed >= totalAmount) {
         response = await api.walletPayment(bookingDataForApi, token);
@@ -2691,6 +2894,7 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
         throw new Error(response?.message || "Payment failed");
       }
     } catch (error) {
+      console.error("❌ Payment Error:", error);
       let errorMessage;
       if (error.message.includes("timeout")) {
         errorMessage =
@@ -3608,7 +3812,6 @@ const BookingGuide = () => {
   );
 };
 
-
 // FAQ Component
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -3885,8 +4088,11 @@ const FAQ = () => {
           <h3 className="text-3xl font-bold mb-4">Still Need Help?</h3>
           <p className="text-xl mb-3 opacity-90">
             Can't find what you're looking for? Our support team is here to
-            help! 
-          </p><p className="text-xl mb-5 opacity-90">Go to Contect Us page and leave your query there..</p>
+            help!
+          </p>
+          <p className="text-xl mb-5 opacity-90">
+            Go to Contect Us page and leave your query there..
+          </p>
         </div>
       </div>
     </div>
