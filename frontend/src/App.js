@@ -16,7 +16,7 @@ import {
   Film,
   Ticket,
 } from "lucide-react";
-import logo from "./generated-image.png";
+import logo from "./logo.png";
 
 // Context for authentication
 const AuthContext = createContext();
@@ -1853,9 +1853,6 @@ const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {
                     }`}
                     style={{
                       animationDelay: `${index * 50}ms`,
-                      animation: isOpen
-                        ? "fadeInUp 0.3s ease-out forwards"
-                        : "none",
                     }}
                   >
                     <div
@@ -1918,19 +1915,6 @@ const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {
         </div>
       )}
 
-      {/* Add required CSS animations */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 };
