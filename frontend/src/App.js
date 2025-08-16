@@ -2889,7 +2889,7 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
   const showId = booking.show._id || booking.show.id || booking.showId;
   const { seats, totalAmount } = booking;
 
-  console.log("🔍 PaymentPage Debug:", { showId, seats, totalAmount });
+  // console.log("🔍 PaymentPage Debug:", { showId, seats, totalAmount });
   const walletAmountUsed = useWallet
     ? Math.min(pageWalletBalance, totalAmount)
     : 0;
@@ -2977,7 +2977,8 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async(e) => {
+    e.preventDefault();
     setIsProcessing(true);
     const bookingDataForApi = { showId, seats, totalAmount };
 
@@ -2998,11 +2999,11 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
         response = await api.createBooking(bookingDataForApi, token);
       }
 
-      console.log("📡 Payment response:", response);
+      // console.log("📡 Payment response:", response);
 
       if (response && response.success) {
         alert("Booking successful!");
-        await refreshWalletBalance();
+          await refreshWalletBalance();
         onPaymentComplete(response);
       } else {
         throw new Error(response?.message || "Payment failed");
@@ -3554,6 +3555,7 @@ const App = () => {
   };
 
   const handlePaymentComplete = (paymentResult) => {
+    // console.log("Data received on payment completion:", paymentResult); 
     setPaymentResult(paymentResult);
     setBookingData(paymentResult.booking);
     setCurrentPage("payment-success");
