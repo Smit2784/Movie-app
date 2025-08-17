@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 // Initialize app
@@ -27,6 +26,7 @@ const Theater = require("./models/Theater");
 const Show = require("./models/Show");
 const User = require("./models/User");
 const Booking = require("./models/Booking");
+const UpcomingMovie = require("./models/UpcomingMovie"); 
 
 // JWT Secret
 const JWT_SECRET = "your-secret-key";
@@ -373,6 +373,241 @@ app.post("/api/bookings", authenticateToken, async (req, res) => {
     });
   }
 });
+
+// 1. GET upcoming movies
+app.get("/api/upcoming-movies", async (req, res) => {
+  try {
+    const { categories, search } = req.query;
+    
+    let query = {};
+    
+    // Handle category filtering
+    if (categories) {
+      const categoryArray = Array.isArray(categories) ? categories : categories.split(',');
+      
+      if (categoryArray.length > 0) {
+        const categoryConditions = categoryArray.map(category => ({
+          genre: { $regex: category.trim(), $options: 'i' }
+        }));
+        query.$and = categoryConditions;
+      }
+    }
+    
+    // Add search filter
+    if (search) {
+      const searchCondition = {
+        $or: [
+          { title: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } },
+          { director: { $regex: search, $options: 'i' } }
+        ]
+      };
+      
+      if (query.$and) {
+        query.$and.push(searchCondition);
+      } else {
+        query = searchCondition;
+      }
+    }
+    
+    console.log('🔍 Upcoming movies query:', JSON.stringify(query, null, 2));
+    
+    // Fetch from upcomingmovies collection, sorted by release date
+    const upcomingMovies = await UpcomingMovie.find(query).sort({ releaseDate: 1 });
+    
+    console.log(`📊 Found ${upcomingMovies.length} upcoming movies`);
+    
+    res.json(upcomingMovies);
+  } catch (error) {
+    console.error("Error fetching upcoming movies:", error);
+    res.status(500).json({ message: "Error fetching upcoming movies" });
+  }
+});
+
+// 2. Seed upcoming movies
+app.get("/api/seed-upcoming-movies", async (req, res) => {
+  try {
+    console.log("🚀 Starting upcoming movies seed...");
+    
+    // Check if upcoming movies already exist
+    const existingUpcoming = await UpcomingMovie.countDocuments();
+    console.log(`📅 Existing upcoming movies: ${existingUpcoming}`);
+    
+    if (existingUpcoming > 0) {
+      return res.json({
+        success: true,
+        message: `${existingUpcoming} upcoming movies already exist in database`,
+        moviesCount: existingUpcoming,
+        skipReason: "already_exists"
+      });
+    }
+
+    const upcomingMoviesData = [
+      {
+        title: "Avengers: Secret Wars",
+        genre: "Action/Sci-Fi",
+        description: "The ultimate Marvel showdown arrives with mind-bending multiverse battles that will reshape the MCU forever.",
+        director: "Russo Brothers",
+        releaseDate: new Date("2025-05-02T00:00:00.000Z"),
+        duration: 180,
+        rating: 8.5,
+        language: "English",
+        poster: "https://via.placeholder.com/300x450/6366f1/ffffff?text=Avengers+Secret+Wars",
+        price: 350,
+        cast: ["Robert Downey Jr.", "Chris Evans", "Scarlett Johansson"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "The Batman Part II",
+        genre: "Action/Crime",
+        description: "The Dark Knight returns to face new threats in Gotham City as Batman's legend continues to grow.",
+        director: "Matt Reeves",
+        releaseDate: new Date("2025-10-03T00:00:00.000Z"),
+        duration: 155,
+        rating: 8.8,
+        language: "English",
+        poster: "https://via.placeholder.com/300x450/333333/ffffff?text=The+Batman+II",
+        price: 320,
+        cast: ["Robert Pattinson", "Zoë Kravitz", "Paul Dano"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "Pushpa 3: The Rampage",
+        genre: "Action/Drama",
+        description: "Allu Arjun returns as Pushpa Raj in the most explosive and action-packed chapter of the saga.",
+        director: "Sukumar",
+        releaseDate: new Date("2025-12-17T00:00:00.000Z"),
+        duration: 165,
+        rating: 8.2,
+        language: "Telugu",
+        poster: "https://via.placeholder.com/300x450/FF6B35/ffffff?text=Pushpa+3",
+        price: 280,
+        cast: ["Allu Arjun", "Rashmika Mandanna", "Fahadh Faasil"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "Spider-Man 4",
+        genre: "Action/Adventure",
+        description: "Tom Holland swings back as Spider-Man in an all-new adventure that will change everything.",
+        director: "Jon Watts",
+        releaseDate: new Date("2025-07-15T00:00:00.000Z"),
+        duration: 140,
+        rating: 8.7,
+        language: "English",
+        poster: "https://via.placeholder.com/300x450/DC143C/ffffff?text=Spider-Man+4",
+        price: 340,
+        cast: ["Tom Holland", "Zendaya", "Jacob Batalon"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "KGF Chapter 3",
+        genre: "Action/Drama",
+        description: "The legacy of Rocky Bhai continues in the most anticipated conclusion to the KGF saga.",
+        director: "Prashanth Neel",
+        releaseDate: new Date("2025-09-22T00:00:00.000Z"),
+        duration: 175,
+        rating: 8.4,
+        language: "Kannada",
+        poster: "https://via.placeholder.com/300x450/DAA520/ffffff?text=KGF+Chapter+3",
+        price: 290,
+        cast: ["Yash", "Srinidhi Shetty", "Ramya Krishnan"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "Deadpool 3",
+        genre: "Action/Comedy",
+        description: "The Merc with a Mouth returns with his irreverent humor and fourth-wall-breaking antics.",
+        director: "Shawn Levy",
+        releaseDate: new Date("2025-11-08T00:00:00.000Z"),
+        duration: 125,
+        rating: 8.6,
+        language: "English",
+        poster: "https://via.placeholder.com/300x450/8B0000/ffffff?text=Deadpool+3",
+        price: 330,
+        cast: ["Ryan Reynolds", "Hugh Jackman", "Morena Baccarin"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "RRR 2",
+        genre: "Action/Drama",
+        description: "SS Rajamouli returns with another epic tale of friendship, valor, and spectacular action sequences.",
+        director: "SS Rajamouli",
+        releaseDate: new Date("2026-03-25T00:00:00.000Z"),
+        duration: 190,
+        rating: 8.9,
+        language: "Telugu",
+        poster: "https://via.placeholder.com/300x450/4B0082/ffffff?text=RRR+2",
+        price: 310,
+        cast: ["Ram Charan", "Jr. NTR", "Alia Bhatt"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "Brahmastra Part Two: Dev",
+        genre: "Fantasy/Adventure",
+        description: "The Astraverse expands with new powers, ancient mysteries, and epic battles between light and darkness.",
+        director: "Ayan Mukerji",
+        releaseDate: new Date("2026-02-14T00:00:00.000Z"),
+        duration: 170,
+        rating: 7.9,
+        language: "Hindi",
+        poster: "https://via.placeholder.com/300x450/FF4500/ffffff?text=Brahmastra+2",
+        price: 300,
+        cast: ["Ranbir Kapoor", "Alia Bhatt", "Amitabh Bachchan"],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    console.log(`📝 Attempting to insert ${upcomingMoviesData.length} upcoming movies...`);
+
+    // Insert into upcomingmovies collection
+    const insertedMovies = await UpcomingMovie.insertMany(upcomingMoviesData, {
+      ordered: false
+    });
+    
+    console.log(`✅ Successfully inserted ${insertedMovies.length} upcoming movies`);
+
+    res.json({
+      success: true,
+      message: `Successfully added ${insertedMovies.length} upcoming movies to database`,
+      moviesCount: insertedMovies.length,
+      insertedIds: insertedMovies.map(m => m._id),
+      totalUpcomingMovies: await UpcomingMovie.countDocuments()
+    });
+
+  } catch (error) {
+    console.error("❌ Error seeding upcoming movies:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to seed upcoming movies",
+      error: error.message,
+      errorName: error.name
+    });
+  }
+});
+
+// 3. Get single upcoming movie by ID
+app.get("/api/upcoming-movies/:id", async (req, res) => {
+  try {
+    const movie = await UpcomingMovie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: "Upcoming movie not found" });
+    }
+    res.json(movie);
+  } catch (error) {
+    console.error("Error fetching upcoming movie:", error);
+    res.status(500).json({ message: "Error fetching upcoming movie" });
+  }
+});
+
+
 
 // Replace your existing DELETE /api/bookings/:id route with this enhanced version
 app.delete("/api/bookings/:id", authenticateToken, async (req, res) => {
