@@ -29,7 +29,7 @@ const Booking = require("./models/Booking");
 const UpcomingMovie = require("./models/UpcomingMovie"); 
 
 // JWT Secret
-const JWT_SECRET = "your-secret-key";
+const JWT_SECRET = "1f3245d266afccd2aa0a441f41f39f6e3a50a1d7332cdc96bda7720c65e93849";
 
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
