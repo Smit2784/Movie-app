@@ -18,6 +18,7 @@ import { FAQ } from "./Components/FAQ.js";
 import { BookingGuide } from "./Components/Bookingguide.js";
 import { UpcomingMovies } from "./Components/UpcomingMovies.js";
 import { PaymentSuccess } from "./Components/PaymentSuccess.js";
+import { GiftCards } from "./Components/GiftCards.js";
 import { Footer } from "./Components/Footer.js";
 
 // Context for authentication
@@ -1129,6 +1130,8 @@ const App = () => {
             }}
           />
         );
+      case "giftcards":
+        return <GiftCards />;  
       case "bookings":
         return <MyBookings />;
       case "upcoming-movies":
@@ -1137,6 +1140,7 @@ const App = () => {
             onMovieSelect={handleMovieSelect}
             onGoHome={() => setCurrentPage("home")}
           />
+      
         );
       default:
         return <Home onMovieSelect={handleMovieSelect} />;

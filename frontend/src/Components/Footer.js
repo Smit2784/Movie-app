@@ -47,7 +47,7 @@ export const Footer = ({ setCurrentPage }) => {
               </li>
               <li>
                 <button
-                  onClick={() => setCurrentPage("home")}
+                  onClick={() => setCurrentPage("giftcards")}
                   className="text-gray-300 hover:text-white transition-colors duration-300 text-left"
                 >
                   Gift Cards

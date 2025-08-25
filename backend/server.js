@@ -27,9 +27,21 @@ const Show = require("./models/Show");
 const User = require("./models/User");
 const Booking = require("./models/Booking");
 const UpcomingMovie = require("./models/UpcomingMovie"); 
+const GiftCard = require("./models/GiftCard"); 
 
 // JWT Secret
 const JWT_SECRET = "1f3245d266afccd2aa0a441f41f39f6e3a50a1d7332cdc96bda7720c65e93849";
+
+// Add this helper function after JWT_SECRET
+const generateGiftCardCode = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
 
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
@@ -960,6 +972,256 @@ app.use((error, req, res, next) => {
   console.error("Server error:", error);
   res.status(500).json({ message: "Internal server error" });
 });
+
+// GIFT CARD ROUTES - Add this entire section
+
+// Purchase Gift Card
+app.post("/api/gift-cards/purchase", authenticateToken, async (req, res) => {
+  try {
+    console.log("🎁 Gift card purchase request received:", req.body);
+    
+    const { amount, recipientEmail, recipientName, senderName, message } = req.body;
+
+    // Validate input
+    if (!amount || !recipientEmail || !recipientName || !senderName) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields"
+      });
+    }
+
+    if (amount < 100 || amount > 10000) {
+      return res.status(400).json({
+        success: false,
+        message: "Gift card amount must be between ₹100 and ₹10,000"
+      });
+    }
+
+    // Check user wallet balance
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    if (user.walletBalance < amount) {
+      return res.status(400).json({
+        success: false,
+        message: `Insufficient wallet balance. Available: ₹${user.walletBalance}, Required: ₹${amount}`
+      });
+    }
+
+    // Generate unique code
+    let code;
+    let isUnique = false;
+    while (!isUnique) {
+      code = generateGiftCardCode();
+      const existingCard = await GiftCard.findOne({ code });
+      if (!existingCard) {
+        isUnique = true;
+      }
+    }
+
+    // Deduct amount from user wallet
+    await User.findByIdAndUpdate(req.user.userId, {
+      $inc: { walletBalance: -amount }
+    });
+
+    // Create gift card
+    const giftCard = new GiftCard({
+      code,
+      amount,
+      purchaser: req.user.userId,
+      recipientEmail,
+      recipientName,
+      senderName,
+      message: message || `Enjoy movies with MovieTix! From ${senderName}`
+    });
+
+    await giftCard.save();
+    
+    console.log("✅ Gift card created successfully:", code);
+
+    res.json({
+      success: true,
+      giftCard: {
+        code: giftCard.code,
+        amount: giftCard.amount,
+        recipientName: giftCard.recipientName
+      },
+      message: "Gift card purchased successfully!"
+    });
+
+  } catch (error) {
+    console.error("❌ Error purchasing gift card:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to purchase gift card",
+      error: error.message
+    });
+  }
+});
+
+// Redeem Gift Card
+app.post("/api/gift-cards/redeem", authenticateToken, async (req, res) => {
+  try {
+    const { code } = req.body;
+
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        message: "Gift card code is required"
+      });
+    }
+
+    // Find gift card
+    const giftCard = await GiftCard.findOne({ 
+      code: code.toUpperCase(),
+      status: 'active'
+    });
+
+    if (!giftCard) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid or already redeemed gift card code"
+      });
+    }
+
+    // Update gift card status
+    giftCard.status = 'redeemed';
+    giftCard.redeemedBy = req.user.userId;
+    giftCard.redeemedAt = new Date();
+    await giftCard.save();
+
+    // Add amount to user wallet
+    await User.findByIdAndUpdate(req.user.userId, {
+      $inc: { walletBalance: giftCard.amount }
+    });
+
+    res.json({
+      success: true,
+      amount: giftCard.amount,
+      message: `₹${giftCard.amount} added to your wallet successfully!`
+    });
+
+  } catch (error) {
+    console.error("Error redeeming gift card:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to redeem gift card"
+    });
+  }
+});
+
+// Get Gift Card History
+app.get("/api/gift-cards/history", authenticateToken, async (req, res) => {
+  try {
+    const giftCards = await GiftCard.find({
+      $or: [
+        { purchaser: req.user.userId },
+        { redeemedBy: req.user.userId }
+      ]
+    }).sort({ createdAt: -1 });
+
+    res.json(giftCards);
+  } catch (error) {
+    console.error("Error fetching gift card history:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch gift card history"
+    });
+  }
+});
+
+// Check Gift Card Status (optional - for public checking)
+app.get("/api/gift-cards/check/:code", async (req, res) => {
+  try {
+    const { code } = req.params;
+    
+    const giftCard = await GiftCard.findOne({ 
+      code: code.toUpperCase() 
+    }).select('amount status recipientName');
+
+    if (!giftCard) {
+      return res.status(404).json({
+        success: false,
+        message: "Gift card not found"
+      });
+    }
+
+    res.json({
+      success: true,
+      amount: giftCard.amount,
+      status: giftCard.status,
+      recipientName: giftCard.recipientName
+    });
+  } catch (error) {
+    console.error("Error checking gift card:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to check gift card"
+    });
+  }
+});
+
+// Redeem Gift Card Route (add this to server.js)
+app.post("/api/gift-cards/redeem", authenticateToken, async (req, res) => {
+  try {
+    console.log("🎁 Gift card redeem request received:", req.body);
+    
+    const { code } = req.body;
+
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        message: "Gift card code is required"
+      });
+    }
+
+    // Find gift card
+    const giftCard = await GiftCard.findOne({ 
+      code: code.toUpperCase(),
+      status: 'active'
+    });
+
+    if (!giftCard) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid or already redeemed gift card code"
+      });
+    }
+
+    // Update gift card status
+    giftCard.status = 'redeemed';
+    giftCard.redeemedBy = req.user.userId;
+    giftCard.redeemedAt = new Date();
+    await giftCard.save();
+
+    // Add amount to user wallet
+    await User.findByIdAndUpdate(req.user.userId, {
+      $inc: { walletBalance: giftCard.amount }
+    });
+
+    console.log("✅ Gift card redeemed successfully:", code);
+
+    res.json({
+      success: true,
+      amount: giftCard.amount,
+      message: `₹${giftCard.amount} added to your wallet successfully!`
+    });
+
+  } catch (error) {
+    console.error("❌ Error redeeming gift card:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to redeem gift card",
+      error: error.message
+    });
+  }
+});
+
 
 // Start server
 const PORT = process.env.PORT || 5000;
