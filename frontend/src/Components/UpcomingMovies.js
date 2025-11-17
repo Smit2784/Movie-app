@@ -1,7 +1,313 @@
-import React, { useState, useEffect } from "react";
-import { Calendar, Film } from "lucide-react";
-import { SearchAndCategoryFilter } from "../App";
+import React, { useState, useEffect , useRef } from "react";
+import { Calendar, Film , Search } from "lucide-react";
 import { api } from "../App";
+
+// Category Dropdown Component
+const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const categories = [
+    {
+      value: "All",
+      label: "All Categories",
+      icon: "🎬",
+      color: "from-gray-500 to-gray-600",
+    },
+    {
+      value: "Action",
+      label: "Action",
+      icon: "💥",
+      color: "from-red-500 to-orange-500",
+    },
+    {
+      value: "Comedy",
+      label: "Comedy",
+      icon: "😂",
+      color: "from-yellow-500 to-orange-500",
+    },
+    {
+      value: "Drama",
+      label: "Drama",
+      icon: "🎭",
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      value: "Horror",
+      label: "Horror",
+      icon: "👻",
+      color: "from-gray-800 to-black",
+    },
+    {
+      value: "Romance",
+      label: "Romance",
+      icon: "💕",
+      color: "from-pink-500 to-red-500",
+    },
+    {
+      value: "Western",
+      label: "Western",
+      icon: "🤠",
+      color: "from-amber-600 to-orange-700",
+    },
+    {
+      value: "Thriller",
+      label: "Thriller",
+      icon: "🔪",
+      color: "from-gray-700 to-red-800",
+    },
+    {
+      value: "Adventure",
+      label: "Adventure",
+      icon: "🗺️",
+      color: "from-green-500 to-teal-500",
+    },
+    {
+      value: "Animation",
+      label: "Animation",
+      icon: "🎨",
+      color: "from-blue-500 to-purple-500",
+    },
+    {
+      value: "Sci-Fi",
+      label: "Sci-Fi",
+      icon: "🚀",
+      color: "from-cyan-500 to-blue-500",
+    },
+    {
+      value: "Fantasy",
+      label: "Fantasy",
+      icon: "🧙‍♂️",
+      color: "from-indigo-500 to-purple-500",
+    },
+  ];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Get selected category details
+  const selectedCategoryData =
+    categories.find((cat) => cat.value === selectedCategory) || categories[0];
+
+  const handleCategorySelect = (category) => {
+    onCategoryChange(category.value);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {/* Dropdown Trigger Button */}
+      <div className="relative group">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="relative w-72 bg-white/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl px-6 py-4 flex items-center justify-between hover:bg-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/30"
+        >
+          <div className="flex items-center space-x-3">
+            <div
+              className={`w-8 h-8 bg-gradient-to-r ${selectedCategoryData.color} rounded-full flex items-center justify-center text-white shadow-lg`}
+            >
+              <span className="text-sm">{selectedCategoryData.icon}</span>
+            </div>
+            <div className="text-left">
+              <div className="text-lg font-semibold text-gray-900">
+                {selectedCategoryData.label}
+              </div>
+              <div className="text-xs text-gray-500">
+                {selectedCategory === "All"
+                  ? "Browse all genres"
+                  : "Movie category"}
+              </div>
+            </div>
+          </div>
+
+          <div
+            className={`transform transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          >
+            <svg
+              className="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      {/* Enhanced Dropdown Menu (Without Search) */}
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-2 z-50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl overflow-hidden">
+            {/* Category Options */}
+            <div className="max-h-80 overflow-y-auto">
+              <div className="p-2">
+                {categories.map((category, index) => (
+                  <button
+                    key={category.value}
+                    onClick={() => handleCategorySelect(category)}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-gray-50 group ${
+                      selectedCategory === category.value
+                        ? "bg-green-50 border-2 border-green-200"
+                        : ""
+                    }`}
+                    style={{
+                      animationDelay: `${index * 50}ms`,
+                    }}
+                  >
+                    <div
+                      className={`w-10 h-10 bg-gradient-to-r ${category.color} rounded-full flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-200`}
+                    >
+                      <span className="text-lg">{category.icon}</span>
+                    </div>
+
+                    <div className="flex-1 text-left">
+                      <div
+                        className={`font-semibold ${
+                          selectedCategory === category.value
+                            ? "text-green-700"
+                            : "text-gray-900"
+                        }`}
+                      >
+                        {category.label}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {category.value === "All"
+                          ? "Show all movies"
+                          : `${category.label} movies`}
+                      </div>
+                    </div>
+
+                    {selectedCategory === category.value && (
+                      <div className="text-green-600">
+                        <svg
+                          className="w-5 h-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer with stats */}
+            <div className="p-4 bg-gray-50 border-t border-gray-100">
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>{categories.length} categories available</span>
+                <span className="flex items-center space-x-1">
+                  <span>Press</span>
+                  <kbd className="px-2 py-1 bg-white rounded border text-xs">
+                    ESC
+                  </kbd>
+                  <span>to close</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// SearchAndCategoryFilter Component
+export const SearchAndCategoryFilter = ({
+  searchTerm,
+  onSearchChange,
+  selectedCategory,
+  onCategoryChange,
+}) => {
+  return (
+    <div className="max-w-4xl mx-auto mb-16">
+      {/* Search and Category Container */}
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-center">
+        {/* Search Bar */}
+        <div className="relative group flex-1 max-w-2xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+          <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl p-2 border border-white/20 shadow-2xl">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 ml-4">
+                <Search className="h-6 w-6 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search for movies, genres, directors..."
+                className="flex-1 px-6 py-4 bg-transparent text-gray-900 text-lg placeholder-gray-500 border-none outline-none font-medium"
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+              />
+              <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-4 rounded-2xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 mr-2">
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Category Dropdown */}
+        <div className="flex-shrink-0">
+          <EnhancedCategoryDropdown
+            selectedCategory={selectedCategory}
+            onCategoryChange={onCategoryChange}
+          />
+        </div>
+      </div>
+
+      {/* Active Filters Display */}
+      {(selectedCategory !== "All" || searchTerm) && (
+        <div className="flex items-center justify-center space-x-3 mt-6">
+          <span className="text-gray-300 text-sm">Active filters:</span>
+          {searchTerm && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-200 border border-blue-500/30">
+              Search: "{searchTerm}"
+              <button
+                onClick={() => onSearchChange("")}
+                className="ml-2 hover:text-blue-100 transition-colors duration-200"
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {selectedCategory !== "All" && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-200 border border-green-500/30">
+              Category: {selectedCategory}
+              <button
+                onClick={() => onCategoryChange("All")}
+                className="ml-2 hover:text-green-100 transition-colors duration-200"
+              >
+                ×
+              </button>
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const UpcomingMovieCard = ({ movie, onSelect, index }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
