@@ -307,7 +307,7 @@ This project is licensed under the ISC License.
 
 ## 👨‍💻 Author
 
-**Smit Patel**
+**Smit Dudhat**
 - GitHub: [@Smit2784](https://github.com/Smit2784)
 
 ## 🙏 Acknowledgments
@@ -317,10 +317,4 @@ This project is licensed under the ISC License.
 - TailwindCSS for styling utilities
 - All open-source contributors
 
-## 📞 Support
 
-For support, email your-email@example.com or open an issue in the repository.
-
----
-
-**Made with ❤️ by Smit Patel**
