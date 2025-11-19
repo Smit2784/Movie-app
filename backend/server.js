@@ -82,8 +82,7 @@ app.post("/api/auth/register", async (req, res) => {
       token,
       user: { id: user._id, name: user.name, email: user.email },
     });
-  } catch (error) {
-    console.error("Register error:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Registration failed" });
   }
 });
@@ -110,8 +109,7 @@ app.post("/api/auth/login", async (req, res) => {
       token,
       user: { id: user._id, name: user.name, email: user.email },
     });
-  } catch (error) {
-    console.error("Login error:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Login failed" });
   }
 });
@@ -186,13 +184,11 @@ app.get("/api/movies", async (req, res) => {
         query = searchCondition;
       }
     }
-    
-    console.log('🔍 Movie query:', JSON.stringify(query, null, 2));
+     
     
     const movies = await Movie.find(query);
     res.json(movies);
-  } catch (error) {
-    console.error("Error fetching movies:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Error fetching movies" });
   }
 });
@@ -204,8 +200,7 @@ app.get("/api/movies/:id", async (req, res) => {
       return res.status(404).json({ message: "Movie not found" });
     }
     res.json(movie);
-  } catch (error) {
-    console.error("Error fetching movie:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Error fetching movie" });
   }
 });
@@ -214,8 +209,7 @@ app.get("/api/movies/:id", async (req, res) => {
 // REPLACE YOUR /api/shows ROUTE WITH THIS CORRECTED VERSION
 app.get("/api/shows", async (req, res) => {
   try {
-    const { movieId, date } = req.query;
-    console.log("🔍 Fetching shows for:", { movieId, date });
+    const { movieId, date } = req.query; 
 
     let query = {};
 
@@ -227,30 +221,21 @@ app.get("/api/shows", async (req, res) => {
       // CORRECTED: Simple date range without timezone confusion
       const searchDate = new Date(date + "T00:00:00.000Z"); // Treat input as UTC
       const endDate = new Date(date + "T23:59:59.999Z");
-
-      console.log("📅 Searching date range:", {
-        from: searchDate.toISOString(),
-        to: endDate.toISOString(),
-      });
-
+ 
       query.date = {
         $gte: searchDate,
         $lte: endDate,
       };
     }
-
-    console.log("🔎 Final query:", JSON.stringify(query, null, 2));
+ 
 
     const shows = await Show.find(query)
       .populate("movie")
       .populate("theater")
-      .sort({ time: 1 });
-
-    console.log(`📊 Found ${shows.length} shows`);
+      .sort({ time: 1 }); 
 
     res.json(shows);
-  } catch (error) {
-    console.error("❌ Error fetching shows:", error);
+  } catch (error) { 
     res.status(500).json({
       message: "Error fetching shows",
       error: error.message,
@@ -269,8 +254,7 @@ app.get("/api/shows/:id", async (req, res) => {
     }
 
     res.json(show);
-  } catch (error) {
-    console.error("Error fetching show:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Error fetching show" });
   }
 });
@@ -283,12 +267,7 @@ app.post("/api/bookings", authenticateToken, async (req, res) => {
 
   try {
     const { showId, seats, totalAmount } = req.body;
-
-    console.log("🎫 Starting atomic booking process:", {
-      showId,
-      seats,
-      totalAmount,
-    });
+ 
 
     // Convert seats to strings for consistency
     const requestedSeatsStr = seats.map((seat) => String(seat));
@@ -313,11 +292,7 @@ app.post("/api/bookings", authenticateToken, async (req, res) => {
     if (!updatedShow) {
       // Check why it failed by examining the current show state
       const currentShow = await Show.findById(showId);
-      if (currentShow) {
-        console.log("📊 Current show state:");
-        console.log("- Available seats:", currentShow.availableSeats);
-        console.log("- Booked seats:", currentShow.bookedSeats);
-        console.log("- Requested seats:", requestedSeatsStr);
+      if (currentShow) { 
 
         const conflictingSeats = requestedSeatsStr.filter((seat) =>
           currentShow.bookedSeats.includes(seat)
@@ -372,8 +347,7 @@ app.post("/api/bookings", authenticateToken, async (req, res) => {
           $pull: { bookedSeats: { $in: reservedSeats } },
           $inc: { availableSeats: reservedSeats.length },
         });
-
-        console.log("✅ Seat reservation rolled back successfully");
+ 
       } catch (rollbackError) {}
     }
 
@@ -421,29 +395,24 @@ app.get("/api/upcoming-movies", async (req, res) => {
         query = searchCondition;
       }
     }
-    
-    console.log('🔍 Upcoming movies query:', JSON.stringify(query, null, 2));
+     
     
     // Fetch from upcomingmovies collection, sorted by release date
     const upcomingMovies = await UpcomingMovie.find(query).sort({ releaseDate: 1 });
-    
-    console.log(`📊 Found ${upcomingMovies.length} upcoming movies`);
+     
     
     res.json(upcomingMovies);
-  } catch (error) {
-    console.error("Error fetching upcoming movies:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Error fetching upcoming movies" });
   }
 });
 
 // 2. Seed upcoming movies
 app.get("/api/seed-upcoming-movies", async (req, res) => {
-  try {
-    console.log("🚀 Starting upcoming movies seed...");
+  try { 
     
     // Check if upcoming movies already exist
-    const existingUpcoming = await UpcomingMovie.countDocuments();
-    console.log(`📅 Existing upcoming movies: ${existingUpcoming}`);
+    const existingUpcoming = await UpcomingMovie.countDocuments(); 
     
     if (existingUpcoming > 0) {
       return res.json({
@@ -454,15 +423,13 @@ app.get("/api/seed-upcoming-movies", async (req, res) => {
       });
     }
 
-
-    console.log(`📝 Attempting to insert ${upcomingMoviesData.length} upcoming movies...`);
+ 
 
     // Insert into upcomingmovies collection
     const insertedMovies = await UpcomingMovie.insertMany(upcomingMoviesData, {
       ordered: false
     });
-    
-    console.log(`✅ Successfully inserted ${insertedMovies.length} upcoming movies`);
+     
 
     res.json({
       success: true,
@@ -472,8 +439,7 @@ app.get("/api/seed-upcoming-movies", async (req, res) => {
       totalUpcomingMovies: await UpcomingMovie.countDocuments()
     });
 
-  } catch (error) {
-    console.error("❌ Error seeding upcoming movies:", error);
+  } catch (error) { 
     res.status(500).json({
       success: false,
       message: "Failed to seed upcoming movies",
@@ -491,8 +457,7 @@ app.get("/api/upcoming-movies/:id", async (req, res) => {
       return res.status(404).json({ message: "Upcoming movie not found" });
     }
     res.json(movie);
-  } catch (error) {
-    console.error("Error fetching upcoming movie:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Error fetching upcoming movie" });
   }
 });
@@ -501,8 +466,7 @@ app.get("/api/upcoming-movies/:id", async (req, res) => {
 
 app.delete("/api/bookings/:id", authenticateToken, async (req, res) => {
   try {
-    const bookingId = req.params.id;
-    console.log(`Attempting to cancel booking: ${bookingId}`);
+    const bookingId = req.params.id; 
 
     // Find the booking first
     const booking = await Booking.findById(bookingId).populate("show");
@@ -548,8 +512,7 @@ app.delete("/api/bookings/:id", authenticateToken, async (req, res) => {
     // Update booking status to cancelled
     booking.status = "cancelled";
     await booking.save();
-
-    console.log(`Booking ${bookingId} cancelled successfully`);
+ 
 
     // ✨ NEW: Process wallet refund with delay
     setTimeout(async () => {
@@ -558,10 +521,7 @@ app.delete("/api/bookings/:id", authenticateToken, async (req, res) => {
         await User.findByIdAndUpdate(req.user.userId, {
           $inc: { walletBalance: booking.totalAmount },
         });
-
-        console.log(
-          `💰 Refunded ₹${booking.totalAmount} to user wallet after delay`
-        );
+ 
       } catch (error) {
         console.error("Error processing wallet refund:", error);
       }
@@ -573,8 +533,7 @@ app.delete("/api/bookings/:id", authenticateToken, async (req, res) => {
       booking: booking,
       refundAmount: booking.totalAmount,
     });
-  } catch (error) {
-    console.error("Error cancelling booking:", error);
+  } catch (error) { 
     res.status(500).json({
       message: "Failed to cancel booking",
       error: error.message,
@@ -592,23 +551,20 @@ app.get("/api/bookings", authenticateToken, async (req, res) => {
       .sort({ createdAt: -1 });
 
     res.json(bookings);
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Error fetching bookings" });
   }
 });
 
 
 // Error handling middleware
-app.use((error, req, res, next) => {
-  console.error("Server error:", error);
+app.use((error, req, res, next) => { 
   res.status(500).json({ message: "Internal server error" });
 });
 
 // Purchase Gift Card
 app.post("/api/gift-cards/purchase", authenticateToken, async (req, res) => {
-  try {
-    console.log("🎁 Gift card purchase request received:", req.body);
+  try { 
     
     const { amount, recipientEmail, recipientName, senderName, message } = req.body;
 
@@ -671,8 +627,7 @@ app.post("/api/gift-cards/purchase", authenticateToken, async (req, res) => {
     });
 
     await giftCard.save();
-    
-    console.log("✅ Gift card created successfully:", code);
+     
 
     res.json({
       success: true,
@@ -684,8 +639,7 @@ app.post("/api/gift-cards/purchase", authenticateToken, async (req, res) => {
       message: "Gift card purchased successfully!"
     });
 
-  } catch (error) {
-    console.error("❌ Error purchasing gift card:", error);
+  } catch (error) { 
     res.status(500).json({
       success: false,
       message: "Failed to purchase gift card",
@@ -736,8 +690,7 @@ app.post("/api/gift-cards/redeem", authenticateToken, async (req, res) => {
       message: `₹${giftCard.amount} added to your wallet successfully!`
     });
 
-  } catch (error) {
-    console.error("Error redeeming gift card:", error);
+  } catch (error) { 
     res.status(500).json({
       success: false,
       message: "Failed to redeem gift card"
@@ -756,8 +709,7 @@ app.get("/api/gift-cards/history", authenticateToken, async (req, res) => {
     }).sort({ createdAt: -1 });
 
     res.json(giftCards);
-  } catch (error) {
-    console.error("Error fetching gift card history:", error);
+  } catch (error) { 
     res.status(500).json({
       success: false,
       message: "Failed to fetch gift card history"
@@ -787,8 +739,7 @@ app.get("/api/gift-cards/check/:code", async (req, res) => {
       status: giftCard.status,
       recipientName: giftCard.recipientName
     });
-  } catch (error) {
-    console.error("Error checking gift card:", error);
+  } catch (error) { 
     res.status(500).json({
       success: false,
       message: "Failed to check gift card"
@@ -797,8 +748,7 @@ app.get("/api/gift-cards/check/:code", async (req, res) => {
 });
 
 app.post("/api/gift-cards/redeem", authenticateToken, async (req, res) => {
-  try {
-    console.log("🎁 Gift card redeem request received:", req.body);
+  try { 
     
     const { code } = req.body;
 
@@ -832,8 +782,7 @@ app.post("/api/gift-cards/redeem", authenticateToken, async (req, res) => {
     await User.findByIdAndUpdate(req.user.userId, {
       $inc: { walletBalance: giftCard.amount }
     });
-
-    console.log("✅ Gift card redeemed successfully:", code);
+ 
 
     res.json({
       success: true,
@@ -841,8 +790,7 @@ app.post("/api/gift-cards/redeem", authenticateToken, async (req, res) => {
       message: `₹${giftCard.amount} added to your wallet successfully!`
     });
 
-  } catch (error) {
-    console.error("❌ Error redeeming gift card:", error);
+  } catch (error) { 
     res.status(500).json({
       success: false,
       message: "Failed to redeem gift card",
@@ -869,8 +817,7 @@ app.get("/api/user/wallet", authenticateToken, async (req, res) => {
     }
 
     res.json({ walletBalance: user.walletBalance });
-  } catch (error) {
-    console.error("Error fetching wallet balance:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Error fetching wallet balance" });
   }
 });
@@ -882,13 +829,7 @@ app.post(
   async (req, res) => {
     try {
       const { showId, seats, totalAmount } = req.body;
-
-      console.log("💰 Wallet payment request received:", {
-        showId,
-        seats,
-        totalAmount,
-      });
-
+ 
       // CRITICAL: Validate all required fields
       if (!showId || !seats || !totalAmount) {
         return res.status(400).json({
@@ -1000,13 +941,7 @@ app.post("/api/bookings/split-payment", authenticateToken, async (req, res) => {
       externalPayment,
       paymentMethod,
     } = req.body;
-
-    console.log("🔄 Processing split payment:", {
-      showId,
-      seats,
-      walletAmount,
-      externalPayment,
-    });
+ 
 
     const requestedSeatsStr = seats.map((seat) => String(seat));
 
@@ -1136,8 +1071,7 @@ app.post("/api/cleanup-seats", authenticateToken, async (req, res) => {
       message: `Cleanup complete. Fixed ${cleanedShows} shows.`,
       totalShows: shows.length,
     });
-  } catch (error) {
-    console.error("Cleanup error:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Cleanup failed" });
   }
 });

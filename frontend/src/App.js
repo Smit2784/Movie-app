@@ -1,24 +1,22 @@
-import React, {
-  useState,
-  useEffect,
-  createContext,
-  useContext,
-} from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 
-import Home from "./Components/home.js";
-import { AuthComponent } from "./Components/AuthComponent.js";
-import { Header } from "./Components/Header.js";
-import { AboutUs } from "./Components/AboutUs.js";
-import { ContactUs } from "./Components/ContactUs.js";
-import { MyBookings } from "./Components/MyBookings.js";
-import { MovieDetails,BookingPage } from "./Components/MovieDetails.js";
-import { PaymentPage } from "./Components/PaymentPage.js";
-import { FAQ } from "./Components/FAQ.js";
-import { BookingGuide } from "./Components/Bookingguide.js";
-import { UpcomingMovies } from "./Components/UpcomingMovies.js";
-import { PaymentSuccess } from "./Components/PaymentSuccess.js";
-import { GiftCards } from "./Components/GiftCards.js";
-import { Footer } from "./Components/Footer.js";
+import {
+  Home,
+  AuthComponent,
+  Header,
+  AboutUs,
+  ContactUs,
+  MyBookings,
+  MovieDetails,
+  BookingPage,
+  PaymentPage,
+  FAQ,
+  BookingGuide,
+  UpcomingMovies,
+  PaymentSuccess,
+  GiftCards,
+  Footer,
+} from "./Components/index.js";
 
 // Context for authentication
 const AuthContext = createContext();
@@ -365,7 +363,6 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-
 // Main App Component
 const App = () => {
   const [currentPage, setCurrentPage] = useState("home");
@@ -476,7 +473,7 @@ const App = () => {
           />
         );
       case "giftcards":
-        return <GiftCards />;  
+        return <GiftCards />;
       case "bookings":
         return <MyBookings />;
       case "upcoming-movies":
@@ -485,7 +482,6 @@ const App = () => {
             onMovieSelect={handleMovieSelect}
             onGoHome={() => setCurrentPage("home")}
           />
-      
         );
       default:
         return <Home onMovieSelect={handleMovieSelect} />;
