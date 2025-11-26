@@ -650,11 +650,11 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                 <div className="text-gray-200 font-medium text-lg">
                   Upcoming Movies
                 </div>
-                <div className="text-gray-400 text-sm mt-2">From database</div>
+                {/* <div className="text-gray-400 text-sm mt-2">From database</div> */}
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 group">
                 <div className="text-5xl font-black text-blue-400 mb-3 group-hover:scale-110 transition-transform duration-300">
-                  50+
+                  25+
                 </div>
                 <div className="text-gray-200 font-medium text-lg">
                   More Coming
