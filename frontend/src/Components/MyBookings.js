@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, MapPin, Clock, User, Ticket } from "lucide-react";
-import { useAuth } from "../App";
-import { api } from "../App";
+import { useAuth } from "../Contexts/AuthProvider";
+import { api } from "../Contexts/AuthProvider";
 
 export const MyBookings = () => {
   const [bookings, setBookings] = useState([]);

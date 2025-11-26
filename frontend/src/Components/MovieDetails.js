@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, Star, User } from "lucide-react";
-import { useAuth, api } from "../App";
+import { useAuth, api } from "../Contexts/AuthProvider";
 import { SeatSelection } from "../Components/SeatSelection.js";
 
 
@@ -11,16 +11,14 @@ export const MovieDetails = ({ movie, onBack, onBookNow }) => {
   );
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-
-  // Determine if the movie is upcoming
+ 
   const isUpcoming = new Date(movie.releaseDate) > new Date();
 
-  useEffect(() => {
-    // Only fetch shows if the movie is NOT upcoming
+  useEffect(() => { 
     if (!isUpcoming) {
       fetchShows();
     } else {
-      setLoading(false); // No need to load shows for upcoming movies
+      setLoading(false); 
     }
   }, [movie._id, selectedDate, isUpcoming]);
 
@@ -467,8 +465,7 @@ const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
 // Booking Page Component
 export const BookingPage = ({ show, onBack, onBookingComplete }) => {
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const { token } = useAuth();
+  const [loading, setLoading] = useState(false); 
 
   const handleSeatSelect = (seatId) => {
     setSelectedSeats((prev) => {

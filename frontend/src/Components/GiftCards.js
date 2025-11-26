@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Gift, Heart, Star, Calendar, CreditCard, Wallet } from "lucide-react";
-import { useAuth, api } from "../App";
-import { API_BASE_URL } from '../App';
+import { useAuth, api } from "../Contexts/AuthProvider";
+import { API_BASE_URL } from '../Contexts/AuthProvider';
 
 
 export const GiftCards = () => {

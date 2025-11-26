@@ -2,7 +2,7 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import { api  } from "../App";
+import { api  } from "../Contexts/AuthProvider";
 import { SearchAndCategoryFilter } from "./UpcomingMovies";
 import { Film } from "lucide-react";
 import { Star , Clock } from "lucide-react";

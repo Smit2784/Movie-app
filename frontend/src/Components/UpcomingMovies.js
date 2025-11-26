@@ -1,6 +1,6 @@
 import React, { useState, useEffect , useRef } from "react";
 import { Calendar, Film , Search } from "lucide-react";
-import { api } from "../App";
+import { api } from "../Contexts/AuthProvider";
 
 // Category Dropdown Component
 const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {

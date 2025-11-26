@@ -2,7 +2,7 @@ import React, {
   useState
 } from "react";
 import { User, Film } from "lucide-react";
-import { useAuth } from "../App";
+import { useAuth } from "../Contexts/AuthProvider";
 
 export const AuthComponent = ({ setCurrentPage }) => {
   const [isLogin, setIsLogin] = useState(true);

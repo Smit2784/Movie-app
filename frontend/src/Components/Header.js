@@ -6,7 +6,7 @@ import {
   LogOut
 } from "lucide-react";
 import logo from "../logo.png";
-import { useAuth } from "../App";
+import { useAuth } from "../Contexts/AuthProvider";
 
 export const Header = ({ currentPage, setCurrentPage }) => {
   const { user, logout, token, walletBalance, refreshWalletBalance } =

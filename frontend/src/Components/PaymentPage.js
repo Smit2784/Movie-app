@@ -2,8 +2,8 @@ import React, {
   useState,
   useEffect
 } from "react";
-import { useAuth } from "../App";
-import { api } from "../App";
+import { useAuth } from "../Contexts/AuthProvider";
+import { api } from "../Contexts/AuthProvider";
 
 export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -103,6 +103,13 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
 
   const handlePayment = async (e) => {
     e.preventDefault();
+
+    if ((!useWallet || (useWallet && remainingAmount > 0)) && paymentMethod === "card" || paymentMethod === "upi") {
+    if (!validateForm()) {
+      return;  
+    }
+  } 
+
     setIsProcessing(true);
     const bookingDataForApi = { showId, seats, totalAmount };
 
