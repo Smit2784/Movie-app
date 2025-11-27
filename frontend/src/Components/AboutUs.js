@@ -3,25 +3,25 @@
 export const AboutUs = () => {
   const teamMembers = [
     {
-      name: "Rajesh Kumar",
+      name: "Smit  Dudhat",
       role: "CEO & Founder",
       image:
-        "https://www.mckinsey.com/~/media/mckinsey/business%20functions/strategy%20and%20corporate%20finance/our%20insights/voices%20of%20ceo%20excellence%20mercks%20ken%20frazier/ken-frazier-50-50.jpg?cq=50&mw=1180&car=1:1&cpy=Center",
+        "https://cdn.images.express.co.uk/img/dynamic/79/940x/secondary/Paul-is-best-known-for-playing-Arthur-Shelby-5237845.avif?r=1709074164477",
       description:
         "Passionate about revolutionizing the movie experience with 10+ years in entertainment industry.",
     },
     {
-      name: "Priyansh Sharma",
+      name: "Vineet Gohil",
       role: "CTO",
-      image: "https://newsroom.paypal-corp.com/image/SriniVenkatesan_3x2.png",
+      image: "https://cdn.webshopapp.com/shops/268192/files/433182622/tommy-shelby.jpg",
       description:
         "Tech enthusiast leading our digital transformation with expertise in web and mobile technologies.",
     },
     {
-      name: "Amit Patel",
+      name: "Harsh Nakrani",
       role: "Head of Operations",
       image:
-        "https://travelmail.in/wp-content/uploads/2024/07/Santoshkumar-Hiremath-as-CX-Leader-and-Head-of-Operations.jpg",
+        "https://i2-prod.walesonline.co.uk/article23499865.ece/ALTERNATES/s1200f/0_Peaky-Blinders-SERIES-4.jpg",
       description:
         "Ensuring seamless operations across all theaters with focus on customer satisfaction.",
     },

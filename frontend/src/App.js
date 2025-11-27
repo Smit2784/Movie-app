@@ -79,7 +79,7 @@ const App = () => {
         currentPage === "booking" ||
         currentPage === "payment")
     ) {
-      return <AuthComponent setCurrentPage={setCurrentPage} />;
+      return <AuthComponent  setCurrentPage={setCurrentPage} />;
     }
 
     switch (currentPage) {

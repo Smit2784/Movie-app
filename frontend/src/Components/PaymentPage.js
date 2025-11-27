@@ -492,7 +492,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                             {
                               id: "movietix",
                               name: "Amzon Pay",
-                              icon: "❤️",
+                              icon: "😊",
                             },
                           ].map((wallet) => (
                             <label key={wallet.id} className="cursor-pointer">
