@@ -23,7 +23,12 @@ const userSchema = new mongoose.Schema({
   walletBalance: {        // ADD THIS NEW FIELD
     type: Number,
     default: 0
-  }
+  },
+  role: { 
+        type: String, 
+        enum: ['user', 'admin'], 
+        default: 'user' 
+    }
 }, {
   timestamps: true
 });

@@ -3,6 +3,12 @@ import React, { useState, useEffect } from "react";
 import {
   Home,
   AuthComponent,
+  ManageTheaters,
+  ManageMovies,
+  ManageShows,
+  UserList,
+  AdminDashboard,
+  AdminBookings,
   Header,
   AboutUs,
   ContactUs,
@@ -16,9 +22,10 @@ import {
   PaymentSuccess,
   GiftCards,
   Footer,
+  UpdateProfile,
 } from "./Components/index.js";
 
-import AuthProvider,{useAuth} from "./Contexts/AuthProvider.js";
+import AuthProvider, { useAuth } from "./Contexts/AuthProvider.js";
 
 // Main App Component
 const App = () => {
@@ -79,12 +86,37 @@ const App = () => {
         currentPage === "booking" ||
         currentPage === "payment")
     ) {
-      return <AuthComponent  setCurrentPage={setCurrentPage} />;
+      return <AuthComponent setCurrentPage={setCurrentPage} />;
+    }
+
+    if (currentPage.startsWith("admin-") && (!user || user.role !== "admin")) {
+      setCurrentPage("home");
+      return <Home onMovieSelect={handleMovieSelect} />;
     }
 
     switch (currentPage) {
       case "auth":
         return <AuthComponent setCurrentPage={setCurrentPage} />;
+
+      case "admin-dashboard":
+        return <AdminDashboard setCurrentPage={setCurrentPage} />;
+      case "admin-movies":
+        return (
+          <ManageMovies onBack={() => setCurrentPage("admin-dashboard")} />
+        );
+      case "admin-shows":
+        return (
+          <ManageShows onBack={() => setCurrentPage("admin-dashboard")} />
+        );
+      case "admin-theaters":
+        return (
+          <ManageTheaters onBack={() => setCurrentPage("admin-dashboard")} />
+        );
+      case "admin-users":
+        return <UserList onBack={() => setCurrentPage("admin-dashboard")} />;
+      case "admin-bookings":
+        return <AdminBookings onBack={() => setCurrentPage("admin-dashboard")} />;
+
       case "about":
         return <AboutUs />;
       case "contact":
@@ -140,6 +172,8 @@ const App = () => {
             onGoHome={() => setCurrentPage("home")}
           />
         );
+      case "profile":
+        return <UpdateProfile onBack={() => setCurrentPage("home")} />;
       default:
         return <Home onMovieSelect={handleMovieSelect} />;
     }
