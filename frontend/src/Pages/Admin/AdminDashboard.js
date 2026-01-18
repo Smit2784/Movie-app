@@ -1,16 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { LayoutDashboard, Film, Building2, Users, ArrowLeft, Calendar, LogOut, CreditCard } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import {
+    LayoutDashboard,
+    Film,
+    Building2,
+    Users,
+    ArrowLeft,
+    Calendar,
+    LogOut,
+    CreditCard,
+} from "lucide-react";
 
 export const AdminDashboard = ({ setCurrentPage }) => {
-    const [stats, setStats] = useState({ movies: 0, theaters: 0, users: 0, bookings: 0 });
+    const [stats, setStats] = useState({
+        movies: 0,
+        theaters: 0,
+        users: 0,
+        bookings: 0,
+    });
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:5000/api/admin/stats', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const token = localStorage.getItem("token");
+                const res = await fetch(
+                    "http://localhost:5000/api/admin/stats",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    },
+                );
                 const data = await res.json();
                 if (data.success) {
                     setStats(data.stats);
@@ -23,12 +40,36 @@ export const AdminDashboard = ({ setCurrentPage }) => {
     }, []);
 
     const menuItems = [
-        { id: 'admin-dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-        { id: 'admin-movies', label: 'Manage Movies', icon: <Film size={20} /> },
-        { id: 'admin-shows', label: 'Manage Shows', icon: <Calendar size={20} /> },
-        { id: 'admin-theaters', label: 'Manage Theaters', icon: <Building2 size={20} /> },
-        { id: 'admin-bookings', label: 'All Bookings', icon: <CreditCard size={20} /> },
-        { id: 'admin-users', label: 'User Directory', icon: <Users size={20} /> },
+        {
+            id: "admin-dashboard",
+            label: "Dashboard",
+            icon: <LayoutDashboard size={20} />,
+        },
+        {
+            id: "admin-movies",
+            label: "Manage Movies",
+            icon: <Film size={20} />,
+        },
+        {
+            id: "admin-shows",
+            label: "Manage Shows",
+            icon: <Calendar size={20} />,
+        },
+        {
+            id: "admin-theaters",
+            label: "Manage Theaters",
+            icon: <Building2 size={20} />,
+        },
+        {
+            id: "admin-bookings",
+            label: "All Bookings",
+            icon: <CreditCard size={20} />,
+        },
+        {
+            id: "admin-users",
+            label: "User Directory",
+            icon: <Users size={20} />,
+        },
     ];
 
     return (
@@ -44,21 +85,26 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                         <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
                             MovieTix
                         </h2>
-                        <p className="text-slate-400 text-sm mt-1">Admin Control Center</p>
+                        <p className="text-slate-400 text-sm mt-1">
+                            Admin Control Center
+                        </p>
                     </div>
 
                     <nav className="space-y-2 flex-1">
-                        {menuItems.map(item => (
+                        {menuItems.map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => setCurrentPage(item.id)}
-                                className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-300 ${item.id === 'admin-dashboard'
-                                    ? 'bg-blue-600 shadow-lg shadow-blue-900/50 text-white'
-                                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                                    }`}
+                                className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-300 ${
+                                    item.id === "admin-dashboard"
+                                        ? "bg-blue-600 shadow-lg shadow-blue-900/50 text-white"
+                                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                                }`}
                             >
                                 {item.icon}
-                                <span className="font-medium">{item.label}</span>
+                                <span className="font-medium">
+                                    {item.label}
+                                </span>
                             </button>
                         ))}
                     </nav>
@@ -68,7 +114,10 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                             onClick={() => setCurrentPage("home")}
                             className="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-white hover:bg-red-500/10 hover:border-red-500/50 border border-transparent rounded-xl transition-all group"
                         >
-                            <LogOut size={18} className="group-hover:text-red-400" />
+                            <LogOut
+                                size={18}
+                                className="group-hover:text-red-400"
+                            />
                             <span>Exit Panel</span>
                         </button>
                     </div>
@@ -79,12 +128,18 @@ export const AdminDashboard = ({ setCurrentPage }) => {
             <div className="flex-1 p-6 md:p-12 overflow-y-auto bg-slate-50">
                 <header className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-4xl font-bold text-slate-800 tracking-tight">Dashboard Overview</h1>
-                        <p className="text-slate-500 mt-2">Welcome back, Admin. Here's your daily report.</p>
+                        <h1 className="text-4xl font-bold text-slate-800 tracking-tight">
+                            Dashboard Overview
+                        </h1>
+                        <p className="text-slate-500 mt-2">
+                            Welcome back, Admin. Here's your daily report.
+                        </p>
                     </div>
                     <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span className="text-sm font-medium text-slate-600">System Online</span>
+                        <span className="text-sm font-medium text-slate-600">
+                            System Online
+                        </span>
                     </div>
                 </header>
 
@@ -122,7 +177,9 @@ export const AdminDashboard = ({ setCurrentPage }) => {
 
                 {/* Quick Actions */}
                 <div className="bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-800 mb-6">Quick Management</h2>
+                    <h2 className="text-xl font-bold text-slate-800 mb-6">
+                        Quick Management
+                    </h2>
                     <div className="flex flex-wrap gap-4">
                         <ActionButton
                             onClick={() => setCurrentPage("admin-movies")}
@@ -154,10 +211,14 @@ const StatCard = ({ title, value, icon, gradient, delay }) => (
         className={`relative overflow-hidden bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
         style={{ animation: `fadeIn Up 0.5s ease-out ${delay}ms` }}
     >
-        <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} opacity-10 rounded-bl-full -mr-10 -mt-10`}></div>
+        <div
+            className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} opacity-10 rounded-bl-full -mr-10 -mt-10`}
+        ></div>
 
         <div className="flex items-center justify-between mb-4 relative z-10">
-            <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg`}>
+            <div
+                className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg`}
+            >
                 {icon}
             </div>
             {/* <span className="text-xs font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded-md">
@@ -176,7 +237,8 @@ const ActionButton = ({ onClick, label, icon, color }) => {
     const colorClasses = {
         blue: "bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border-blue-200",
         violet: "bg-violet-50 text-violet-600 hover:bg-violet-600 hover:text-white border-violet-200",
-        emerald: "bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border-emerald-200",
+        emerald:
+            "bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border-emerald-200",
     };
 
     return (

@@ -23,7 +23,10 @@ export const UpdateProfile = ({ onBack }) => {
         e.preventDefault();
         setLoading(true);
 
-        if (formData.password && formData.password !== formData.confirmPassword) {
+        if (
+            formData.password &&
+            formData.password !== formData.confirmPassword
+        ) {
             setError("Passwords do not match");
             setLoading(false);
             return;
@@ -72,7 +75,9 @@ export const UpdateProfile = ({ onBack }) => {
                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-500 mb-4 shadow-lg">
                         <User size={40} className="text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-white">Update Profile</h2>
+                    <h2 className="text-2xl font-bold text-white">
+                        Update Profile
+                    </h2>
                     <p className="text-purple-200 mt-1">{user?.email}</p>
                 </div>
 
@@ -110,7 +115,10 @@ export const UpdateProfile = ({ onBack }) => {
 
                     <div className="border-t pt-4">
                         <h3 className="text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wider">
-                            Change Password <span className="text-xs font-normal normal-case">(Optional)</span>
+                            Change Password{" "}
+                            <span className="text-xs font-normal normal-case">
+                                (Optional)
+                            </span>
                         </h3>
 
                         <div className="space-y-4">
@@ -120,7 +128,10 @@ export const UpdateProfile = ({ onBack }) => {
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Lock size={18} className="text-gray-400" />
+                                        <Lock
+                                            size={18}
+                                            className="text-gray-400"
+                                        />
                                     </div>
                                     <input
                                         type="password"
@@ -140,7 +151,10 @@ export const UpdateProfile = ({ onBack }) => {
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Lock size={18} className="text-gray-400" />
+                                        <Lock
+                                            size={18}
+                                            className="text-gray-400"
+                                        />
                                     </div>
                                     <input
                                         type="password"
@@ -160,7 +174,9 @@ export const UpdateProfile = ({ onBack }) => {
                         disabled={loading}
                         className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors disabled:opacity-50"
                     >
-                        {loading ? "Updating..." : (
+                        {loading ? (
+                            "Updating..."
+                        ) : (
                             <>
                                 <Save size={18} className="mr-2" /> Save Changes
                             </>

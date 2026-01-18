@@ -1,200 +1,397 @@
 import React, { useState, useEffect } from "react";
+import {
+    createBrowserRouter,
+    RouterProvider,
+    Outlet,
+    Navigate,
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
 
 import {
-  Home,
-  AuthComponent,
-  ManageTheaters,
-  ManageMovies,
-  ManageShows,
-  UserList,
-  AdminDashboard,
-  AdminBookings,
-  Header,
-  AboutUs,
-  ContactUs,
-  MyBookings,
-  MovieDetails,
-  BookingPage,
-  PaymentPage,
-  FAQ,
-  BookingGuide,
-  UpcomingMovies,
-  PaymentSuccess,
-  GiftCards,
-  Footer,
-  UpdateProfile,
-} from "./Components/index.js";
+    Home,
+    AuthComponent,
+    ManageTheaters,
+    ManageMovies,
+    ManageShows,
+    UserList,
+    AdminDashboard,
+    AdminBookings,
+    Header,
+    AboutUs,
+    ContactUs,
+    MyBookings,
+    MovieDetails,
+    BookingPage,
+    PaymentPage,
+    FAQ,
+    BookingGuide,
+    UpcomingMovies,
+    PaymentSuccess,
+    GiftCards,
+    Footer,
+    UpdateProfile,
+} from "./Index/Index.js";
 
 import AuthProvider, { useAuth } from "./Contexts/AuthProvider.js";
 
-// Main App Component
-const App = () => {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [selectedShow, setSelectedShow] = useState(null);
-  const [bookingData, setBookingData] = useState(null);
-  const [paymentResult, setPaymentResult] = useState(null);
-  const [authRedirect, setAuthRedirect] = useState(null);
-  const { user, loading: authLoading } = useAuth();
+// Protected Route Wrapper
+const ProtectedRoute = ({ children, adminOnly = false }) => {
+    const { user, loading } = useAuth();
+    const location = useLocation();
 
-  useEffect(() => {
-    if (user && authRedirect) {
-      setSelectedShow(authRedirect.show);
-      setCurrentPage("booking");
-      setAuthRedirect(null);
-    }
-  }, [user, authRedirect]);
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">Loading...</div>
-      </div>
-    );
-  }
-
-  const handleMovieSelect = (movie) => {
-    setSelectedMovie(movie);
-    setCurrentPage("movie-details");
-  };
-
-  const handleShowSelect = (show, proceed) => {
-    if (proceed) {
-      setSelectedShow(show);
-      setCurrentPage("booking");
-    } else {
-      setAuthRedirect({ show: show });
-      setCurrentPage("auth");
-    }
-  };
-
-  const handleBookingComplete = (booking) => {
-    setBookingData(booking);
-    setCurrentPage("payment");
-  };
-
-  const handlePaymentComplete = (paymentResult) => {
-    setPaymentResult(paymentResult);
-    setBookingData(paymentResult.booking);
-    setCurrentPage("payment-success");
-  };
-
-  const renderPage = () => {
-    if (
-      !user &&
-      (currentPage === "bookings" ||
-        currentPage === "booking" ||
-        currentPage === "payment")
-    ) {
-      return <AuthComponent setCurrentPage={setCurrentPage} />;
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                <div className="text-center">Loading...</div>
+            </div>
+        );
     }
 
-    if (currentPage.startsWith("admin-") && (!user || user.role !== "admin")) {
-      setCurrentPage("home");
-      return <Home onMovieSelect={handleMovieSelect} />;
+    if (!user) {
+        return <Navigate to="/auth" state={{ from: location }} replace />;
     }
 
-    switch (currentPage) {
-      case "auth":
-        return <AuthComponent setCurrentPage={setCurrentPage} />;
-
-      case "admin-dashboard":
-        return <AdminDashboard setCurrentPage={setCurrentPage} />;
-      case "admin-movies":
-        return (
-          <ManageMovies onBack={() => setCurrentPage("admin-dashboard")} />
-        );
-      case "admin-shows":
-        return (
-          <ManageShows onBack={() => setCurrentPage("admin-dashboard")} />
-        );
-      case "admin-theaters":
-        return (
-          <ManageTheaters onBack={() => setCurrentPage("admin-dashboard")} />
-        );
-      case "admin-users":
-        return <UserList onBack={() => setCurrentPage("admin-dashboard")} />;
-      case "admin-bookings":
-        return <AdminBookings onBack={() => setCurrentPage("admin-dashboard")} />;
-
-      case "about":
-        return <AboutUs />;
-      case "contact":
-        return <ContactUs />;
-      case "booking-guide":
-        return <BookingGuide />;
-      case "faq":
-        return <FAQ />;
-      case "movie-details":
-        return (
-          <MovieDetails
-            movie={selectedMovie}
-            onBack={() => setCurrentPage("home")}
-            onBookNow={handleShowSelect}
-          />
-        );
-      case "booking":
-        return (
-          <BookingPage
-            show={selectedShow}
-            onBack={() => setCurrentPage("movie-details")}
-            onBookingComplete={handleBookingComplete}
-          />
-        );
-      case "payment":
-        return (
-          <PaymentPage
-            booking={bookingData}
-            onBack={() => setCurrentPage("booking")}
-            onPaymentComplete={handlePaymentComplete}
-          />
-        );
-      case "payment-success":
-        return (
-          <PaymentSuccess
-            paymentResult={paymentResult}
-            booking={bookingData}
-            onGoHome={() => {
-              setCurrentPage("home");
-              setBookingData(null);
-              setPaymentResult(null);
-            }}
-          />
-        );
-      case "giftcards":
-        return <GiftCards />;
-      case "bookings":
-        return <MyBookings />;
-      case "upcoming-movies":
-        return (
-          <UpcomingMovies
-            onMovieSelect={handleMovieSelect}
-            onGoHome={() => setCurrentPage("home")}
-          />
-        );
-      case "profile":
-        return <UpdateProfile onBack={() => setCurrentPage("home")} />;
-      default:
-        return <Home onMovieSelect={handleMovieSelect} />;
+    if (adminOnly && user.role !== "admin") {
+        return <Navigate to="/" replace />;
     }
-  };
 
-  return (
-    <div className="App min-h-screen flex flex-col">
-      <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <main className="flex-grow">{renderPage()}</main>
-      <Footer setCurrentPage={setCurrentPage} />
-    </div>
-  );
+    return children;
 };
 
-// Main component with AuthProvider
+// Layout Component
+const RootLayout = () => {
+    return (
+        <AuthProvider>
+            <div className="App min-h-screen flex flex-col">
+                <LayoutContent />
+            </div>
+        </AuthProvider>
+    );
+};
+
+// Values needed from AuthContext for Header, so we need a sub-component inside AuthProvider
+const LayoutContent = () => {
+    return (
+        <>
+            <Header />
+            <main className="flex-grow">
+                <Outlet />
+            </main>
+            <Footer />
+        </>
+    );
+};
+
+// Wrapper Components to handle Navigation Props (Legacy Adapter)
+
+function HomeWithNavigation() {
+    const navigate = useNavigate();
+    return (
+        <Home
+            onMovieSelect={(movie) =>
+                navigate(`/movie/${movie._id}`, { state: { movie } })
+            }
+        />
+    );
+}
+
+function UpcomingMoviesWithNavigation() {
+    const navigate = useNavigate();
+    return (
+        <UpcomingMovies
+            onMovieSelect={(movie) =>
+                navigate(`/movie/${movie._id}`, { state: { movie } })
+            }
+            onGoHome={() => navigate("/")}
+        />
+    );
+}
+
+function AuthWrapper() {
+    const navigate = useNavigate();
+    return (
+        <AuthComponent
+            setCurrentPage={(page) => {
+                if (page === "home") navigate("/");
+                else navigate(page);
+            }}
+        />
+    );
+}
+
+function MovieDetailsWithNavigation() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    return (
+        <MovieDetails
+            movie={location.state?.movie}
+            onBack={() => navigate("/")}
+            onBookNow={(show, proceed) => {
+                if (proceed) {
+                    navigate(`/booking/${show._id}`, { state: { show } });
+                } else {
+                    navigate("/auth", {
+                        state: { from: `/booking/${show._id}`, show },
+                    });
+                }
+            }}
+        />
+    );
+}
+
+function BookingPageWithNavigation() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    return (
+        <BookingPage
+            show={location.state?.show}
+            onBack={() => navigate(-1)}
+            onBookingComplete={(booking) => {
+                navigate("/payment", { state: { booking } });
+            }}
+        />
+    );
+}
+
+function PaymentPageWithNavigation() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const booking = location.state?.booking;
+
+    if (!booking) {
+        return <Navigate to="/" replace />;
+    }
+
+    return (
+        <PaymentPage
+            booking={booking}
+            onBack={() => navigate(-1)}
+            onPaymentComplete={(result) => {
+                navigate("/payment-success", {
+                    state: { result, booking: result.booking },
+                });
+            }}
+        />
+    );
+}
+
+function PaymentSuccessWithNavigation() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { result, booking } = location.state || {};
+
+    return (
+        <PaymentSuccess
+            paymentResult={result}
+            booking={booking}
+            onGoHome={() => navigate("/")}
+        />
+    );
+}
+
+function UpdateProfileWithNavigation() {
+    const navigate = useNavigate();
+    return <UpdateProfile onBack={() => navigate("/")} />;
+}
+
+// Admin Wrappers
+function AdminDashboardWithNavigation() {
+    const navigate = useNavigate();
+    return (
+        <AdminDashboard
+            setCurrentPage={(page) => {
+                if (page.startsWith("admin-")) {
+                    navigate(page.replace("admin-", "/admin/"));
+                } else {
+                    navigate(page);
+                }
+            }}
+        />
+    );
+}
+
+function ManageMoviesWithNavigation() {
+    const navigate = useNavigate();
+    return <ManageMovies onBack={() => navigate("/admin/dashboard")} />;
+}
+function ManageShowsWithNavigation() {
+    const navigate = useNavigate();
+    return <ManageShows onBack={() => navigate("/admin/dashboard")} />;
+}
+function ManageTheatersWithNavigation() {
+    const navigate = useNavigate();
+    return <ManageTheaters onBack={() => navigate("/admin/dashboard")} />;
+}
+function UserListWithNavigation() {
+    const navigate = useNavigate();
+    return <UserList onBack={() => navigate("/admin/dashboard")} />;
+}
+function AdminBookingsWithNavigation() {
+    const navigate = useNavigate();
+    return <AdminBookings onBack={() => navigate("/admin/dashboard")} />;
+}
+
+// Router Configuration
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <RootLayout />,
+        errorElement: <Navigate to="/" replace />,
+        children: [
+            {
+                path: "/",
+                element: <HomeWithNavigation />,
+            },
+            {
+                path: "auth",
+                element: <AuthWrapper />,
+            },
+            {
+                path: "about",
+                element: <AboutUs />,
+            },
+            {
+                path: "contact",
+                element: <ContactUs />,
+            },
+            {
+                path: "faq",
+                element: <FAQ />,
+            },
+            {
+                path: "booking-guide",
+                element: <BookingGuide />,
+            },
+            {
+                path: "giftcards",
+                element: <GiftCards />,
+            },
+            {
+                path: "upcoming-movies",
+                element: <UpcomingMoviesWithNavigation />,
+            },
+
+            // Protected User Routes
+            {
+                path: "bookings",
+                element: (
+                    <ProtectedRoute>
+                        <MyBookings />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "profile",
+                element: (
+                    <ProtectedRoute>
+                        <UpdateProfileWithNavigation />
+                    </ProtectedRoute>
+                ),
+            },
+
+            // Flows
+            {
+                path: "movie/:id",
+                element: <MovieDetailsWithNavigation />,
+            },
+            {
+                path: "booking/:showId",
+                element: (
+                    <ProtectedRoute>
+                        <BookingPageWithNavigation />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "payment",
+                element: (
+                    <ProtectedRoute>
+                        <PaymentPageWithNavigation />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "payment-success",
+                element: (
+                    <ProtectedRoute>
+                        <PaymentSuccessWithNavigation />
+                    </ProtectedRoute>
+                ),
+            },
+
+            // Admin Routes
+            {
+                path: "admin",
+                children: [
+                    {
+                        index: true,
+                        element: <Navigate to="dashboard" replace />,
+                    },
+                    {
+                        path: "dashboard",
+                        element: (
+                            <ProtectedRoute adminOnly={true}>
+                                <AdminDashboardWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "movies",
+                        element: (
+                            <ProtectedRoute adminOnly={true}>
+                                <ManageMoviesWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "shows",
+                        element: (
+                            <ProtectedRoute adminOnly={true}>
+                                <ManageShowsWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "theaters",
+                        element: (
+                            <ProtectedRoute adminOnly={true}>
+                                <ManageTheatersWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "users",
+                        element: (
+                            <ProtectedRoute adminOnly={true}>
+                                <UserListWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "bookings",
+                        element: (
+                            <ProtectedRoute adminOnly={true}>
+                                <AdminBookingsWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                ],
+            },
+
+            // Catch all
+            {
+                path: "*",
+                element: <Navigate to="/" replace />,
+            },
+        ],
+    },
+]);
+
+// Main App
 const MovieTicketBookingApp = () => {
-  return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  );
+    return <RouterProvider router={router} />;
 };
 
 export default MovieTicketBookingApp;
