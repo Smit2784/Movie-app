@@ -3,7 +3,7 @@ import { useAuth } from "../Contexts/AuthProvider";
 import { User, Lock, Save, ArrowLeft } from "lucide-react";
 
 export const UpdateProfile = ({ onBack }) => {
-    const { user, token, setUser } = useAuth();
+    const { user, token, updateUser } = useAuth();
     const [formData, setFormData] = useState({
         name: user?.name || "",
         password: "",
@@ -51,6 +51,7 @@ export const UpdateProfile = ({ onBack }) => {
 
             if (data.success) {
                 setMessage("Profile updated successfully!");
+                updateUser({ name: formData.name });
                 setFormData({ ...formData, password: "", confirmPassword: "" });
             } else {
                 setError(data.message || "Failed to update profile");

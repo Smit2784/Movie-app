@@ -129,7 +129,7 @@ export const Footer = () => {
                 <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/20">
                     <div className="text-center md:text-left mb-4 md:mb-0">
                         <p className="text-gray-300">
-                            © 2025{" "}
+                            © 2026{" "}
                             <span className="font-bold text-white">
                                 MovieTix
                             </span>

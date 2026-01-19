@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../Contexts/AuthProvider";
 import { SearchAndCategoryFilter } from "./UpcomingMovies";
-import { Film } from "lucide-react";
+import { Film, Theater } from "lucide-react";
 import { Star, Clock } from "lucide-react";
 
 //Movie Card Component
@@ -96,6 +96,7 @@ const EnhancedMovieCard = ({ movie, onSelect, index }) => {
 // Complete Home Component
 const Home = ({ onMovieSelect }) => {
     const [movies, setMovies] = useState([]);
+    const [theaters, setTheaters] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [loading, setLoading] = useState(true);
@@ -112,6 +113,20 @@ const Home = ({ onMovieSelect }) => {
             console.error("Error fetching movies:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchTheaters();
+    }, []);
+
+    const fetchTheaters = async () => {
+        try {
+            const data = await api.getTheaters();
+            console.log(data);
+            setTheaters(data.theater);
+        } catch (error) {
+            console.error("Error fetching theaters:", error);
         }
     };
 
@@ -146,7 +161,6 @@ const Home = ({ onMovieSelect }) => {
                 <div className="text-center">
                     <div className="relative">
                         <div className="w-20 h-20 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-6"></div>
-                        <div className="absolute inset-0 w-16 h-16 border-4 border-blue-200 border-b-blue-600 rounded-full animate-spin mx-auto mt-2 ml-2 animate-reverse"></div>
                     </div>
                     <h3 className="text-2xl font-bold text-gray-700 mb-2">
                         Loading Movies
@@ -216,7 +230,7 @@ const Home = ({ onMovieSelect }) => {
                             </div>
                             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 group">
                                 <div className="text-5xl font-black text-green-400 mb-3 group-hover:scale-110 transition-transform duration-300">
-                                    7+
+                                    {theaters.length}+
                                 </div>
                                 <div className="text-gray-200 font-medium text-lg">
                                     Premium Theaters
