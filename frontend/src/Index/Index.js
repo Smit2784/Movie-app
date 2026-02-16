@@ -20,6 +20,7 @@ import { PaymentSuccess } from "../Pages/PaymentSuccess";
 import { GiftCards } from "../Pages/GiftCards";
 import { Footer } from "../Layouts/Footer";
 import { UpdateProfile } from "../Pages/UpdateProfile";
+import NotFound from "../Pages/NotFound";
 
 export {
     Home,
@@ -44,4 +45,5 @@ export {
     GiftCards,
     Footer,
     UpdateProfile,
+    NotFound,
 };

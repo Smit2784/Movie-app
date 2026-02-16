@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { MapPin } from "lucide-react";
+import {
+    validateName,
+    validateEmail,
+    validateMinLength,
+} from "../utils/validation";
 
 export const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -8,6 +13,7 @@ export const ContactUs = () => {
         subject: "",
         message: "",
     });
+    const [fieldErrors, setFieldErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleInputChange = (e) => {
@@ -15,10 +21,53 @@ export const ContactUs = () => {
             ...formData,
             [e.target.name]: e.target.value,
         });
+        // Clear error for the field being edited
+        if (fieldErrors[e.target.name]) {
+            setFieldErrors({
+                ...fieldErrors,
+                [e.target.name]: null,
+            });
+        }
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        let isValid = true;
+
+        const nameError = validateName(formData.name);
+        if (nameError) {
+            errors.name = nameError;
+            isValid = false;
+        }
+
+        const emailError = validateEmail(formData.email);
+        if (emailError) {
+            errors.email = emailError;
+            isValid = false;
+        }
+
+        const messageError = validateMinLength(formData.message, 10, "Message");
+        if (messageError) {
+            errors.message = messageError;
+            isValid = false;
+        }
+
+        if (formData.subject === "") {
+            errors.subject = "Please select a subject";
+            isValid = false;
+        }
+
+        setFieldErrors(errors);
+        return isValid;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
         setIsSubmitting(true);
 
         setTimeout(() => {
@@ -26,6 +75,7 @@ export const ContactUs = () => {
                 "Thank you for contacting us! We'll get back to you within 24 hours.",
             );
             setFormData({ name: "", email: "", subject: "", message: "" });
+            setFieldErrors({});
             setIsSubmitting(false);
         }, 2000);
     };
@@ -69,12 +119,16 @@ export const ContactUs = () => {
                                     <input
                                         type="text"
                                         name="name"
-                                        required
                                         value={formData.name}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300"
+                                        className={`w-full px-4 py-3 border-2 ${fieldErrors.name ? "border-red-500" : "border-gray-200"} rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300`}
                                         placeholder="Enter your full name"
                                     />
+                                    {fieldErrors.name && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {fieldErrors.name}
+                                        </p>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -83,12 +137,16 @@ export const ContactUs = () => {
                                     <input
                                         type="email"
                                         name="email"
-                                        required
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300"
+                                        className={`w-full px-4 py-3 border-2 ${fieldErrors.email ? "border-red-500" : "border-gray-200"} rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300`}
                                         placeholder="Enter your email"
                                     />
+                                    {fieldErrors.email && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {fieldErrors.email}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
@@ -98,10 +156,9 @@ export const ContactUs = () => {
                                 </label>
                                 <select
                                     name="subject"
-                                    required
                                     value={formData.subject}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300"
+                                    className={`w-full px-4 py-3 border-2 ${fieldErrors.subject ? "border-red-500" : "border-gray-200"} rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300`}
                                 >
                                     <option value="">Select a subject</option>
                                     <option value="booking-support">
@@ -119,6 +176,11 @@ export const ContactUs = () => {
                                     </option>
                                     <option value="other">Other</option>
                                 </select>
+                                {fieldErrors.subject && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {fieldErrors.subject}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -127,13 +189,17 @@ export const ContactUs = () => {
                                 </label>
                                 <textarea
                                     name="message"
-                                    required
                                     rows="6"
                                     value={formData.message}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300 resize-none"
+                                    className={`w-full px-4 py-3 border-2 ${fieldErrors.message ? "border-red-500" : "border-gray-200"} rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300 resize-none`}
                                     placeholder="Type your message here..."
                                 ></textarea>
+                                {fieldErrors.message && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {fieldErrors.message}
+                                    </p>
+                                )}
                             </div>
 
                             <button

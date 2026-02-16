@@ -5,14 +5,18 @@ import {
     ChevronDown,
     LayoutDashboard,
     Ticket,
+    Clapperboard,
+    Info,
+    PhoneCall,
+    CalendarDays,
+    Wallet
 } from "lucide-react";
 import logo from "../logo.png";
 import { useAuth } from "../Contexts/AuthProvider";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export const Header = () => {
-    const { user, logout, token, walletBalance, refreshWalletBalance } =
-        useAuth();
+    const { user, logout, token, walletBalance, refreshWalletBalance } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
     const navigate = useNavigate();
@@ -25,13 +29,11 @@ export const Header = () => {
                 setIsMenuOpen(false);
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    // Wallet Refresh Logic
     useEffect(() => {
         const interval = setInterval(() => {
             if (user && token) {
@@ -43,193 +45,145 @@ export const Header = () => {
 
     const isActive = (path) => location.pathname === path;
 
+    const navLinks = [
+        { name: "Movies", path: "/", icon: <Clapperboard size={16} /> },
+        { name: "About Us", path: "/about", icon: <Info size={16} /> },
+        { name: "Contact", path: "/contact", icon: <PhoneCall size={16} /> },
+        { name: "Upcoming", path: "/upcoming-movies", icon: <CalendarDays size={16} /> },
+    ];
+
     return (
-        <header className="bg-gradient-to-r sticky top-0 z-50 from-purple-900 via-purple-800 to-indigo-900 text-white shadow-2xl">
-            <div className="container mx-auto px-4 py-4">
-                <div className="flex items-center justify-between">
+        <header className="sticky top-0 z-[100] w-full transition-all duration-300">
+            {/* Glassmorphism Background Layer */}
+            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)]"></div>
+
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="flex items-center justify-between h-20">
+                    
+                    {/* Brand / Logo */}
                     <Link
                         to="/"
-                        className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                        className="flex items-center space-x-3 group"
                     >
-                        <img
-                            src={logo}
-                            alt="MovieTix Logo"
-                            className="h-12 w-15 object-contain"
-                        />
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                            <img
+                                src={logo}
+                                alt="MovieTix Logo"
+                                className="h-10 w-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                            />
+                        </div>
+                        <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-purple-400">
                             MovieTix
                         </h1>
                     </Link>
-                    <nav className="hidden md:flex space-x-8">
-                        <Link
-                            to="/"
-                            className={`relative px-3 py-2 font-semibold transition-all duration-300 hover:text-purple-300 ${
-                                isActive("/")
-                                    ? "text-purple-300 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-purple-300"
-                                    : "hover:scale-105"
-                            }`}
-                        >
-                            Movies
-                        </Link>
-                        <Link
-                            to="/about"
-                            className={`relative px-3 py-2 font-semibold transition-all duration-300 hover:text-purple-300 ${
-                                isActive("/about")
-                                    ? "text-purple-300 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-purple-300"
-                                    : "hover:scale-105"
-                            }`}
-                        >
-                            About Us
-                        </Link>
-                        <Link
-                            to="/contact"
-                            className={`relative px-3 py-2 font-semibold transition-all duration-300 hover:text-purple-300 ${
-                                isActive("/contact")
-                                    ? "text-purple-300 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-purple-300"
-                                    : "hover:scale-105"
-                            }`}
-                        >
-                            Contact Us
-                        </Link>
-                        <Link
-                            to="/upcoming-movies"
-                            className={`relative px-3 py-2 font-semibold transition-all duration-300 hover:text-purple-300 ${
-                                isActive("/upcoming-movies")
-                                    ? "text-purple-300 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-purple-300"
-                                    : "hover:scale-105"
-                            }`}
-                        >
-                            Upcoming Movies
-                        </Link>
+
+                    {/* Desktop Navigation */}
+                    <nav className="hidden lg:flex items-center space-x-1">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.path}
+                                to={link.path}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                                    isActive(link.path)
+                                        ? "bg-white/10 text-purple-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                                }`}
+                            >
+                                <span className={isActive(link.path) ? "text-purple-400" : "text-slate-500"}>
+                                    {link.icon}
+                                </span>
+                                {link.name}
+                            </Link>
+                        ))}
                     </nav>
-                    <div className="flex items-center space-x-4">
+
+                    {/* Right Action Area */}
+                    <div className="flex items-center space-x-3">
                         {user ? (
-                            <div className="flex items-center space-x-4">
-                                {/* Wallet Display - Kept visible for easy access */}
-                                <div className="bg-yellow-500/20 backdrop-blur-sm rounded-xl px-3 py-2 border border-yellow-500/30 hover:bg-yellow-500/30 transition-all duration-300">
-                                    <div className="flex items-center space-x-2">
-                                        <span className="text-yellow-300">
-                                            💰
-                                        </span>
-                                        <span className="text-white font-semibold">
-                                            ₹{walletBalance}
-                                        </span>
+                            <>
+                                {/* Premium Wallet Display */}
+                                <div className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl shadow-inner">
+                                    <div className="w-8 h-8 rounded-full bg-amber-400/10 flex items-center justify-center">
+                                        <Wallet size={16} className="text-amber-400" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Balance</span>
+                                        <span className="text-white font-black text-sm">₹{walletBalance}</span>
                                     </div>
                                 </div>
 
-                                {/* Profile Menu Dropdown */}
+                                {/* User Dropdown */}
                                 <div className="relative" ref={menuRef}>
                                     <button
-                                        onClick={() =>
-                                            setIsMenuOpen(!isMenuOpen)
-                                        }
-                                        className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-2 border border-white/20 hover:bg-white/20 transition-all duration-300 focus:outline-none"
+                                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                        className={`flex items-center gap-3 p-1.5 pr-4 rounded-2xl border transition-all duration-300 ${
+                                            isMenuOpen 
+                                            ? "bg-purple-600 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.4)]" 
+                                            : "bg-white/5 border-white/10 hover:bg-white/10"
+                                        }`}
                                     >
-                                        <div className="relative">
-                                            <User className="h-6 w-6 text-purple-300" />
-                                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                                        <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg">
+                                            {user.name.charAt(0).toUpperCase()}
                                         </div>
-                                        <div className="hidden sm:block text-left">
-                                            <div className="text-sm font-semibold text-white">
-                                                {user.name}
-                                            </div>
+                                        <div className="hidden md:block text-left">
+                                            <p className="text-xs font-black text-white leading-tight">{user.name}</p>
+                                            <p className="text-[10px] font-bold text-purple-300/70 uppercase tracking-tighter italic">{user.role}</p>
                                         </div>
                                         <ChevronDown
-                                            size={16}
-                                            className={`transition-transform duration-300 ${isMenuOpen ? "rotate-180" : ""}`}
+                                            size={14}
+                                            className={`text-white transition-transform duration-500 ${isMenuOpen ? "rotate-180" : ""}`}
                                         />
                                     </button>
 
-                                    {/* Dropdown Content */}
+                                    {/* Dropdown Menu */}
                                     {isMenuOpen && (
-                                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 z-50 text-gray-800 border border-gray-100 animate-fadeIn">
-                                            <div className="px-4 py-3 border-b border-gray-100">
-                                                <p className="text-sm text-gray-500">
-                                                    Signed in as
-                                                </p>
-                                                <p
-                                                    className="text-sm font-bold truncate"
-                                                    title={user.email}
-                                                >
-                                                    {user.email}
-                                                </p>
+                                        <div className="absolute right-0 mt-4 w-64 bg-slate-900/95 backdrop-blur-2xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-3 z-[110] border border-white/10 animate-in fade-in slide-in-from-top-5 duration-300">
+                                            <div className="px-6 py-4 border-b border-white/5 mb-2">
+                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Authenticated as</p>
+                                                <p className="text-sm font-bold text-white truncate">{user.email}</p>
                                             </div>
 
-                                            <div className="py-1">
-                                                <Link
-                                                    to="/profile"
-                                                    onClick={() =>
-                                                        setIsMenuOpen(false)
-                                                    }
-                                                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
-                                                >
-                                                    <User
-                                                        size={16}
-                                                        className="mr-3 text-purple-500"
-                                                    />
-                                                    My Profile
-                                                </Link>
-                                                <Link
-                                                    to="/bookings"
-                                                    onClick={() =>
-                                                        setIsMenuOpen(false)
-                                                    }
-                                                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
-                                                >
-                                                    <Ticket
-                                                        size={16}
-                                                        className="mr-3 text-purple-500"
-                                                    />
-                                                    My Bookings
-                                                </Link>
-
+                                            <div className="px-2 space-y-1">
+                                                <DropdownItem to="/profile" icon={<User size={18}/>} label="My Profile" onClick={() => setIsMenuOpen(false)} />
+                                                <DropdownItem to="/bookings" icon={<Ticket size={18}/>} label="My Bookings" onClick={() => setIsMenuOpen(false)} />
+                                                
                                                 {user.role === "admin" && (
-                                                    <Link
-                                                        to="/admin/dashboard"
-                                                        onClick={() =>
-                                                            setIsMenuOpen(false)
-                                                        }
-                                                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
-                                                    >
-                                                        <LayoutDashboard
-                                                            size={16}
-                                                            className="mr-3 text-blue-500"
-                                                        />
-                                                        Admin Panel
-                                                    </Link>
+                                                    <DropdownItem 
+                                                        to="/admin/dashboard" 
+                                                        icon={<LayoutDashboard size={18} className="text-blue-400"/>} 
+                                                        label="Admin Control" 
+                                                        onClick={() => setIsMenuOpen(false)} 
+                                                        highlight
+                                                    />
                                                 )}
-                                            </div>
 
-                                            <div className="border-t border-gray-100 mt-1 pt-1">
                                                 <button
                                                     onClick={() => {
                                                         logout();
                                                         setIsMenuOpen(false);
                                                         navigate("/");
                                                     }}
-                                                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-rose-400 hover:bg-rose-500/10 rounded-2xl transition-all"
                                                 >
-                                                    <LogOut
-                                                        size={16}
-                                                        className="mr-3"
-                                                    />
-                                                    Logout
+                                                    <LogOut size={18} />
+                                                    Sign Out
                                                 </button>
                                             </div>
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </>
                         ) : (
                             <Link
                                 to="/auth"
-                                className="group relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center"
+                                className="relative group overflow-hidden bg-white text-slate-950 px-8 py-3 rounded-2xl font-black text-sm transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_10px_20px_rgba(255,255,255,0.1)]"
                             >
-                                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                                <div className="relative flex items-center space-x-2">
-                                    <User className="h-5 w-5" />
-                                    <span>LogIn</span>
-                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-200 to-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <span className="relative z-10 flex items-center gap-2">
+                                    <User size={18} />
+                                    Sign In
+                                </span>
                             </Link>
                         )}
                     </div>
@@ -238,3 +192,19 @@ export const Header = () => {
         </header>
     );
 };
+
+// Helper component for Dropdown Items
+const DropdownItem = ({ to, icon, label, onClick, highlight }) => (
+    <Link
+        to={to}
+        onClick={onClick}
+        className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all duration-200 ${
+            highlight 
+            ? "bg-blue-600/10 text-blue-400 hover:bg-blue-600/20" 
+            : "text-slate-300 hover:bg-white/5 hover:text-white"
+        }`}
+    >
+        {icon}
+        {label}
+    </Link>
+);

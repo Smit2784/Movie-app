@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../Contexts/AuthProvider";
 import { User, Lock, Save, ArrowLeft } from "lucide-react";
+import { validateName, validatePassword } from "../utils/validation";
 
 export const UpdateProfile = ({ onBack }) => {
     const { user, token, updateUser } = useAuth();
@@ -11,26 +12,58 @@ export const UpdateProfile = ({ onBack }) => {
     });
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
+    const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setError(null);
         setMessage(null);
+
+        // Clear error for the field being edited
+        if (fieldErrors[e.target.name]) {
+            setFieldErrors({
+                ...fieldErrors,
+                [e.target.name]: null,
+            });
+        }
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        let isValid = true;
+
+        const nameError = validateName(formData.name);
+        if (nameError) {
+            errors.name = nameError;
+            isValid = false;
+        }
+
+        if (formData.password) {
+            const passwordError = validatePassword(formData.password);
+            if (passwordError) {
+                errors.password = passwordError;
+                isValid = false;
+            }
+
+            if (formData.password !== formData.confirmPassword) {
+                errors.confirmPassword = "Passwords do not match";
+                isValid = false;
+            }
+        }
+
+        setFieldErrors(errors);
+        return isValid;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
 
-        if (
-            formData.password &&
-            formData.password !== formData.confirmPassword
-        ) {
-            setError("Passwords do not match");
-            setLoading(false);
+        if (!validateForm()) {
             return;
         }
+
+        setLoading(true);
 
         try {
             const payload = { name: formData.name };
@@ -53,6 +86,7 @@ export const UpdateProfile = ({ onBack }) => {
                 setMessage("Profile updated successfully!");
                 updateUser({ name: formData.name });
                 setFormData({ ...formData, password: "", confirmPassword: "" });
+                setFieldErrors({});
             } else {
                 setError(data.message || "Failed to update profile");
             }
@@ -107,11 +141,15 @@ export const UpdateProfile = ({ onBack }) => {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="pl-10 block w-full border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm p-2.5 border"
+                                className={`pl-10 block w-full border ${fieldErrors.name ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm p-2.5`}
                                 placeholder="Your Name"
-                                required
                             />
                         </div>
+                        {fieldErrors.name && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {fieldErrors.name}
+                            </p>
+                        )}
                     </div>
 
                     <div className="border-t pt-4">
@@ -139,11 +177,15 @@ export const UpdateProfile = ({ onBack }) => {
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
-                                        className="pl-10 block w-full border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm p-2.5 border"
+                                        className={`pl-10 block w-full border ${fieldErrors.password ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm p-2.5`}
                                         placeholder="Leave blank to keep current"
-                                        minLength={6}
                                     />
                                 </div>
+                                {fieldErrors.password && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {fieldErrors.password}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -162,10 +204,15 @@ export const UpdateProfile = ({ onBack }) => {
                                         name="confirmPassword"
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
-                                        className="pl-10 block w-full border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm p-2.5 border"
+                                        className={`pl-10 block w-full border ${fieldErrors.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm p-2.5`}
                                         placeholder="Confirm new password"
                                     />
                                 </div>
+                                {fieldErrors.confirmPassword && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {fieldErrors.confirmPassword}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>

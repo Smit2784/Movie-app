@@ -31,6 +31,7 @@ import {
     GiftCards,
     Footer,
     UpdateProfile,
+    NotFound,
 } from "./Index/Index.js";
 
 import AuthProvider, { useAuth } from "./Contexts/AuthProvider.js";
@@ -62,11 +63,9 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
 // Layout Component
 const RootLayout = () => {
     return (
-        <AuthProvider>
-            <div className="App min-h-screen flex flex-col">
-                <LayoutContent />
-            </div>
-        </AuthProvider>
+        <div className="App min-h-screen flex flex-col">
+            <LayoutContent />
+        </div>
     );
 };
 
@@ -241,13 +240,10 @@ const router = createBrowserRouter([
         errorElement: <Navigate to="/" replace />,
         children: [
             {
-                path: "/",
+                index: true,
                 element: <HomeWithNavigation />,
             },
-            {
-                path: "auth",
-                element: <AuthWrapper />,
-            },
+
             {
                 path: "about",
                 element: <AboutUs />,
@@ -379,19 +375,27 @@ const router = createBrowserRouter([
                     },
                 ],
             },
-
-            // Catch all
-            {
-                path: "*",
-                element: <Navigate to="/" replace />,
-            },
         ],
+    },
+    // Auth Route - Outside of RootLayout to hide Header/Footer
+    {
+        path: "/auth",
+        element: <AuthWrapper />,
+    },
+    // Catch all - Outside of RootLayout to hide Header/Footer
+    {
+        path: "*",
+        element: <NotFound />,
     },
 ]);
 
 // Main App
 const MovieTicketBookingApp = () => {
-    return <RouterProvider router={router} />;
+    return (
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+    );
 };
 
 export default MovieTicketBookingApp;

@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../Contexts/AuthProvider";
 import { api } from "../Contexts/AuthProvider";
+import {
+    validateName,
+    validateCardNumber,
+    validateCVV,
+    validateUPI,
+} from "../utils/validation";
 
 export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
     const [paymentMethod, setPaymentMethod] = useState("card");
@@ -75,26 +81,25 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
 
     const validateForm = () => {
         const newErrors = {};
-        if (useWallet && walletAmount >= booking.totalAmount) {
+        if (useWallet && walletAmountUsed >= booking.totalAmount) {
             return true;
         }
         if (remainingAmount > 0) {
             if (paymentMethod === "card") {
-                if (
-                    !formData.cardNumber ||
-                    formData.cardNumber.replace(/\s/g, "").length < 16
-                )
-                    newErrors.cardNumber =
-                        "Please enter a valid 16-digit card number";
-                if (!formData.cardName || formData.cardName.length < 3)
-                    newErrors.cardName = "Please enter the cardholder name";
+                const cardError = validateCardNumber(formData.cardNumber);
+                if (cardError) newErrors.cardNumber = cardError;
+
+                const nameError = validateName(formData.cardName);
+                if (nameError) newErrors.cardName = nameError;
+
                 if (!formData.expiryMonth || !formData.expiryYear)
                     newErrors.expiry = "Please enter expiry date";
-                if (!formData.cvv || formData.cvv.length < 3)
-                    newErrors.cvv = "Please enter a valid CVV";
+
+                const cvvError = validateCVV(formData.cvv);
+                if (cvvError) newErrors.cvv = cvvError;
             } else if (paymentMethod === "upi") {
-                if (!formData.upiId || !formData.upiId.includes("@"))
-                    newErrors.upiId = "Please enter a valid UPI ID";
+                const upiError = validateUPI(formData.upiId);
+                if (upiError) newErrors.upiId = upiError;
             }
         }
         setErrors(newErrors);

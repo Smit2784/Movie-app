@@ -8,6 +8,9 @@ import {
     Calendar,
     LogOut,
     CreditCard,
+    TrendingUp,
+    ChevronRight,
+    Activity
 } from "lucide-react";
 
 export const AdminDashboard = ({ setCurrentPage }) => {
@@ -40,214 +43,235 @@ export const AdminDashboard = ({ setCurrentPage }) => {
     }, []);
 
     const menuItems = [
-        {
-            id: "admin-dashboard",
-            label: "Dashboard",
-            icon: <LayoutDashboard size={20} />,
-        },
-        {
-            id: "admin-movies",
-            label: "Manage Movies",
-            icon: <Film size={20} />,
-        },
-        {
-            id: "admin-shows",
-            label: "Manage Shows",
-            icon: <Calendar size={20} />,
-        },
-        {
-            id: "admin-theaters",
-            label: "Manage Theaters",
-            icon: <Building2 size={20} />,
-        },
-        {
-            id: "admin-bookings",
-            label: "All Bookings",
-            icon: <CreditCard size={20} />,
-        },
-        {
-            id: "admin-users",
-            label: "User Directory",
-            icon: <Users size={20} />,
-        },
+        { id: "admin-dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
+        { id: "admin-movies", label: "Manage Movies", icon: <Film size={20} /> },
+        { id: "admin-shows", label: "Manage Shows", icon: <Calendar size={20} /> },
+        { id: "admin-theaters", label: "Manage Theaters", icon: <Building2 size={20} /> },
+        { id: "admin-bookings", label: "All Bookings", icon: <CreditCard size={20} /> },
+        { id: "admin-users", label: "User Directory", icon: <Users size={20} /> },
     ];
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-slate-50 font-sans">
-            {/* Glossy Sidebar */}
-            <div className="w-full md:w-72 bg-slate-900 text-white p-6 flex flex-col shadow-2xl relative overflow-hidden">
-                {/* Decorative background blur */}
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 opacity-90 z-0"></div>
-                <div className="absolute -top-20 -left-20 w-60 h-60 bg-blue-600 rounded-full blur-[100px] opacity-20"></div>
+        <div className="flex flex-col md:flex-row min-h-screen bg-[#f8fafc] font-sans text-slate-900">
+            {/* Custom Animations */}
+            <style>{`
+                @keyframes fadeInUp {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
+            `}</style>
 
-                <div className="relative z-10 flex flex-col h-full">
-                    <div className="mb-10 px-2">
-                        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                            MovieTix
+            {/* Sidebar */}
+            <aside className="w-full md:w-72 bg-slate-950 text-white flex flex-col relative z-20 shadow-2xl">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
+                
+                <div className="relative z-10 flex flex-col h-full p-6">
+                    {/* Brand */}
+                    <div className="mb-12 flex items-center gap-3 px-2">
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/40">
+                            <Activity size={24} className="text-white" />
+                        </div>
+                        <h2 className="text-xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+                            CineAdmin
                         </h2>
-                        <p className="text-slate-400 text-sm mt-1">
-                            Admin Control Center
-                        </p>
                     </div>
 
-                    <nav className="space-y-2 flex-1">
+                    {/* Nav */}
+                    <nav className="space-y-1.5 flex-1">
                         {menuItems.map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => setCurrentPage(item.id)}
-                                className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-300 ${
+                                className={`w-full flex items-center justify-between p-3.5 rounded-xl transition-all duration-300 group ${
                                     item.id === "admin-dashboard"
-                                        ? "bg-blue-600 shadow-lg shadow-blue-900/50 text-white"
-                                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/40"
+                                        : "text-slate-400 hover:bg-white/5 hover:text-white"
                                 }`}
                             >
-                                {item.icon}
-                                <span className="font-medium">
-                                    {item.label}
-                                </span>
+                                <div className="flex items-center gap-4">
+                                    <span className={`${item.id === "admin-dashboard" ? "text-white" : "group-hover:text-blue-400"} transition-colors`}>
+                                        {item.icon}
+                                    </span>
+                                    <span className="font-semibold text-sm tracking-wide">{item.label}</span>
+                                </div>
+                                {item.id === "admin-dashboard" && <ChevronRight size={14} className="opacity-50" />}
                             </button>
                         ))}
                     </nav>
 
-                    <div className="pt-6 border-t border-slate-700/50 mt-auto">
+                    {/* Exit */}
+                    <div className="pt-6 border-t border-white/10 mt-auto">
                         <button
                             onClick={() => setCurrentPage("home")}
-                            className="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-white hover:bg-red-500/10 hover:border-red-500/50 border border-transparent rounded-xl transition-all group"
+                            className="w-full flex items-center gap-3 p-4 text-slate-400 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all duration-300 group"
                         >
-                            <LogOut
-                                size={18}
-                                className="group-hover:text-red-400"
-                            />
-                            <span>Exit Panel</span>
+                            <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
+                            <span className="font-bold text-sm">Exit Control Center</span>
                         </button>
                     </div>
                 </div>
-            </div>
+            </aside>
 
-            {/* Main Content Area */}
-            <div className="flex-1 p-6 md:p-12 overflow-y-auto bg-slate-50">
-                <header className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-4xl font-bold text-slate-800 tracking-tight">
-                            Dashboard Overview
+            {/* Main Content */}
+            <main className="flex-1 p-6 md:p-10 lg:p-14 overflow-y-auto relative">
+                {/* Background Decoration */}
+                <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-b from-blue-50/50 to-transparent -z-10"></div>
+
+                <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div className="animate-fadeInUp">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="h-1 w-8 bg-blue-600 rounded-full"></span>
+                            <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">Administrator</span>
+                        </div>
+                        <h1 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
+                            System <span className="text-slate-400 italic font-light">Overview</span>
                         </h1>
-                        <p className="text-slate-500 mt-2">
-                            Welcome back, Admin. Here's your daily report.
-                        </p>
                     </div>
-                    <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
-                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span className="text-sm font-medium text-slate-600">
-                            System Online
-                        </span>
+                    
+                    <div className="flex items-center gap-4 animate-fadeInUp" style={{animationDelay: '100ms'}}>
+                        <div className="flex flex-col items-end">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Server Status</span>
+                            <div className="flex items-center gap-2 mt-1 px-4 py-2 bg-white rounded-2xl shadow-sm border border-slate-100">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                <span className="text-[13px] font-bold text-slate-700">Operational</span>
+                            </div>
+                        </div>
                     </div>
                 </header>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
                     <StatCard
                         title="Total Movies"
                         value={stats.movies}
-                        icon={<Film size={24} />}
-                        gradient="from-blue-500 to-cyan-400"
-                        delay="0"
+                        icon={<Film size={22} />}
+                        color="blue"
+                        delay="100"
                     />
                     <StatCard
                         title="Active Theaters"
                         value={stats.theaters}
-                        icon={<Building2 size={24} />}
-                        gradient="from-emerald-500 to-teal-400"
-                        delay="100"
+                        icon={<Building2 size={22} />}
+                        color="emerald"
+                        delay="200"
                     />
                     <StatCard
                         title="Registered Users"
                         value={stats.users}
-                        icon={<Users size={24} />}
-                        gradient="from-violet-500 to-purple-400"
-                        delay="200"
+                        icon={<Users size={22} />}
+                        color="violet"
+                        delay="300"
                     />
                     <StatCard
                         title="Total Bookings"
                         value={stats.bookings}
-                        icon={<LayoutDashboard size={24} />}
-                        gradient="from-orange-500 to-amber-400"
-                        delay="300"
+                        icon={<TrendingUp size={22} />}
+                        color="orange"
+                        delay="400"
                     />
                 </div>
 
-                {/* Quick Actions */}
-                <div className="bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-800 mb-6">
-                        Quick Management
-                    </h2>
-                    <div className="flex flex-wrap gap-4">
-                        <ActionButton
-                            onClick={() => setCurrentPage("admin-movies")}
-                            label="Add New Movie"
-                            icon={<Film size={18} />}
-                            color="blue"
-                        />
-                        <ActionButton
-                            onClick={() => setCurrentPage("admin-shows")}
-                            label="Schedule Show"
-                            icon={<Calendar size={18} />}
-                            color="violet"
-                        />
-                        <ActionButton
-                            onClick={() => setCurrentPage("admin-theaters")}
-                            label="Setup Theater"
-                            icon={<Building2 size={18} />}
-                            color="emerald"
-                        />
+                {/* Quick Management Section */}
+                <section className="animate-fadeInUp" style={{animationDelay: '500ms'}}>
+                    <div className="bg-white p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/60 border border-slate-100 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-32 -mt-32 z-0"></div>
+                        
+                        <div className="relative z-10">
+                            <div className="mb-8">
+                                <h2 className="text-2xl font-black text-slate-800">Quick Actions</h2>
+                                <p className="text-slate-500 font-medium">Streamline your management workflow</p>
+                            </div>
+                            
+                            <div className="flex flex-wrap gap-5">
+                                <ActionButton
+                                    onClick={() => setCurrentPage("admin-movies")}
+                                    label="Add New Movie"
+                                    icon={<Film size={20} />}
+                                    theme="blue"
+                                />
+                                <ActionButton
+                                    onClick={() => setCurrentPage("admin-shows")}
+                                    label="Schedule Show"
+                                    icon={<Calendar size={20} />}
+                                    theme="violet"
+                                />
+                                <ActionButton
+                                    onClick={() => setCurrentPage("admin-theaters")}
+                                    label="Setup Theater"
+                                    icon={<Building2 size={20} />}
+                                    theme="emerald"
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </section>
+            </main>
         </div>
     );
 };
 
-const StatCard = ({ title, value, icon, gradient, delay }) => (
-    <div
-        className={`relative overflow-hidden bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
-        style={{ animation: `fadeIn Up 0.5s ease-out ${delay}ms` }}
-    >
+const StatCard = ({ title, value, icon, color, delay }) => {
+    const themes = {
+        blue: "from-blue-600 to-indigo-600 shadow-blue-200 text-blue-600",
+        emerald: "from-emerald-500 to-teal-600 shadow-emerald-200 text-emerald-600",
+        violet: "from-violet-600 to-purple-600 shadow-violet-200 text-violet-600",
+        orange: "from-orange-500 to-amber-600 shadow-orange-200 text-orange-600",
+    };
+
+    return (
         <div
-            className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} opacity-10 rounded-bl-full -mr-10 -mt-10`}
-        ></div>
-
-        <div className="flex items-center justify-between mb-4 relative z-10">
-            <div
-                className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg`}
-            >
-                {icon}
+            className="animate-fadeInUp group bg-white p-8 rounded-[2rem] shadow-lg border border-slate-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+            style={{ animationDelay: `${delay}ms` }}
+        >
+            <div className="flex justify-between items-start mb-6">
+                <div className={`p-4 rounded-2xl bg-gradient-to-br ${themes[color].split(' shadow')[0]} text-white shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
+                    {icon}
+                </div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-2 py-1 rounded-lg">
+                    Live Data
+                </div>
             </div>
-            {/* <span className="text-xs font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded-md">
-                +2.5%
-            </span> */}
-        </div>
 
-        <div className="relative z-10">
-            <h3 className="text-3xl font-black text-slate-800">{value}</h3>
-            <p className="text-slate-500 text-sm font-medium mt-1">{title}</p>
+            <div>
+                <h3 className="text-4xl font-black text-slate-900 mb-1 tracking-tight">
+                    {value.toLocaleString()}
+                </h3>
+                <p className="text-slate-500 font-bold text-sm uppercase tracking-wide opacity-80">
+                    {title}
+                </p>
+            </div>
+            
+            {/* <div className="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between">
+                <span className={`text-xs font-bold ${themes[color].split(' shadow')[2]}`}>+12% from last month</span>
+                <ChevronRight size={14} className="text-slate-300" />
+            </div> */}
         </div>
-    </div>
-);
+    );
+};
 
-const ActionButton = ({ onClick, label, icon, color }) => {
-    const colorClasses = {
-        blue: "bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border-blue-200",
-        violet: "bg-violet-50 text-violet-600 hover:bg-violet-600 hover:text-white border-violet-200",
-        emerald:
-            "bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border-emerald-200",
+const ActionButton = ({ onClick, label, icon, theme }) => {
+    const styles = {
+        blue: "bg-blue-600 hover:bg-blue-700 shadow-blue-200",
+        violet: "bg-violet-600 hover:bg-violet-700 shadow-violet-200",
+        emerald: "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200",
     };
 
     return (
         <button
             onClick={onClick}
-            className={`flex items-center gap-3 px-6 py-4 rounded-xl font-bold transition-all duration-300 border ${colorClasses[color]} hover:shadow-lg hover:scale-105 active:scale-95`}
+            className={`group relative flex items-center gap-4 px-8 py-5 rounded-2xl font-black text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl ${styles[theme]}`}
         >
-            {icon}
-            {label}
+            <span className="p-2 bg-white/20 rounded-lg group-hover:rotate-12 transition-transform">
+                {icon}
+            </span>
+            <span className="tracking-tight">{label}</span>
+            <div className="ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowLeft size={18} className="rotate-180" />
+            </div>
         </button>
     );
 };

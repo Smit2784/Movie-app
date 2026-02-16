@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import {
     Plus,
     Trash2,
-    ArrowLeft,
     Calendar,
     Clock,
     MapPin,
     Film,
+    ChevronLeft,
+    Tag,
+    Activity,
+    CalendarCheck,
 } from "lucide-react";
+import { validatePositiveNumber } from "../../utils/validation";
 
 export const ManageShows = ({ onBack }) => {
     const [shows, setShows] = useState([]);
@@ -21,6 +25,7 @@ export const ManageShows = ({ onBack }) => {
         time: "",
         price: "",
     });
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         fetchShows();
@@ -30,14 +35,6 @@ export const ManageShows = ({ onBack }) => {
 
     const fetchShows = async () => {
         try {
-            // Fetching all shows (could filter by date in future)
-            const res = await fetch(
-                "http://localhost:5000/api/shows?date=" +
-                    new Date().toISOString().split("T")[0],
-            ); // Initial fetch for today, can improve
-            // Actually /api/shows filters by date. We might need a generic "get all shows" for admin or just loop through dates?
-            // For now let's just use the public API but maybe we need an admin one to see ALL shows regardless of date.
-            // Let's use the public one without date to get everything? server.js logic implies filters are optional.
             const resAll = await fetch("http://localhost:5000/api/shows");
             const data = await resAll.json();
             setShows(data);
@@ -57,8 +54,27 @@ export const ManageShows = ({ onBack }) => {
         setTheaters(data.theater || []);
     };
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!newShow.movieId) newErrors.movieId = "Movie selection is required";
+        if (!newShow.theaterId)
+            newErrors.theaterId = "Theater selection is required";
+        if (!newShow.date) newErrors.date = "Date is required";
+        if (!newShow.time) newErrors.time = "Time is required";
+
+        const priceError = validatePositiveNumber(newShow.price, "Price");
+        if (priceError) newErrors.price = priceError;
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleAdd = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
+
         const token = localStorage.getItem("token");
 
         const res = await fetch("http://localhost:5000/api/admin/shows", {
@@ -81,6 +97,7 @@ export const ManageShows = ({ onBack }) => {
                 time: "",
                 price: "",
             });
+            setErrors({});
         } else {
             alert("Failed: " + data.message);
         }
@@ -104,211 +121,334 @@ export const ManageShows = ({ onBack }) => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
-            <button
-                onClick={onBack}
-                className="flex items-center gap-2 mb-6 text-blue-600 font-medium hover:underline"
-            >
-                <ArrowLeft size={20} /> Back to Dashboard
-            </button>
+        <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-900">
+            {/* Custom Animations */}
+            <style>{`
+                @keyframes slideInUp {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-slideUp { animation: slideInUp 0.5s ease-out forwards; }
+            `}</style>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Add Show Form */}
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-gray-800">
-                        <Plus size={20} className="text-blue-500" /> Schedule
-                        New Show
-                    </h2>
+            {/* Top Navigation */}
+            <nav className="mb-12 flex items-center justify-between">
+                <button
+                    onClick={onBack}
+                    className="group flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-2xl text-slate-600 font-bold hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all duration-300 shadow-sm"
+                >
+                    <ChevronLeft
+                        size={18}
+                        className="group-hover:-translate-x-1 transition-transform"
+                    />
+                    <span>Back to Dashboard</span>
+                </button>
 
-                    <form onSubmit={handleAdd} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Select Movie
-                            </label>
-                            <select
-                                className="w-full p-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
-                                value={newShow.movieId}
-                                onChange={(e) =>
-                                    setNewShow({
-                                        ...newShow,
-                                        movieId: e.target.value,
-                                    })
-                                }
-                                required
-                            >
-                                <option value="">-- Choose Movie --</option>
-                                {movies.map((m) => (
-                                    <option key={m._id} value={m._id}>
-                                        {m.title}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                <div className="flex items-center gap-3">
+                    <div className="flex flex-col items-end">
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">
+                            Scheduling Engine
+                        </span>
+                        <span className="text-xs font-bold text-slate-400">
+                            v2.4.0 Running
+                        </span>
+                    </div>
+                    <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                        <Activity size={20} />
+                    </div>
+                </div>
+            </nav>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Select Theater
-                            </label>
-                            <select
-                                className="w-full p-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
-                                value={newShow.theaterId}
-                                onChange={(e) =>
-                                    setNewShow({
-                                        ...newShow,
-                                        theaterId: e.target.value,
-                                    })
-                                }
-                                required
-                            >
-                                <option value="">-- Choose Theater --</option>
-                                {theaters.map((t) => (
-                                    <option key={t._id} value={t._id}>
-                                        {t.name} ({t.location})
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
+                {/* Scheduling Form Section */}
+                <div className="xl:col-span-4 animate-slideUp">
+                    <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-white sticky top-10">
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-200">
+                                <Plus size={24} />
+                            </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Date
+                                <h2 className="text-2xl font-black tracking-tight text-slate-800">
+                                    New Showtime
+                                </h2>
+                                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+                                    Register Slot
+                                </p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleAdd} className="space-y-5">
+                            <div className="space-y-1.5">
+                                <label className="ml-2 text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <Film size={12} /> Film Selection
                                 </label>
-                                <input
-                                    type="date"
-                                    className="w-full p-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
-                                    value={newShow.date}
+                                <select
+                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.movieId ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-700 appearance-none cursor-pointer`}
+                                    value={newShow.movieId}
                                     onChange={(e) =>
                                         setNewShow({
                                             ...newShow,
-                                            date: e.target.value,
+                                            movieId: e.target.value,
+                                        })
+                                    }
+                                    required
+                                >
+                                    <option value="">-- Choose Movie --</option>
+                                    {movies.map((m) => (
+                                        <option key={m._id} value={m._id}>
+                                            {m.title}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.movieId && (
+                                    <p className="text-red-500 text-xs mt-1 ml-2">
+                                        {errors.movieId}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="ml-2 text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <MapPin size={12} /> Venue
+                                </label>
+                                <select
+                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.theaterId ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-700 appearance-none cursor-pointer`}
+                                    value={newShow.theaterId}
+                                    onChange={(e) =>
+                                        setNewShow({
+                                            ...newShow,
+                                            theaterId: e.target.value,
+                                        })
+                                    }
+                                    required
+                                >
+                                    <option value="">
+                                        -- Choose Theater --
+                                    </option>
+                                    {theaters.map((t) => (
+                                        <option key={t._id} value={t._id}>
+                                            {t.name} ({t.location})
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.theaterId && (
+                                    <p className="text-red-500 text-xs mt-1 ml-2">
+                                        {errors.theaterId}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="ml-2 text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                        <Calendar size={12} /> Date
+                                    </label>
+                                    <input
+                                        type="date"
+                                        className={`w-full p-4 bg-slate-50 border-2 ${errors.date ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-600`}
+                                        value={newShow.date}
+                                        onChange={(e) =>
+                                            setNewShow({
+                                                ...newShow,
+                                                date: e.target.value,
+                                            })
+                                        }
+                                        required
+                                    />
+                                    {errors.date && (
+                                        <p className="text-red-500 text-xs mt-1 ml-2">
+                                            {errors.date}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="ml-2 text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                        <Clock size={12} /> Time
+                                    </label>
+                                    <input
+                                        type="time"
+                                        className={`w-full p-4 bg-slate-50 border-2 ${errors.time ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-600`}
+                                        value={newShow.time}
+                                        onChange={(e) =>
+                                            setNewShow({
+                                                ...newShow,
+                                                time: e.target.value,
+                                            })
+                                        }
+                                        required
+                                    />
+                                    {errors.time && (
+                                        <p className="text-red-500 text-xs mt-1 ml-2">
+                                            {errors.time}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="ml-2 text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <Tag size={12} /> Base Price (₹)
+                                </label>
+                                <input
+                                    type="number"
+                                    placeholder="250"
+                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.price ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-700`}
+                                    value={newShow.price}
+                                    onChange={(e) =>
+                                        setNewShow({
+                                            ...newShow,
+                                            price: e.target.value,
                                         })
                                     }
                                     required
                                 />
+                                {errors.price && (
+                                    <p className="text-red-500 text-xs mt-1 ml-2">
+                                        {errors.price}
+                                    </p>
+                                )}
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Time
-                                </label>
-                                <input
-                                    type="time"
-                                    className="w-full p-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
-                                    value={newShow.time}
-                                    onChange={(e) =>
-                                        setNewShow({
-                                            ...newShow,
-                                            time: e.target.value,
-                                        })
-                                    }
-                                    required
-                                />
-                            </div>
-                        </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Ticket Price (₹)
-                            </label>
-                            <input
-                                type="number"
-                                placeholder="250"
-                                className="w-full p-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
-                                value={newShow.price}
-                                onChange={(e) =>
-                                    setNewShow({
-                                        ...newShow,
-                                        price: e.target.value,
-                                    })
-                                }
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg transform active:scale-95"
-                        >
-                            Schedule Show
-                        </button>
-                    </form>
+                            <button
+                                type="submit"
+                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-blue-200 hover:scale-[1.02] hover:shadow-blue-300 active:scale-95 pt-6 mt-4"
+                            >
+                                Commit to Schedule
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
-                {/* Shows List */}
-                <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col h-[600px]">
-                    <h2 className="text-xl font-bold mb-6 text-gray-800">
-                        Scheduled Shows
-                    </h2>
+                {/* Shows List Section */}
+                <div
+                    className="xl:col-span-8 animate-slideUp"
+                    style={{ animationDelay: "150ms" }}
+                >
+                    <div className="flex items-end justify-between px-4 mb-8">
+                        <div>
+                            <h2 className="text-4xl font-black text-slate-900 tracking-tight flex items-center gap-4">
+                                Timeline{" "}
+                                <span className="text-slate-400 italic font-light">
+                                    Archive
+                                </span>
+                                <div className="h-10 w-px bg-slate-200 ml-2"></div>
+                                <span className="text-sm font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full">
+                                    {shows.length} Scheduled
+                                </span>
+                            </h2>
+                        </div>
+                    </div>
 
-                    <div className="flex-1 overflow-y-auto pr-2">
-                        {shows.length === 0 ? (
-                            <p className="text-center text-gray-400 mt-10">
-                                No shows scheduled yet.
-                            </p>
-                        ) : (
-                            <div className="space-y-4">
-                                {shows.map((show) => (
-                                    <div
-                                        key={show._id}
-                                        className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-blue-200 transition group"
-                                    >
-                                        <div className="flex gap-4">
-                                            <div className="w-16 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                                                {/* Optimized helper to safely get movie poster if population worked, else fallback */}
-                                                {show.movie &&
-                                                    show.movie.poster && (
+                    <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 overflow-hidden h-[720px] flex flex-col">
+                        <div className="flex-1 overflow-y-auto p-8 space-y-4 custom-scrollbar">
+                            {shows.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-center py-20">
+                                    <div className="p-8 bg-slate-50 rounded-full text-slate-200 mb-6">
+                                        <CalendarCheck size={64} />
+                                    </div>
+                                    <h3 className="text-2xl font-black text-slate-800">
+                                        No Active Slots
+                                    </h3>
+                                    <p className="text-slate-400 font-medium max-w-xs mt-2">
+                                        The schedule is currently clear. Use the
+                                        engine to program new showtimes.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="grid gap-4">
+                                    {shows.map((show) => (
+                                        <div
+                                            key={show._id}
+                                            className="group flex items-center justify-between p-5 bg-slate-50/50 rounded-3xl border border-transparent hover:border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-slate-100 transition-all duration-300"
+                                        >
+                                            <div className="flex items-center gap-6">
+                                                {/* Movie Thumbnail */}
+                                                <div className="w-20 h-28 bg-white p-1 rounded-2xl shadow-sm overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                                                    {show.movie &&
+                                                    show.movie.poster ? (
                                                         <img
                                                             src={
                                                                 show.movie
                                                                     .poster
                                                             }
                                                             alt=""
-                                                            className="w-full h-full object-cover"
+                                                            className="w-full h-full object-cover rounded-xl"
                                                         />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
+                                                            <Film size={24} />
+                                                        </div>
                                                     )}
+                                                </div>
+
+                                                {/* Details */}
+                                                <div className="space-y-3">
+                                                    <h3 className="font-black text-xl text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                        {show.movie
+                                                            ? show.movie.title
+                                                            : "Unknown Release"}
+                                                    </h3>
+
+                                                    <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                                                        <span className="flex items-center gap-2 text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
+                                                            <MapPin
+                                                                size={14}
+                                                                className="text-blue-500"
+                                                            />
+                                                            {show.theater
+                                                                ? show.theater
+                                                                      .name
+                                                                : "Unassigned"}
+                                                        </span>
+                                                        <span className="flex items-center gap-2">
+                                                            <Calendar
+                                                                size={14}
+                                                            />
+                                                            {new Date(
+                                                                show.date,
+                                                            ).toLocaleDateString(
+                                                                undefined,
+                                                                {
+                                                                    month: "short",
+                                                                    day: "numeric",
+                                                                    year: "numeric",
+                                                                },
+                                                            )}
+                                                        </span>
+                                                        <span className="flex items-center gap-2">
+                                                            <Clock size={14} />
+                                                            {show.time}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold text-gray-900">
-                                                    {show.movie
-                                                        ? show.movie.title
-                                                        : "Unknown Movie"}
-                                                </h3>
-                                                <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
-                                                    <span className="flex items-center gap-1">
-                                                        <MapPin size={14} />{" "}
-                                                        {show.theater
-                                                            ? show.theater.name
-                                                            : "Unknown Theater"}
+
+                                            {/* Action & Price */}
+                                            <div className="flex items-center gap-8 pr-4">
+                                                <div className="text-right">
+                                                    <span className="text-[10px] font-black text-slate-300 uppercase block mb-1">
+                                                        Standard
                                                     </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <Calendar size={14} />{" "}
-                                                        {new Date(
-                                                            show.date,
-                                                        ).toLocaleDateString()}
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <Clock size={14} />{" "}
-                                                        {show.time}
+                                                    <span className="text-2xl font-black text-emerald-600">
+                                                        ₹{show.price}
                                                     </span>
                                                 </div>
-                                                <div className="mt-2 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md inline-block">
-                                                    ₹{show.price} per ticket
-                                                </div>
+
+                                                <button
+                                                    onClick={() =>
+                                                        handleDelete(show._id)
+                                                    }
+                                                    className="p-4 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all opacity-0 group-hover:opacity-100 group-hover:rotate-6 active:scale-90"
+                                                    title="Cancel Program"
+                                                >
+                                                    <Trash2 size={22} />
+                                                </button>
                                             </div>
                                         </div>
-
-                                        <button
-                                            onClick={() =>
-                                                handleDelete(show._id)
-                                            }
-                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition opacity-0 group-hover:opacity-100"
-                                            title="Cancel Show"
-                                        >
-                                            <Trash2 size={20} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
