@@ -66,16 +66,16 @@ export const Header = () => {
                         className="flex items-center space-x-3 group"
                     >
                         <div className="relative">
-                            <div className="absolute inset-0 bg-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                            {/* <div className="absolute inset-0 bg-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition-opacity"></div> */}
                             <img
                                 src={logo}
                                 alt="MovieTix Logo"
-                                className="h-10 w-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                                className="h-36 w-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300"
                             />
                         </div>
-                        <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-purple-400">
+                        {/* <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-purple-400">
                             MovieTix
-                        </h1>
+                        </h1> */}
                     </Link>
 
                     {/* Desktop Navigation */}

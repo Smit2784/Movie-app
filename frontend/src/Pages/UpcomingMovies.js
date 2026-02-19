@@ -594,7 +594,7 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                 <div className="text-center">
                     <div className="relative">
                         <div className="w-20 h-20 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-6"></div>
-                        <div className="absolute inset-0 w-16 h-16 border-4 border-blue-200 border-b-blue-600 rounded-full animate-spin mx-auto mt-2 ml-2 animate-reverse"></div>
+                        {/* <div className="absolute inset-0 w-16 h-16 border-4 border-blue-200 border-b-blue-600 rounded-full animate-spin mx-auto mt-2 ml-2 animate-reverse"></div> */}
                     </div>
                     <h3 className="text-2xl font-bold text-gray-700 mb-2">
                         Loading Upcoming Movies

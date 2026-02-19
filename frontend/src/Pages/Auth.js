@@ -7,6 +7,7 @@ import {
     validatePassword,
     validatePhone,
 } from "../utils/validation";
+import logo from "../logo.png";
 
 export const AuthComponent = ({ setCurrentPage }) => {
     const [isLogin, setIsLogin] = useState(true);
@@ -122,13 +123,18 @@ export const AuthComponent = ({ setCurrentPage }) => {
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
 
                     <div className="relative z-10">
-                        <div className="flex items-center space-x-3 mb-10">
-                            <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-md border border-white/10 shadow-lg">
+                        <div className="flex items-center space-x-3">
+                            {/* <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-md border border-white/10 shadow-lg">
                                 <Film className="h-7 w-7 text-white" />
                             </div>
                             <span className="text-2xl font-bold tracking-wider drop-shadow-md">
                                 MovieTix
-                            </span>
+                            </span> */}
+                            <img
+                                src={logo}
+                                alt="MovieTix Logo"
+                                className="h-44 w-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                            />
                         </div>
 
                         <h2 className="text-4xl font-extrabold mb-6 leading-tight drop-shadow-md">

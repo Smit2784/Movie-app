@@ -23,17 +23,17 @@ export const Footer = () => {
                     
                     {/* Brand Section */}
                     <div className="md:col-span-5">
-                        <Link to="/" className="flex items-center space-x-3 mb-6 group">
-                            <div className="p-2 bg-white/5 rounded-xl border border-white/10 group-hover:border-purple-500/50 transition-colors">
+                        <Link to="/" className="flex items-center space-x-3 group">
+                            <div className="p-2 group-hover:border-purple-500/50 transition-colors">
                                 <img
                                     src={logo}
-                                    className="h-10 w-auto transform group-hover:scale-110 transition-transform duration-500"
+                                    className="h-36 w-auto transform group-hover:scale-110 transition-transform duration-500"
                                     alt="logo"
                                 />
                             </div>
-                            <h3 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
+                            {/* <h3 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
                                 MovieTix
-                            </h3>
+                            </h3> */}
                         </Link>
                         <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-sm font-medium">
                             Redefining the cinematic experience. From the biggest blockbusters to indie gems, book your perfect seat in seconds.
