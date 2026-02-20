@@ -9,6 +9,7 @@ export const UpdateProfile = ({ onBack }) => {
         name: user?.name || "",
         password: "",
         confirmPassword: "",
+        oldPassword: "",
     });
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
@@ -46,6 +47,12 @@ export const UpdateProfile = ({ onBack }) => {
                 isValid = false;
             }
 
+            if (!formData.oldPassword) {
+                errors.oldPassword =
+                    "Current password is required to set a new password";
+                isValid = false;
+            }
+
             if (formData.password !== formData.confirmPassword) {
                 errors.confirmPassword = "Passwords do not match";
                 isValid = false;
@@ -69,6 +76,7 @@ export const UpdateProfile = ({ onBack }) => {
             const payload = { name: formData.name };
             if (formData.password) {
                 payload.password = formData.password;
+                payload.oldPassword = formData.oldPassword;
             }
 
             const res = await fetch("http://localhost:5000/api/users/profile", {
@@ -85,7 +93,12 @@ export const UpdateProfile = ({ onBack }) => {
             if (data.success) {
                 setMessage("Profile updated successfully!");
                 updateUser({ name: formData.name });
-                setFormData({ ...formData, password: "", confirmPassword: "" });
+                setFormData({
+                    ...formData,
+                    password: "",
+                    confirmPassword: "",
+                    oldPassword: "",
+                });
                 setFieldErrors({});
             } else {
                 setError(data.message || "Failed to update profile");
@@ -161,6 +174,33 @@ export const UpdateProfile = ({ onBack }) => {
                         </h3>
 
                         <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Current Password
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Lock
+                                            size={18}
+                                            className="text-gray-400"
+                                        />
+                                    </div>
+                                    <input
+                                        type="password"
+                                        name="oldPassword"
+                                        value={formData.oldPassword}
+                                        onChange={handleChange}
+                                        className={`pl-10 block w-full border ${fieldErrors.oldPassword ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm p-2.5`}
+                                        placeholder="Enter current password"
+                                    />
+                                </div>
+                                {fieldErrors.oldPassword && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {fieldErrors.oldPassword}
+                                    </p>
+                                )}
+                            </div>
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     New Password

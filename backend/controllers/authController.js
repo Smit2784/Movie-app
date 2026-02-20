@@ -4,10 +4,8 @@ const Theater = require("../models/Theater");
 const Booking = require("../models/Booking");
 const jwt = require("jsonwebtoken");
 
-// Use the secret imported from middleware or define it here if shared config needed
-// For simplicity, reusing the string or importing from a config file is better, 
-// but to match previous logic exactly:
-const JWT_SECRET = "1f3245d266afccd2aa0a441f41f39f6e3a50a1d7332cdc96bda7720c65e93849";
+const JWT_SECRET =
+    "1f3245d266afccd2aa0a441f41f39f6e3a50a1d7332cdc96bda7720c65e93849";
 
 exports.registerUser = async (req, res) => {
     try {
@@ -80,11 +78,28 @@ exports.updateProfile = async (req, res) => {
             if (password.length < 6) {
                 return res
                     .status(400)
-                    .json({ message: "Password must be at least 6 characters long" });
+                    .json({
+                        message: "Password must be at least 6 characters long",
+                    });
+            }
+
+            const { oldPassword } = req.body;
+            if (!oldPassword) {
+                return res
+                    .status(400)
+                    .json({ message: "Please provide your current password" });
             }
 
             const user = await User.findById(req.user.userId);
-            if (!user) return res.status(404).json({ message: "User not found" });
+            if (!user)
+                return res.status(404).json({ message: "User not found" });
+
+            const isMatch = await user.comparePassword(oldPassword);
+            if (!isMatch) {
+                return res
+                    .status(400)
+                    .json({ message: "Invalid current password" });
+            }
 
             user.name = name;
             user.password = password; // pre-save hook should hash this
@@ -106,7 +121,7 @@ exports.updateProfile = async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(
             req.user.userId,
             updateData,
-            { new: true, select: "-password" }
+            { new: true, select: "-password" },
         );
 
         res.json({
@@ -120,13 +135,18 @@ exports.updateProfile = async (req, res) => {
             message: "Profile updated successfully",
         });
     } catch (error) {
-        res.status(500).json({ message: "Update failed", error: error.message });
+        res.status(500).json({
+            message: "Update failed",
+            error: error.message,
+        });
     }
 };
 
 exports.getWalletBalance = async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select("walletBalance");
+        const user = await User.findById(req.user.userId).select(
+            "walletBalance",
+        );
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -141,10 +161,15 @@ exports.getWalletBalance = async (req, res) => {
 // ADMIN
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select("-password").sort({ createdAt: -1 });
+        const users = await User.find()
+            .select("-password")
+            .sort({ createdAt: -1 });
         res.json({ success: true, users });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Error fetching users" });
+        res.status(500).json({
+            success: false,
+            message: "Error fetching users",
+        });
     }
 };
 
@@ -169,8 +194,9 @@ exports.getAdminStats = async (req, res) => {
         });
     } catch (err) {
         console.error("Stats Error:", err);
-        res
-            .status(500)
-            .json({ success: false, message: "Could not fetch data from Atlas" });
+        res.status(500).json({
+            success: false,
+            message: "Could not fetch data from Atlas",
+        });
     }
 };

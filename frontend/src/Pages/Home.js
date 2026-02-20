@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../Contexts/AuthProvider";
 import { SearchAndCategoryFilter } from "./UpcomingMovies";
-import { Film, Theater } from "lucide-react";
+import { Film } from "lucide-react";
 import { Star, Clock } from "lucide-react";
 
 //Movie Card Component

@@ -2,7 +2,7 @@ import React, {
   useState,
   useEffect
 } from "react";
-import { API_BASE_URL } from "../Contexts/AuthProvider";
+import { api } from "../Contexts/AuthProvider";
 
 
 export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
@@ -14,8 +14,7 @@ export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
       if (!refreshing) {
         setRefreshing(true);
         try {
-          const response = await fetch(`${API_BASE_URL}/shows/${show._id}`);
-          const updatedShow = await response.json();
+          const updatedShow = await api.getShow(show._id);
           setCurrentShow(updatedShow);
 
           const nowBooked = selectedSeats.filter((seat) =>

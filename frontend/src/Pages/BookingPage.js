@@ -41,7 +41,7 @@ export const BookingPage = ({ show: propShow, onBack, onBookingComplete }) => {
         });
     };
 
-    const handleConfirmBooking = () => {
+    const handleConfirmBooking = async () => {
         if (!user) {
             alert("Please login first.");
             return;
@@ -51,15 +51,20 @@ export const BookingPage = ({ show: propShow, onBack, onBookingComplete }) => {
             return;
         }
 
-        const bookingInfo = {
-            show: show, // This contains the _id
-            showId: show._id, // Also include direct showId
-            seats: selectedSeats,
-            totalAmount: selectedSeats.length * show.price,
-        };
+        setLoading(true);
+        try {
+            const bookingInfo = {
+                show: show, // This contains the _id
+                showId: show._id, // Also include direct showId
+                seats: selectedSeats,
+                totalAmount: selectedSeats.length * show.price,
+            };
 
-        console.log("🔍 Booking info being passed:", bookingInfo);
-        onBookingComplete(bookingInfo);
+            console.log("🔍 Booking info being passed:", bookingInfo);
+            await onBookingComplete(bookingInfo);
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (fetchingShow) {

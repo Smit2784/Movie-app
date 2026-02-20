@@ -123,7 +123,7 @@ exports.checkSeats = async (req, res) => {
             bookedSeats: show.bookedSeats,
             bookedSeatsTypes: show.bookedSeats.map((seat) => typeof seat),
             availableSeats: show.availableSeats,
-            totalSeats: show.bookedSeats.length,
+            totalSeats: show.totalSeats,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -13,6 +13,7 @@ const showSchema = new mongoose.Schema({
   },
   date: { type: Date, required: true },
   time: { type: String, required: true },
+  totalSeats: { type: Number, required: true, default: 100 },
   availableSeats: { type: Number, required: true },
   bookedSeats: [{ type: String }],
   price: { type: Number, required: true }

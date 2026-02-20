@@ -14,6 +14,6 @@ router.get("/debug/show/:id/seats", showController.checkSeats);
 // Admin
 router.post("/admin/shows", authenticateToken, authAdmin, showController.createShow);
 router.delete("/admin/shows/:id", authenticateToken, authAdmin, showController.deleteShow);
-router.post("/cleanup-seats", authenticateToken, showController.cleanupSeats);
+router.post("/cleanup-seats", authenticateToken, authAdmin, showController.cleanupSeats);
 
 module.exports = router;

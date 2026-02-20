@@ -9,14 +9,15 @@ import {
     Info,
     PhoneCall,
     CalendarDays,
-    Wallet
+    Wallet,
 } from "lucide-react";
 import logo from "../logo.png";
 import { useAuth } from "../Contexts/AuthProvider";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export const Header = () => {
-    const { user, logout, token, walletBalance, refreshWalletBalance } = useAuth();
+    const { user, logout, token, walletBalance, refreshWalletBalance } =
+        useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
     const navigate = useNavigate();
@@ -30,7 +31,8 @@ export const Header = () => {
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     // Wallet Refresh Logic
@@ -49,7 +51,11 @@ export const Header = () => {
         { name: "Movies", path: "/", icon: <Clapperboard size={16} /> },
         { name: "About Us", path: "/about", icon: <Info size={16} /> },
         { name: "Contact", path: "/contact", icon: <PhoneCall size={16} /> },
-        { name: "Upcoming", path: "/upcoming-movies", icon: <CalendarDays size={16} /> },
+        {
+            name: "Upcoming",
+            path: "/upcoming-movies",
+            icon: <CalendarDays size={16} />,
+        },
     ];
 
     return (
@@ -59,12 +65,8 @@ export const Header = () => {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="flex items-center justify-between h-20">
-                    
                     {/* Brand / Logo */}
-                    <Link
-                        to="/"
-                        className="flex items-center space-x-3 group"
-                    >
+                    <Link to="/" className="flex items-center space-x-3 group">
                         <div className="relative">
                             {/* <div className="absolute inset-0 bg-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition-opacity"></div> */}
                             <img
@@ -90,7 +92,13 @@ export const Header = () => {
                                         : "text-slate-400 hover:text-white hover:bg-white/5"
                                 }`}
                             >
-                                <span className={isActive(link.path) ? "text-purple-400" : "text-slate-500"}>
+                                <span
+                                    className={
+                                        isActive(link.path)
+                                            ? "text-purple-400"
+                                            : "text-slate-500"
+                                    }
+                                >
                                     {link.icon}
                                 </span>
                                 {link.name}
@@ -105,30 +113,43 @@ export const Header = () => {
                                 {/* Premium Wallet Display */}
                                 <div className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl shadow-inner">
                                     <div className="w-8 h-8 rounded-full bg-amber-400/10 flex items-center justify-center">
-                                        <Wallet size={16} className="text-amber-400" />
+                                        <Wallet
+                                            size={16}
+                                            className="text-amber-400"
+                                        />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Balance</span>
-                                        <span className="text-white font-black text-sm">₹{walletBalance}</span>
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                                            Balance
+                                        </span>
+                                        <span className="text-white font-black text-sm">
+                                            ₹{walletBalance}
+                                        </span>
                                     </div>
                                 </div>
 
                                 {/* User Dropdown */}
                                 <div className="relative" ref={menuRef}>
                                     <button
-                                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                        onClick={() =>
+                                            setIsMenuOpen(!isMenuOpen)
+                                        }
                                         className={`flex items-center gap-3 p-1.5 pr-4 rounded-2xl border transition-all duration-300 ${
-                                            isMenuOpen 
-                                            ? "bg-purple-600 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.4)]" 
-                                            : "bg-white/5 border-white/10 hover:bg-white/10"
+                                            isMenuOpen
+                                                ? "bg-purple-600 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                                                : "bg-white/5 border-white/10 hover:bg-white/10"
                                         }`}
                                     >
                                         <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg">
                                             {user.name.charAt(0).toUpperCase()}
                                         </div>
                                         <div className="hidden md:block text-left">
-                                            <p className="text-xs font-black text-white leading-tight">{user.name}</p>
-                                            <p className="text-[10px] font-bold text-purple-300/70 uppercase tracking-tighter italic">{user.role}</p>
+                                            <p className="text-xs font-black text-white leading-tight">
+                                                {user.name}
+                                            </p>
+                                            <p className="text-[10px] font-bold text-purple-300/70 uppercase tracking-tighter italic">
+                                                {user.role}
+                                            </p>
                                         </div>
                                         <ChevronDown
                                             size={14}
@@ -140,21 +161,54 @@ export const Header = () => {
                                     {isMenuOpen && (
                                         <div className="absolute right-0 mt-4 w-64 bg-slate-900/95 backdrop-blur-2xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-3 z-[110] border border-white/10 animate-in fade-in slide-in-from-top-5 duration-300">
                                             <div className="px-6 py-4 border-b border-white/5 mb-2">
-                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Authenticated as</p>
-                                                <p className="text-sm font-bold text-white truncate">{user.email}</p>
+                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
+                                                    Authenticated as
+                                                </p>
+                                                <p className="text-sm font-bold text-white truncate">
+                                                    {user.email}
+                                                </p>
                                             </div>
 
                                             <div className="px-2 space-y-1">
-                                                <DropdownItem to="/profile" icon={<User size={18}/>} label="My Profile" onClick={() => setIsMenuOpen(false)} />
-                                                <DropdownItem to="/bookings" icon={<Ticket size={18}/>} label="My Bookings" onClick={() => setIsMenuOpen(false)} />
-                                                
+                                                <DropdownItem
+                                                    to="/profile"
+                                                    icon={<User size={18} />}
+                                                    label="My Profile"
+                                                    onClick={() =>
+                                                        setIsMenuOpen(false)
+                                                    }
+                                                    isActive={isActive(
+                                                        "/profile",
+                                                    )}
+                                                />
+                                                <DropdownItem
+                                                    to="/bookings"
+                                                    icon={<Ticket size={18} />}
+                                                    label="My Bookings"
+                                                    onClick={() =>
+                                                        setIsMenuOpen(false)
+                                                    }
+                                                    isActive={isActive(
+                                                        "/bookings",
+                                                    )}
+                                                />
+
                                                 {user.role === "admin" && (
-                                                    <DropdownItem 
-                                                        to="/admin/dashboard" 
-                                                        icon={<LayoutDashboard size={18} className="text-blue-400"/>} 
-                                                        label="Admin Control" 
-                                                        onClick={() => setIsMenuOpen(false)} 
-                                                        highlight
+                                                    <DropdownItem
+                                                        to="/admin/dashboard"
+                                                        icon={
+                                                            <LayoutDashboard
+                                                                size={18}
+                                                                className="text-blue-400"
+                                                            />
+                                                        }
+                                                        label="Admin Control"
+                                                        onClick={() =>
+                                                            setIsMenuOpen(false)
+                                                        }
+                                                        isActive={location.pathname.startsWith(
+                                                            "/admin",
+                                                        )}
                                                     />
                                                 )}
 
@@ -194,14 +248,14 @@ export const Header = () => {
 };
 
 // Helper component for Dropdown Items
-const DropdownItem = ({ to, icon, label, onClick, highlight }) => (
+const DropdownItem = ({ to, icon, label, onClick, isActive }) => (
     <Link
         to={to}
         onClick={onClick}
         className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all duration-200 ${
-            highlight 
-            ? "bg-blue-600/10 text-blue-400 hover:bg-blue-600/20" 
-            : "text-slate-300 hover:bg-white/5 hover:text-white"
+            isActive
+                ? "bg-purple-600/10 text-purple-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                : "text-slate-300 hover:bg-white/5 hover:text-white"
         }`}
     >
         {icon}

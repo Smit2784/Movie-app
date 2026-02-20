@@ -1,5 +1,4 @@
 // backend/middleware/authAdmin.js
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const authAdmin = async (req, res, next) => {
