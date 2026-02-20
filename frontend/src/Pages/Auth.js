@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { User, Film, Mail, Lock, Phone, ArrowRight } from "lucide-react";
+import {
+    User,
+    Mail,
+    Lock,
+    Phone,
+    ArrowRight,
+    KeyRound,
+} from "lucide-react";
 import { useAuth } from "../Contexts/AuthProvider";
 import {
     validateName,
@@ -11,16 +18,21 @@ import logo from "../logo.png";
 
 export const AuthComponent = ({ setCurrentPage }) => {
     const [isLogin, setIsLogin] = useState(true);
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
+    const [otpSent, setOtpSent] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
         phone: "",
+        otp: "",
+        newPassword: "",
     });
     const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const { login, register } = useAuth();
+    const { login, register, forgotPassword, resetPassword } = useAuth();
 
     const validateForm = () => {
         const errors = {};
@@ -63,7 +75,81 @@ export const AuthComponent = ({ setCurrentPage }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setSuccessMessage("");
         setFieldErrors({});
+
+        if (isForgotPassword) {
+            if (!otpSent) {
+                const emailError = validateEmail(formData.email);
+                if (emailError) {
+                    setFieldErrors({ email: emailError });
+                    return;
+                }
+                setLoading(true);
+                try {
+                    const result = await forgotPassword(formData.email);
+                    if (
+                        result.message === "OTP sent to your email" ||
+                        result.success
+                    ) {
+                        setOtpSent(true);
+                        setSuccessMessage(
+                            "OTP sent successfully. Please check your email.",
+                        );
+                    } else {
+                        setError(result.message || "Failed to send OTP");
+                    }
+                } catch (err) {
+                    setError("An error occurred while sending OTP.");
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                const errors = {};
+                if (!formData.otp || formData.otp.trim().length !== 6) {
+                    errors.otp = "Please enter a valid 6-digit OTP";
+                }
+                const passwordError = validatePassword(formData.newPassword);
+                if (passwordError) {
+                    errors.newPassword = passwordError;
+                }
+                if (Object.keys(errors).length > 0) {
+                    setFieldErrors(errors);
+                    return;
+                }
+                setLoading(true);
+                try {
+                    const result = await resetPassword({
+                        email: formData.email,
+                        otp: formData.otp.trim(),
+                        newPassword: formData.newPassword,
+                    });
+                    if (
+                        result.message === "Password updated successfully" ||
+                        result.success
+                    ) {
+                        setIsForgotPassword(false);
+                        setOtpSent(false);
+                        setFormData({
+                            ...formData,
+                            password: "",
+                            otp: "",
+                            newPassword: "",
+                        });
+                        setSuccessMessage(
+                            "Password reset successful. Please sign in.",
+                        );
+                    } else {
+                        setError(result.message || "Failed to reset password");
+                    }
+                } catch (err) {
+                    setError("An error occurred while resetting password.");
+                } finally {
+                    setLoading(false);
+                }
+            }
+            return;
+        }
 
         if (!validateForm()) {
             return;
@@ -138,12 +224,18 @@ export const AuthComponent = ({ setCurrentPage }) => {
                         </div>
 
                         <h2 className="text-4xl font-extrabold mb-6 leading-tight drop-shadow-md">
-                            {isLogin ? "Welcome Back!" : "Join the Experience"}
+                            {isForgotPassword
+                                ? "Reset Password"
+                                : isLogin
+                                  ? "Welcome Back!"
+                                  : "Join the Experience"}
                         </h2>
                         <p className="text-indigo-100 text-base leading-relaxed font-light opacity-90">
-                            {isLogin
-                                ? "Sign in to access your bookings, tailored recommendations, and exclusive offers."
-                                : "Create an account to start your cinema journey. Get access to express booking and more."}
+                            {isForgotPassword
+                                ? "Enter your email to receive a one-time password to reset your account password securely."
+                                : isLogin
+                                  ? "Sign in to access your bookings, tailored recommendations, and exclusive offers."
+                                  : "Create an account to start your cinema journey. Get access to express booking and more."}
                         </p>
                     </div>
 
@@ -177,48 +269,60 @@ export const AuthComponent = ({ setCurrentPage }) => {
                 <div className="md:w-[55%] p-8 md:p-12 bg-white">
                     <div className="text-center mb-10">
                         <h3 className="text-3xl font-bold text-gray-900 tracking-tight">
-                            {isLogin ? "Sign In" : "Create Account"}
+                            {isForgotPassword
+                                ? "Account Recovery"
+                                : isLogin
+                                  ? "Sign In"
+                                  : "Create Account"}
                         </h3>
                         <p className="text-gray-500 mt-2 text-sm">
-                            {isLogin
-                                ? "Welcome back! Please enter your details."
-                                : "Enter your details to get started."}
+                            {isForgotPassword
+                                ? "We'll help you securely get back into your account."
+                                : isLogin
+                                  ? "Welcome back! Please enter your details."
+                                  : "Enter your details to get started."}
                         </p>
                     </div>
 
                     {/* Custom Round Toggle */}
-                    <div className="flex justify-center mb-10">
-                        <div className="bg-gray-100 p-1.5 rounded-full inline-flex relative shadow-inner">
-                            {/* Slider Background */}
-                            <div
-                                className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-white rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isLogin ? "left-1.5" : "left-[calc(50%+3px)]"}`}
-                            ></div>
+                    {!isForgotPassword && (
+                        <div className="flex justify-center mb-10">
+                            <div className="bg-gray-100 p-1.5 rounded-full inline-flex relative shadow-inner">
+                                {/* Slider Background */}
+                                <div
+                                    className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-white rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isLogin ? "left-1.5" : "left-[calc(50%+3px)]"}`}
+                                ></div>
 
-                            <button
-                                onClick={() => {
-                                    setIsLogin(true);
-                                    setFieldErrors({});
-                                    setError("");
-                                }}
-                                className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-semibold transition-colors duration-300 ${isLogin ? "text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
-                            >
-                                Sign In
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setIsLogin(false);
-                                    setFieldErrors({});
-                                    setError("");
-                                }}
-                                className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-semibold transition-colors duration-300 ${!isLogin ? "text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
-                            >
-                                Sign Up
-                            </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsLogin(true);
+                                        setFieldErrors({});
+                                        setError("");
+                                        setSuccessMessage("");
+                                    }}
+                                    className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-semibold transition-colors duration-300 ${isLogin ? "text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
+                                >
+                                    Sign In
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsLogin(false);
+                                        setFieldErrors({});
+                                        setError("");
+                                        setSuccessMessage("");
+                                    }}
+                                    className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-semibold transition-colors duration-300 ${!isLogin ? "text-indigo-700" : "text-gray-500 hover:text-gray-700"}`}
+                                >
+                                    Sign Up
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <form onSubmit={handleSubmit} className="space-y-5">
-                        {!isLogin && (
+                        {!isLogin && !isForgotPassword && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-semibold text-gray-700 ml-1 uppercase tracking-wider">
@@ -276,7 +380,8 @@ export const AuthComponent = ({ setCurrentPage }) => {
                                 <input
                                     name="email"
                                     type="email"
-                                    className={`w-full pl-11 pr-4 py-3 bg-gray-50/50 border ${fieldErrors.email ? "border-red-500" : "border-gray-200"} rounded-xl focus:bg-white focus:ring-[3px] focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none text-sm font-medium`}
+                                    disabled={isForgotPassword && otpSent}
+                                    className={`w-full pl-11 pr-4 py-3 bg-gray-50/50 border ${fieldErrors.email ? "border-red-500" : "border-gray-200"} rounded-xl focus:bg-white focus:ring-[3px] focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none text-sm font-medium ${isForgotPassword && otpSent ? "opacity-60 cursor-not-allowed" : ""}`}
                                     placeholder="john@example.com"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -289,31 +394,103 @@ export const AuthComponent = ({ setCurrentPage }) => {
                             )}
                         </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 ml-1 uppercase tracking-wider">
-                                Password
-                            </label>
-                            <div className="relative group">
-                                <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
-                                <input
-                                    name="password"
-                                    type="password"
-                                    className={`w-full pl-11 pr-4 py-3 bg-gray-50/50 border ${fieldErrors.password ? "border-red-500" : "border-gray-200"} rounded-xl focus:bg-white focus:ring-[3px] focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none text-sm font-medium`}
-                                    placeholder="••••••••"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                />
+                        {isForgotPassword && otpSent && (
+                            <>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-gray-700 ml-1 uppercase tracking-wider">
+                                        6-Digit OTP
+                                    </label>
+                                    <div className="relative group">
+                                        <KeyRound className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
+                                        <input
+                                            name="otp"
+                                            type="text"
+                                            className={`w-full pl-11 pr-4 py-3 bg-gray-50/50 border ${fieldErrors.otp ? "border-red-500" : "border-gray-200"} rounded-xl focus:bg-white focus:ring-[3px] focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none text-sm font-medium tracking-widest`}
+                                            placeholder="123456"
+                                            maxLength={6}
+                                            value={formData.otp}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    {fieldErrors.otp && (
+                                        <p className="text-red-500 text-xs ml-1">
+                                            {fieldErrors.otp}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-gray-700 ml-1 uppercase tracking-wider">
+                                        New Password
+                                    </label>
+                                    <div className="relative group">
+                                        <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
+                                        <input
+                                            name="newPassword"
+                                            type="password"
+                                            className={`w-full pl-11 pr-4 py-3 bg-gray-50/50 border ${fieldErrors.newPassword ? "border-red-500" : "border-gray-200"} rounded-xl focus:bg-white focus:ring-[3px] focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none text-sm font-medium`}
+                                            placeholder="••••••••"
+                                            value={formData.newPassword}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    {fieldErrors.newPassword && (
+                                        <p className="text-red-500 text-xs ml-1">
+                                            {fieldErrors.newPassword}
+                                        </p>
+                                    )}
+                                </div>
+                            </>
+                        )}
+
+                        {!isForgotPassword && (
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-gray-700 ml-1 uppercase tracking-wider">
+                                    Password
+                                </label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
+                                    <input
+                                        name="password"
+                                        type="password"
+                                        className={`w-full pl-11 pr-4 py-3 bg-gray-50/50 border ${fieldErrors.password ? "border-red-500" : "border-gray-200"} rounded-xl focus:bg-white focus:ring-[3px] focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none text-sm font-medium`}
+                                        placeholder="••••••••"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                {fieldErrors.password && (
+                                    <p className="text-red-500 text-xs ml-1">
+                                        {fieldErrors.password}
+                                    </p>
+                                )}
                             </div>
-                            {fieldErrors.password && (
-                                <p className="text-red-500 text-xs ml-1">
-                                    {fieldErrors.password}
-                                </p>
-                            )}
-                        </div>
+                        )}
 
                         {error && (
                             <div className="text-red-500 text-xs text-center bg-red-50 p-2.5 rounded-xl border border-red-100 font-medium animate-shake">
                                 {error}
+                            </div>
+                        )}
+                        {successMessage && (
+                            <div className="text-green-600 text-xs text-center bg-green-50 p-2.5 rounded-xl border border-green-100 font-medium">
+                                {successMessage}
+                            </div>
+                        )}
+
+                        {isLogin && !isForgotPassword && (
+                            <div className="flex justify-end">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsForgotPassword(true);
+                                        setError("");
+                                        setSuccessMessage("");
+                                        setFieldErrors({});
+                                    }}
+                                    className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
+                                >
+                                    Forgot Password?
+                                </button>
                             </div>
                         )}
 
@@ -327,28 +504,50 @@ export const AuthComponent = ({ setCurrentPage }) => {
                             ) : (
                                 <>
                                     <span>
-                                        {isLogin
-                                            ? "Sign In"
-                                            : "Get Started Now"}
+                                        {isForgotPassword
+                                            ? otpSent
+                                                ? "Verify & Reset Password"
+                                                : "Send Reset OTP"
+                                            : isLogin
+                                              ? "Sign In"
+                                              : "Get Started Now"}
                                     </span>
                                     <ArrowRight className="w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
                         </button>
+
+                        {isForgotPassword && (
+                            <div className="flex justify-center mt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsForgotPassword(false);
+                                        setOtpSent(false);
+                                        setError("");
+                                        setSuccessMessage("");
+                                        setFieldErrors({});
+                                    }}
+                                    className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+                                >
+                                    Back to Sign In
+                                </button>
+                            </div>
+                        )}
                     </form>
 
                     <div className="mt-8 text-center">
                         <p className="text-xs text-gray-500">
                             By continuing, you agree to our{" "}
                             <a
-                                href="#"
+                                href="/terms-of-service"
                                 className="underline decoration-gray-300 hover:text-indigo-600 hover:decoration-indigo-600 transition-all"
                             >
                                 Terms of Service
                             </a>{" "}
                             &{" "}
                             <a
-                                href="#"
+                                href="/privacy-policy"
                                 className="underline decoration-gray-300 hover:text-indigo-600 hover:decoration-indigo-600 transition-all"
                             >
                                 Privacy Policy

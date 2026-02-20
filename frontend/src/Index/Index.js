@@ -21,6 +21,8 @@ import { GiftCards } from "../Pages/GiftCards";
 import { Footer } from "../Layouts/Footer";
 import { UpdateProfile } from "../Pages/UpdateProfile";
 import NotFound from "../Pages/NotFound";
+import PrivacyPolicy from "../Pages/PrivacyPolicy";
+import TermsOfService from "../Pages/TermsOfService";
 
 export {
     Home,
@@ -46,4 +48,6 @@ export {
     Footer,
     UpdateProfile,
     NotFound,
+    PrivacyPolicy,
+    TermsOfService,
 };

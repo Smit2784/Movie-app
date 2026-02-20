@@ -35,6 +35,24 @@ export const api = {
         return response.json();
     },
 
+    forgotPassword: async (email) => {
+        const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        });
+        return response.json();
+    },
+
+    resetPassword: async (data) => {
+        const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    },
+
     // Movies
     getMovies: async () => {
         const response = await fetch(`${API_BASE_URL}/movies`);
@@ -341,6 +359,22 @@ const AuthProvider = ({ children }) => {
         setWalletBalance(0);
     };
 
+    const forgotPasswordContext = async (email) => {
+        try {
+            return await api.forgotPassword(email);
+        } catch (error) {
+            return { success: false, message: "Network error" };
+        }
+    };
+
+    const resetPasswordContext = async (data) => {
+        try {
+            return await api.resetPassword(data);
+        } catch (error) {
+            return { success: false, message: "Network error" };
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -348,6 +382,8 @@ const AuthProvider = ({ children }) => {
                 token,
                 login,
                 register,
+                forgotPassword: forgotPasswordContext,
+                resetPassword: resetPasswordContext,
                 logout,
                 loading,
                 walletBalance,

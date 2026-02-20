@@ -32,6 +32,8 @@ import {
     Footer,
     UpdateProfile,
     NotFound,
+    PrivacyPolicy,
+    TermsOfService,
 } from "./Index/Index.js";
 
 import AuthProvider, { useAuth } from "./Contexts/AuthProvider.js";
@@ -251,6 +253,14 @@ const router = createBrowserRouter([
             {
                 path: "contact",
                 element: <ContactUs />,
+            },
+            {
+                path: "privacy-policy",
+                element: <PrivacyPolicy />,
+            },
+            {
+                path: "terms-of-service",
+                element: <TermsOfService />,
             },
             {
                 path: "faq",

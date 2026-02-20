@@ -7,13 +7,25 @@ const authAdmin = require("../middleware/authAdmin");
 // Public
 router.post("/auth/register", authController.registerUser);
 router.post("/auth/login", authController.loginUser);
+router.post("/auth/forgot-password", authController.forgotPassword);
+router.post("/auth/reset-password", authController.resetPassword);
 
 // User Protected
 router.put("/users/profile", authenticateToken, authController.updateProfile);
 router.get("/user/wallet", authenticateToken, authController.getWalletBalance);
 
 // Admin Protected
-router.get("/admin/users", authenticateToken, authAdmin, authController.getAllUsers);
-router.get("/admin/stats", authenticateToken, authAdmin, authController.getAdminStats);
+router.get(
+    "/admin/users",
+    authenticateToken,
+    authAdmin,
+    authController.getAllUsers,
+);
+router.get(
+    "/admin/stats",
+    authenticateToken,
+    authAdmin,
+    authController.getAdminStats,
+);
 
 module.exports = router;

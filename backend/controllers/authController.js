@@ -76,11 +76,9 @@ exports.updateProfile = async (req, res) => {
 
         if (password) {
             if (password.length < 6) {
-                return res
-                    .status(400)
-                    .json({
-                        message: "Password must be at least 6 characters long",
-                    });
+                return res.status(400).json({
+                    message: "Password must be at least 6 characters long",
+                });
             }
 
             const { oldPassword } = req.body;
@@ -155,6 +153,114 @@ exports.getWalletBalance = async (req, res) => {
         res.json({ walletBalance: user.walletBalance });
     } catch (error) {
         res.status(500).json({ message: "Error fetching wallet balance" });
+    }
+};
+
+const nodemailer = require("nodemailer");
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // 10 minutes expiration
+        const otpExpires = Date.now() + 10 * 60 * 1000;
+
+        user.resetPasswordOTP = otp;
+        user.resetPasswordExpires = otpExpires;
+        await user.save();
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        const mailOptions = {
+            from: `"MovieTix Support" <${process.env.EMAIL_USER}>`,
+            to: user.email,
+            subject: "Password Reset Request - MovieTix",
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+                    <div style="background-color: #4f46e5; padding: 20px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 24px; letter-spacing: 1px;">MovieTix</h1>
+                    </div>
+                    <div style="padding: 30px; background-color: #ffffff;">
+                        <h2 style="color: #333333; margin-top: 0;">Password Reset Request</h2>
+                        <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+                            Hello ${user.name},
+                        </p>
+                        <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+                            We received a request to reset your password for your MovieTix account. Please use the following One-Time Password (OTP) to proceed:
+                        </p>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <span style="display: inline-block; padding: 15px 30px; background-color: #f3f4f6; color: #4f46e5; font-size: 32px; font-weight: bold; border-radius: 8px; letter-spacing: 5px;">
+                                ${otp}
+                            </span>
+                        </div>
+                        <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+                            This OTP is valid for <strong>10 minutes</strong>. Do not share this code with anyone.
+                        </p>
+                        <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+                            If you did not request a password reset, you can safely ignore this email.
+                        </p>
+                        <br>
+                        <p style="color: #777777; font-size: 14px; margin-bottom: 0;">
+                            Best regards,<br>
+                            The MovieTix Team
+                        </p>
+                    </div>
+                </div>
+            `,
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        res.json({ message: "OTP sent to your email" });
+    } catch (error) {
+        console.error("Forgot Password Error:", error);
+        res.status(500).json({ message: "Error sending OTP email" });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res
+                .status(400)
+                .json({ message: "Please provide all details" });
+        }
+
+        const user = await User.findOne({
+            email,
+            resetPasswordOTP: otp,
+            resetPasswordExpires: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        user.password = newPassword; // this will trigger pre-save hook
+        user.resetPasswordOTP = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error("Reset Password Error:", error);
+        res.status(500).json({ message: "Error resetting password" });
     }
 };
 
