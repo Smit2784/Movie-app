@@ -21,6 +21,12 @@ router.get(
     authAdmin,
     authController.getAllUsers,
 );
+router.put(
+    "/admin/users/:id/role",
+    authenticateToken,
+    authAdmin,
+    authController.updateUserRole,
+);
 router.get(
     "/admin/stats",
     authenticateToken,

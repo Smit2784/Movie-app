@@ -279,6 +279,36 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
+exports.updateUserRole = async (req, res) => {
+    try {
+        const { role } = req.body;
+        if (!["user", "admin", "vendor"].includes(role)) {
+            return res.status(400).json({ message: "Invalid role" });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { role },
+            { new: true },
+        ).select("-password");
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({
+            success: true,
+            user,
+            message: "User role updated successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error updating user role",
+        });
+    }
+};
+
 exports.getAdminStats = async (req, res) => {
     try {
         const [movieCount, theaterCount, userCount, bookingCount] =

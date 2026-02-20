@@ -39,7 +39,7 @@ import {
 import AuthProvider, { useAuth } from "./Contexts/AuthProvider.js";
 
 // Protected Route Wrapper
-const ProtectedRoute = ({ children, adminOnly = false }) => {
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     const { user, loading } = useAuth();
     const location = useLocation();
 
@@ -55,7 +55,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
         return <Navigate to="/auth" state={{ from: location }} replace />;
     }
 
-    if (adminOnly && user.role !== "admin") {
+    if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
         return <Navigate to="/" replace />;
     }
 
@@ -338,7 +338,7 @@ const router = createBrowserRouter([
                     {
                         path: "dashboard",
                         element: (
-                            <ProtectedRoute adminOnly={true}>
+                            <ProtectedRoute allowedRoles={["admin", "vendor"]}>
                                 <AdminDashboardWithNavigation />
                             </ProtectedRoute>
                         ),
@@ -346,7 +346,7 @@ const router = createBrowserRouter([
                     {
                         path: "movies",
                         element: (
-                            <ProtectedRoute adminOnly={true}>
+                            <ProtectedRoute allowedRoles={["admin"]}>
                                 <ManageMoviesWithNavigation />
                             </ProtectedRoute>
                         ),
@@ -354,7 +354,7 @@ const router = createBrowserRouter([
                     {
                         path: "shows",
                         element: (
-                            <ProtectedRoute adminOnly={true}>
+                            <ProtectedRoute allowedRoles={["vendor", "admin"]}>
                                 <ManageShowsWithNavigation />
                             </ProtectedRoute>
                         ),
@@ -362,7 +362,7 @@ const router = createBrowserRouter([
                     {
                         path: "theaters",
                         element: (
-                            <ProtectedRoute adminOnly={true}>
+                            <ProtectedRoute allowedRoles={["vendor", "admin"]}>
                                 <ManageTheatersWithNavigation />
                             </ProtectedRoute>
                         ),
@@ -370,7 +370,7 @@ const router = createBrowserRouter([
                     {
                         path: "users",
                         element: (
-                            <ProtectedRoute adminOnly={true}>
+                            <ProtectedRoute allowedRoles={["admin"]}>
                                 <UserListWithNavigation />
                             </ProtectedRoute>
                         ),
@@ -378,7 +378,7 @@ const router = createBrowserRouter([
                     {
                         path: "bookings",
                         element: (
-                            <ProtectedRoute adminOnly={true}>
+                            <ProtectedRoute allowedRoles={["admin"]}>
                                 <AdminBookingsWithNavigation />
                             </ProtectedRoute>
                         ),

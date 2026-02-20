@@ -49,7 +49,12 @@ export const ManageShows = ({ onBack }) => {
     };
 
     const fetchTheaters = async () => {
-        const res = await fetch("http://localhost:5000/api/theaters");
+        const token = localStorage.getItem("token");
+        const res = await fetch("http://localhost:5000/api/admin/theaters", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         const data = await res.json();
         setTheaters(data.theater || []);
     };

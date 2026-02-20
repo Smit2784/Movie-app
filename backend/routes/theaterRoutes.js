@@ -2,35 +2,42 @@ const express = require("express");
 const router = express.Router();
 const theaterController = require("../controllers/theaterController");
 const { authenticateToken } = require("../middleware/authMiddleware");
-const authAdmin = require("../middleware/authAdmin");
+const authVendor = require("../middleware/authVendor");
 
 // Public
 router.get("/theaters", theaterController.getTheaters);
 
-// Admin
+// Vendor
+router.get(
+    "/admin/theaters",
+    authenticateToken,
+    authVendor,
+    theaterController.getVendorTheaters,
+);
+
 router.post(
     "/theaters",
     authenticateToken,
-    authAdmin,
+    authVendor,
     theaterController.createTheater,
-);  
+);
 
 router.post(
     "/admin/theaters",
     authenticateToken,
-    authAdmin,
+    authVendor,
     theaterController.createTheater,
 );
 router.put(
     "/admin/theaters/:id",
     authenticateToken,
-    authAdmin,
+    authVendor,
     theaterController.updateTheater,
 );
 router.delete(
     "/admin/theaters/:id",
     authenticateToken,
-    authAdmin,
+    authVendor,
     theaterController.deleteTheater,
 );
 

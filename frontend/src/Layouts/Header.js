@@ -193,7 +193,8 @@ export const Header = () => {
                                                     )}
                                                 />
 
-                                                {user.role === "admin" && (
+                                                {(user.role === "admin" ||
+                                                    user.role === "vendor") && (
                                                     <DropdownItem
                                                         to="/admin/dashboard"
                                                         icon={
@@ -202,7 +203,12 @@ export const Header = () => {
                                                                 className="text-blue-400"
                                                             />
                                                         }
-                                                        label="Admin Control"
+                                                        label={
+                                                            user.role ===
+                                                            "admin"
+                                                                ? "Admin Control"
+                                                                : "Vendor Control"
+                                                        }
                                                         onClick={() =>
                                                             setIsMenuOpen(false)
                                                         }

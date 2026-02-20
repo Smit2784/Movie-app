@@ -10,10 +10,12 @@ import {
     CreditCard,
     TrendingUp,
     ChevronRight,
-    Activity
+    Activity,
 } from "lucide-react";
+import { useAuth } from "../../Contexts/AuthProvider";
 
 export const AdminDashboard = ({ setCurrentPage }) => {
+    const { user } = useAuth();
     const [stats, setStats] = useState({
         movies: 0,
         theaters: 0,
@@ -43,12 +45,44 @@ export const AdminDashboard = ({ setCurrentPage }) => {
     }, []);
 
     const menuItems = [
-        { id: "admin-dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
-        { id: "admin-movies", label: "Manage Movies", icon: <Film size={20} /> },
-        { id: "admin-shows", label: "Manage Shows", icon: <Calendar size={20} /> },
-        { id: "admin-theaters", label: "Manage Theaters", icon: <Building2 size={20} /> },
-        { id: "admin-bookings", label: "All Bookings", icon: <CreditCard size={20} /> },
-        { id: "admin-users", label: "User Directory", icon: <Users size={20} /> },
+        {
+            id: "admin-dashboard",
+            label: "Dashboard",
+            icon: <LayoutDashboard size={20} />,
+        },
+        ...(user?.role === "admin"
+            ? [
+                  {
+                      id: "admin-movies",
+                      label: "Manage Movies",
+                      icon: <Film size={20} />,
+                  },
+                  {
+                      id: "admin-bookings",
+                      label: "All Bookings",
+                      icon: <CreditCard size={20} />,
+                  },
+                  {
+                      id: "admin-users",
+                      label: "User Directory",
+                      icon: <Users size={20} />,
+                  },
+              ]
+            : []),
+        ...(user?.role === "vendor"
+            ? [
+                  {
+                      id: "admin-shows",
+                      label: "Manage Shows",
+                      icon: <Calendar size={20} />,
+                  },
+                  {
+                      id: "admin-theaters",
+                      label: "Manage Theaters",
+                      icon: <Building2 size={20} />,
+                  },
+              ]
+            : []),
     ];
 
     return (
@@ -65,7 +99,7 @@ export const AdminDashboard = ({ setCurrentPage }) => {
             {/* Sidebar */}
             <aside className="w-full md:w-72 bg-slate-950 text-white flex flex-col relative z-20 shadow-2xl">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
-                
+
                 <div className="relative z-10 flex flex-col h-full p-6">
                     {/* Brand */}
                     <div className="mb-12 flex items-center gap-3 px-2">
@@ -90,12 +124,21 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                                 }`}
                             >
                                 <div className="flex items-center gap-4">
-                                    <span className={`${item.id === "admin-dashboard" ? "text-white" : "group-hover:text-blue-400"} transition-colors`}>
+                                    <span
+                                        className={`${item.id === "admin-dashboard" ? "text-white" : "group-hover:text-blue-400"} transition-colors`}
+                                    >
                                         {item.icon}
                                     </span>
-                                    <span className="font-semibold text-sm tracking-wide">{item.label}</span>
+                                    <span className="font-semibold text-sm tracking-wide">
+                                        {item.label}
+                                    </span>
                                 </div>
-                                {item.id === "admin-dashboard" && <ChevronRight size={14} className="opacity-50" />}
+                                {item.id === "admin-dashboard" && (
+                                    <ChevronRight
+                                        size={14}
+                                        className="opacity-50"
+                                    />
+                                )}
                             </button>
                         ))}
                     </nav>
@@ -106,8 +149,13 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                             onClick={() => setCurrentPage("home")}
                             className="w-full flex items-center gap-3 p-4 text-slate-400 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all duration-300 group"
                         >
-                            <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
-                            <span className="font-bold text-sm">Exit Control Center</span>
+                            <LogOut
+                                size={18}
+                                className="group-hover:-translate-x-1 transition-transform"
+                            />
+                            <span className="font-bold text-sm">
+                                Exit Control Center
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -122,22 +170,36 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                     <div className="animate-fadeInUp">
                         <div className="flex items-center gap-2 mb-2">
                             <span className="h-1 w-8 bg-blue-600 rounded-full"></span>
-                            <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">Administrator</span>
+                            <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">
+                                {user?.role === "vendor"
+                                    ? "Vendor Portal"
+                                    : "Administrator"}
+                            </span>
                         </div>
                         <h1 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-                            System <span className="text-slate-400 italic font-light">Overview</span>
+                            System{" "}
+                            <span className="text-slate-400 italic font-light">
+                                Overview
+                            </span>
                         </h1>
                     </div>
-                    
-                    <div className="flex items-center gap-4 animate-fadeInUp" style={{animationDelay: '100ms'}}>
+
+                    <div
+                        className="flex items-center gap-4 animate-fadeInUp"
+                        style={{ animationDelay: "100ms" }}
+                    >
                         <div className="flex flex-col items-end">
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Server Status</span>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                Server Status
+                            </span>
                             <div className="flex items-center gap-2 mt-1 px-4 py-2 bg-white rounded-2xl shadow-sm border border-slate-100">
                                 <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                                 </span>
-                                <span className="text-[13px] font-bold text-slate-700">Operational</span>
+                                <span className="text-[13px] font-bold text-slate-700">
+                                    Operational
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -176,35 +238,54 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                 </div>
 
                 {/* Quick Management Section */}
-                <section className="animate-fadeInUp" style={{animationDelay: '500ms'}}>
+                <section
+                    className="animate-fadeInUp"
+                    style={{ animationDelay: "500ms" }}
+                >
                     <div className="bg-white p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/60 border border-slate-100 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-32 -mt-32 z-0"></div>
-                        
+
                         <div className="relative z-10">
                             <div className="mb-8">
-                                <h2 className="text-2xl font-black text-slate-800">Quick Actions</h2>
-                                <p className="text-slate-500 font-medium">Streamline your management workflow</p>
+                                <h2 className="text-2xl font-black text-slate-800">
+                                    Quick Actions
+                                </h2>
+                                <p className="text-slate-500 font-medium">
+                                    Streamline your management workflow
+                                </p>
                             </div>
-                            
+
                             <div className="flex flex-wrap gap-5">
-                                <ActionButton
-                                    onClick={() => setCurrentPage("admin-movies")}
-                                    label="Add New Movie"
-                                    icon={<Film size={20} />}
-                                    theme="blue"
-                                />
-                                <ActionButton
-                                    onClick={() => setCurrentPage("admin-shows")}
-                                    label="Schedule Show"
-                                    icon={<Calendar size={20} />}
-                                    theme="violet"
-                                />
-                                <ActionButton
-                                    onClick={() => setCurrentPage("admin-theaters")}
-                                    label="Setup Theater"
-                                    icon={<Building2 size={20} />}
-                                    theme="emerald"
-                                />
+                                {user?.role === "admin" && (
+                                    <ActionButton
+                                        onClick={() =>
+                                            setCurrentPage("admin-movies")
+                                        }
+                                        label="Add New Movie"
+                                        icon={<Film size={20} />}
+                                        theme="blue"
+                                    />
+                                )}
+                                {user?.role === "vendor" && (
+                                    <>
+                                        <ActionButton
+                                            onClick={() =>
+                                                setCurrentPage("admin-shows")
+                                            }
+                                            label="Schedule Show"
+                                            icon={<Calendar size={20} />}
+                                            theme="violet"
+                                        />
+                                        <ActionButton
+                                            onClick={() =>
+                                                setCurrentPage("admin-theaters")
+                                            }
+                                            label="Setup Theater"
+                                            icon={<Building2 size={20} />}
+                                            theme="emerald"
+                                        />
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -217,7 +298,8 @@ export const AdminDashboard = ({ setCurrentPage }) => {
 const StatCard = ({ title, value, icon, color, delay }) => {
     const themes = {
         blue: "from-blue-600 to-indigo-600 shadow-blue-200 text-blue-600",
-        emerald: "from-emerald-500 to-teal-600 shadow-emerald-200 text-emerald-600",
+        emerald:
+            "from-emerald-500 to-teal-600 shadow-emerald-200 text-emerald-600",
         violet: "from-violet-600 to-purple-600 shadow-violet-200 text-violet-600",
         orange: "from-orange-500 to-amber-600 shadow-orange-200 text-orange-600",
     };
@@ -228,7 +310,9 @@ const StatCard = ({ title, value, icon, color, delay }) => {
             style={{ animationDelay: `${delay}ms` }}
         >
             <div className="flex justify-between items-start mb-6">
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${themes[color].split(' shadow')[0]} text-white shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
+                <div
+                    className={`p-4 rounded-2xl bg-gradient-to-br ${themes[color].split(" shadow")[0]} text-white shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                >
                     {icon}
                 </div>
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-2 py-1 rounded-lg">
@@ -244,7 +328,7 @@ const StatCard = ({ title, value, icon, color, delay }) => {
                     {title}
                 </p>
             </div>
-            
+
             {/* <div className="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between">
                 <span className={`text-xs font-bold ${themes[color].split(' shadow')[2]}`}>+12% from last month</span>
                 <ChevronRight size={14} className="text-slate-300" />

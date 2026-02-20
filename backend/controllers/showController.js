@@ -66,7 +66,16 @@ exports.createShow = async (req, res) => {
         const theater = await Theater.findById(theaterId);
 
         if (!movie) return res.status(404).json({ message: "Movie not found" });
-        if (!theater) return res.status(404).json({ message: "Theater not found" });
+        if (!theater)
+            return res.status(404).json({ message: "Theater not found" });
+
+        if (theater.vendorId.toString() !== req.user.userId) {
+            return res
+                .status(403)
+                .json({
+                    message: "Not authorized to add shows to this theater",
+                });
+        }
 
         const availableSeats = theater.capacity;
 
@@ -78,7 +87,7 @@ exports.createShow = async (req, res) => {
             price: price || 250,
             totalSeats: theater.capacity,
             availableSeats: availableSeats,
-            bookedSeats: []
+            bookedSeats: [],
         });
 
         await show.save();
@@ -86,24 +95,32 @@ exports.createShow = async (req, res) => {
         res.status(201).json({
             success: true,
             message: "Show scheduled successfully!",
-            show
+            show,
         });
     } catch (error) {
         res.status(500).json({
             success: false,
             message: "Failed to schedule show",
-            error: error.message
+            error: error.message,
         });
     }
 };
 
-// ADMIN: Delete Show
+// ADMIN/VENDOR: Delete Show
 exports.deleteShow = async (req, res) => {
     try {
-        const show = await Show.findByIdAndDelete(req.params.id);
+        const show = await Show.findById(req.params.id).populate("theater");
         if (!show) {
             return res.status(404).json({ message: "Show not found" });
         }
+
+        if (show.theater.vendorId.toString() !== req.user.userId) {
+            return res
+                .status(403)
+                .json({ message: "Not authorized to delete this show" });
+        }
+
+        await Show.findByIdAndDelete(req.params.id);
         res.json({ success: true, message: "Show deleted successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting show" });

@@ -1,13 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const theaterSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  location: { type: String, required: true },
-  capacity: { type: Number, required: true },
-  screens: { type: Number, default: 1 },
-  facilities: [{ type: String }]
-}, {
-  timestamps: true
-});
+const theaterSchema = new mongoose.Schema(
+    {
+        name: { type: String, required: true },
+        location: { type: String, required: true },
+        capacity: { type: Number, required: true },
+        screens: { type: Number, default: 1 },
+        facilities: [{ type: String }],
+        vendorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+    },
+    {
+        timestamps: true,
+    },
+);
 
-module.exports = mongoose.model('Theater', theaterSchema);
+module.exports = mongoose.model("Theater", theaterSchema);
