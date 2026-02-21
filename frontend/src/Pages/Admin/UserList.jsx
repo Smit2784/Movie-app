@@ -180,7 +180,7 @@ export const UserList = ({ onBack }) => {
                                             <td className="p-6">
                                                 <div className="flex items-center gap-5">
                                                     <div className="relative">
-                                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-transform">
+                                                        <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-transform">
                                                             {u.name
                                                                 .charAt(0)
                                                                 .toUpperCase()}

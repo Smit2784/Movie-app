@@ -59,7 +59,7 @@ export const Header = () => {
     ];
 
     return (
-        <header className="sticky top-0 z-[100] w-full transition-all duration-300">
+        <header className="sticky top-0 z-100 w-full transition-all duration-300">
             {/* Glassmorphism Background Layer */}
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)]"></div>
 
@@ -75,7 +75,7 @@ export const Header = () => {
                                 className="h-36 w-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300"
                             />
                         </div>
-                        {/* <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-purple-400">
+                        {/* <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-linear-to-r from-white via-purple-200 to-purple-400">
                             MovieTix
                         </h1> */}
                     </Link>
@@ -140,7 +140,7 @@ export const Header = () => {
                                                 : "bg-white/5 border-white/10 hover:bg-white/10"
                                         }`}
                                     >
-                                        <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg">
+                                        <div className="w-9 h-9 bg-linear-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg">
                                             {user.name.charAt(0).toUpperCase()}
                                         </div>
                                         <div className="hidden md:block text-left">
@@ -159,7 +159,7 @@ export const Header = () => {
 
                                     {/* Dropdown Menu */}
                                     {isMenuOpen && (
-                                        <div className="absolute right-0 mt-4 w-64 bg-slate-900/95 backdrop-blur-2xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-3 z-[110] border border-white/10 animate-in fade-in slide-in-from-top-5 duration-300">
+                                        <div className="absolute right-0 mt-4 w-64 bg-slate-900/95 backdrop-blur-2xl rounded-4xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-3 z-110 border border-white/10 animate-in fade-in slide-in-from-top-5 duration-300">
                                             <div className="px-6 py-4 border-b border-white/5 mb-2">
                                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
                                                     Authenticated as
@@ -196,7 +196,12 @@ export const Header = () => {
                                                 {(user.role === "admin" ||
                                                     user.role === "vendor") && (
                                                     <DropdownItem
-                                                        to="/admin/dashboard"
+                                                        to={
+                                                            user.role ===
+                                                            "admin"
+                                                                ? "/admin/dashboard"
+                                                                : "/vendor/dashboard"
+                                                        }
                                                         icon={
                                                             <LayoutDashboard
                                                                 size={18}
@@ -213,7 +218,10 @@ export const Header = () => {
                                                             setIsMenuOpen(false)
                                                         }
                                                         isActive={location.pathname.startsWith(
-                                                            "/admin",
+                                                            user.role ===
+                                                                "admin"
+                                                                ? "/admin"
+                                                                : "/vendor",
                                                         )}
                                                     />
                                                 )}
@@ -239,7 +247,7 @@ export const Header = () => {
                                 to="/auth"
                                 className="relative group overflow-hidden bg-white text-slate-950 px-8 py-3 rounded-2xl font-black text-sm transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_10px_20px_rgba(255,255,255,0.1)]"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-purple-200 to-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="absolute inset-0 bg-linear-to-r from-purple-200 to-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <span className="relative z-10 flex items-center gap-2">
                                     <User size={18} />
                                     Sign In

@@ -35,7 +35,15 @@ export const ManageShows = ({ onBack }) => {
 
     const fetchShows = async () => {
         try {
-            const resAll = await fetch("http://localhost:5000/api/shows");
+            const token = localStorage.getItem("token");
+            const resAll = await fetch(
+                "http://localhost:5000/api/admin/shows",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
             const data = await resAll.json();
             setShows(data);
         } catch (error) {
@@ -169,7 +177,7 @@ export const ManageShows = ({ onBack }) => {
                 <div className="xl:col-span-4 animate-slideUp">
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-white sticky top-10">
                         <div className="flex items-center gap-4 mb-8">
-                            <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-200">
+                            <div className="p-4 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-200">
                                 <Plus size={24} />
                             </div>
                             <div>
@@ -316,7 +324,7 @@ export const ManageShows = ({ onBack }) => {
 
                             <button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-blue-200 hover:scale-[1.02] hover:shadow-blue-300 active:scale-95 pt-6 mt-4"
+                                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white py-5 rounded-3xl font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-blue-200 hover:scale-[1.02] hover:shadow-blue-300 active:scale-95 pt-6 mt-4"
                             >
                                 Commit to Schedule
                             </button>

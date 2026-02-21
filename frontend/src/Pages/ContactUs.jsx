@@ -81,11 +81,11 @@ export const ContactUs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
-            <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-20">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
+            <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-20">
                 <div className="container mx-auto px-6 text-center">
                     <h1 className="text-5xl lg:text-6xl font-black mb-6 leading-tight">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400">
                             Contact Us
                         </span>
                     </h1>
@@ -205,7 +205,7 @@ export const ContactUs = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isSubmitting ? (
                                     <div className="flex items-center justify-center space-x-2">
@@ -282,7 +282,7 @@ export const ContactUs = () => {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl p-8 text-white">
+                        <div className="bg-linear-to-r from-purple-600 to-blue-600 rounded-3xl p-8 text-white">
                             <h3 className="text-xl font-bold mb-4">
                                 Quick Response Guarantee
                             </h3>

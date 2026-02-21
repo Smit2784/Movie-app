@@ -154,12 +154,12 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="flex-grow px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300 text-lg"
+                        className="grow px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300 text-lg"
                         placeholder="Enter your email address"
                     />
                     <button
                         type="submit"
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-lg"
+                        className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-lg"
                     >
                         Notify Me
                     </button>
@@ -185,8 +185,8 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
-            <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-8">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
+            <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-8">
                 <div className="container mx-auto px-6">
                     <button
                         onClick={onBack}
@@ -214,7 +214,7 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
 
                     <div className="text-center">
                         <h1 className="text-5xl lg:text-6xl font-black mb-4 leading-tight">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400">
                                 {movie.title}
                             </span>
                         </h1>
@@ -246,7 +246,7 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                     alt={movie.title}
                                     className="w-full h-96 lg:h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent"></div>
 
                                 {!isUpcoming && (
                                     <div className="absolute top-6 right-6 bg-black/70 backdrop-blur-md text-white px-4 py-2 rounded-2xl border border-white/20">
@@ -259,7 +259,7 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                     </div>
                                 )}
                                 {!isUpcoming && (
-                                    <div className="absolute bottom-6 left-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-2xl shadow-xl">
+                                    <div className="absolute bottom-6 left-6 bg-linear-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-2xl shadow-xl">
                                         <div className="text-center">
                                             <div className="text-sm font-medium opacity-90">
                                                 Starting from
@@ -276,13 +276,13 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                         <div className="lg:w-3/5 p-8 lg:p-12">
                             <div className="space-y-8">
                                 <div className="flex flex-wrap gap-3">
-                                    <span className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-4 py-2 rounded-full font-semibold border border-purple-200">
+                                    <span className="bg-linear-to-r from-purple-100 to-blue-100 text-purple-700 px-4 py-2 rounded-full font-semibold border border-purple-200">
                                         {movie.genre}
                                     </span>
-                                    <span className="bg-gradient-to-r from-green-100 to-teal-100 text-green-700 px-4 py-2 rounded-full font-semibold border border-green-200">
+                                    <span className="bg-linear-to-r from-green-100 to-teal-100 text-green-700 px-4 py-2 rounded-full font-semibold border border-green-200">
                                         {movie.language}
                                     </span>
-                                    <span className="bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-700 px-4 py-2 rounded-full font-semibold border border-yellow-200">
+                                    <span className="bg-linear-to-r from-yellow-100 to-orange-100 text-yellow-700 px-4 py-2 rounded-full font-semibold border border-yellow-200">
                                         {movie.duration} min
                                     </span>
                                 </div>
@@ -297,7 +297,7 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-100">
+                                    <div className="bg-linear-to-br from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-100">
                                         <h4 className="font-bold text-gray-800 mb-2 flex items-center">
                                             <div className="w-2 h-2 bg-purple-600 rounded-full mr-3"></div>
                                             Director
@@ -307,7 +307,7 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                         </p>
                                     </div>
 
-                                    <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-6 border border-green-100">
+                                    <div className="bg-linear-to-br from-green-50 to-teal-50 rounded-2xl p-6 border border-green-100">
                                         <h4 className="font-bold text-gray-800 mb-2 flex items-center">
                                             <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
                                             Release Date
@@ -361,7 +361,7 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                         </div>
                     ) : shows.length > 0 ? (
                         <div className="bg-white rounded-3xl shadow-xl overflow-hidden -m-12">
-                            <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8">
+                            <div className="bg-linear-to-r from-purple-600 to-blue-600 text-white p-8">
                                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                                     <div>
                                         <h3 className="text-3xl font-bold mb-2">
@@ -424,7 +424,7 @@ export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                                 .split("T")[0],
                                         )
                                     }
-                                    className="mt-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                                    className="mt-6 bg-linear-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                                 >
                                     Try Today's Shows
                                 </button>
@@ -466,7 +466,7 @@ const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
                 ([theaterName, theaterShows]) => (
                     <div key={theaterName} className="mb-8 last:mb-0">
                         <div className="flex items-center mb-4 pb-2 border-b-2 border-purple-100">
-                            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
+                            <div className="w-10 h-10 bg-linear-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
                                 <svg
                                     className="w-5 h-5 text-white"
                                     fill="none"
@@ -530,7 +530,7 @@ const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
                                         </div>
 
                                         {!isSoldOut && (
-                                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                                            <div className="absolute inset-0 bg-linear-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                                         )}
                                     </button>
                                 );

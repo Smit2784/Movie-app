@@ -225,7 +225,7 @@ export const GiftCards = () => {
 
                 {/* Wallet Balance Display */}
                 {user && (
-                    <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 rounded-lg mb-8 text-center">
+                    <div className="bg-linear-to-r from-purple-600 to-blue-600 text-white p-4 rounded-lg mb-8 text-center">
                         <div className="flex items-center justify-center">
                             <Wallet className="h-5 w-5 mr-2" />
                             <span className="text-lg font-semibold">
@@ -282,7 +282,7 @@ export const GiftCards = () => {
                             <h3 className="text-2xl font-bold mb-6 text-center text-gray-800">
                                 Gift Card Preview
                             </h3>
-                            <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 rounded-xl p-6 text-white relative overflow-hidden">
+                            <div className="bg-linear-to-br from-purple-600 via-blue-600 to-indigo-700 rounded-xl p-6 text-white relative overflow-hidden">
                                 <div className="absolute top-0 right-0 opacity-10">
                                     <Gift className="h-32 w-32" />
                                 </div>

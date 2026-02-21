@@ -358,8 +358,8 @@ export const ManageTheaters = ({ onBack }) => {
                                     type="submit"
                                     className={`flex-1 py-4 rounded-2xl font-black text-white transition-all shadow-xl uppercase text-[10px] tracking-widest hover:scale-[1.02] active:scale-95 ${
                                         isEditing
-                                            ? "bg-gradient-to-r from-orange-500 to-amber-500 shadow-orange-200"
-                                            : "bg-gradient-to-r from-emerald-600 to-teal-600 shadow-emerald-200"
+                                            ? "bg-linear-to-r from-orange-500 to-amber-500 shadow-orange-200"
+                                            : "bg-linear-to-r from-emerald-600 to-teal-600 shadow-emerald-200"
                                     }`}
                                 >
                                     {isEditing

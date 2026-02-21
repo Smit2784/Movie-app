@@ -12,6 +12,12 @@ router.get("/shows/:id", showController.getShowById);
 router.get("/debug/show/:id/seats", showController.checkSeats);
 
 // Vendor
+router.get(
+    "/admin/shows",
+    authenticateToken,
+    authVendor,
+    showController.getAdminShows,
+);
 router.post(
     "/admin/shows",
     authenticateToken,

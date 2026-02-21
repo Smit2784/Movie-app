@@ -187,8 +187,8 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
-            <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-8">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
+            <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-8">
                 <div className="container mx-auto px-6">
                     <button
                         onClick={onBack}
@@ -215,7 +215,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                     </button>
                     <div className="text-center">
                         <h1 className="text-4xl lg:text-5xl font-black mb-4 leading-tight">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400">
                                 Secure Payment
                             </span>
                         </h1>
@@ -234,10 +234,10 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                 Choose Payment Method
                             </h2>
                             {pageWalletBalance > 0 && (
-                                <div className="mb-8 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300">
+                                <div className="mb-8 p-6 bg-linear-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300">
                                     <label className="flex items-center justify-between cursor-pointer group">
                                         <div className="flex items-center space-x-4">
-                                            <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-md">
+                                            <div className="w-12 h-12 bg-linear-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-md">
                                                 <span className="text-2xl">
                                                     💰
                                                 </span>
@@ -267,7 +267,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                                 }
                                                 className="sr-only peer"
                                             />
-                                            <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-7 after:w-7 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-orange-500 shadow-inner"></div>
+                                            <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-7 after:w-7 after:transition-all peer-checked:bg-linear-to-r peer-checked:from-yellow-400 peer-checked:to-orange-500 shadow-inner"></div>
                                         </div>
                                     </label>
 
@@ -295,7 +295,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                                 }
                                                 className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
                                                     paymentMethod === "card"
-                                                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                                                        ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                                                         : "text-gray-600 hover:bg-gray-200"
                                                 }`}
                                             >
@@ -308,7 +308,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                                 }
                                                 className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
                                                     paymentMethod === "upi"
-                                                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                                                        ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                                                         : "text-gray-600 hover:bg-gray-200"
                                                 }`}
                                             >
@@ -324,7 +324,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                                 className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
                                                     paymentMethod ===
                                                     "wallet-external"
-                                                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                                                        ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                                                         : "text-gray-600 hover:bg-gray-200"
                                                 }`}
                                             >
@@ -507,7 +507,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                         {paymentMethod === "upi" && (
                                             <div className="space-y-6">
                                                 <div className="text-center py-8">
-                                                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
+                                                    <div className="w-24 h-24 mx-auto bg-linear-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
                                                         <span className="text-4xl">
                                                             📱
                                                         </span>
@@ -550,7 +550,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                             "wallet-external" && (
                                             <div className="space-y-6">
                                                 <div className="text-center py-8">
-                                                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
+                                                    <div className="w-24 h-24 mx-auto bg-linear-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
                                                         <span className="text-4xl">
                                                             💰
                                                         </span>
@@ -636,7 +636,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                             className={`w-full mt-6 py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 ${
                                                 isProcessing
                                                     ? "bg-gray-400 cursor-not-allowed"
-                                                    : "bg-gradient-to-r from-purple-600 to-blue-600 hover:shadow-2xl transform hover:scale-105"
+                                                    : "bg-linear-to-r from-purple-600 to-blue-600 hover:shadow-2xl transform hover:scale-105"
                                             } text-white`}
                                         >
                                             {isProcessing
@@ -650,7 +650,7 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                     <button
                                         type="submit"
                                         disabled={isProcessing}
-                                        className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full bg-linear-to-r from-yellow-500 to-orange-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isProcessing
                                             ? "Processing..."
@@ -734,13 +734,13 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                     <span className="text-lg font-bold text-gray-800">
                                         Total Amount:
                                     </span>
-                                    <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+                                    <span className="text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-600">
                                         ₹{booking.totalAmount}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-3xl shadow-xl p-6 text-white">
+                        <div className="bg-linear-to-r from-yellow-400 to-orange-500 rounded-3xl shadow-xl p-6 text-white">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <div className="text-sm opacity-90">

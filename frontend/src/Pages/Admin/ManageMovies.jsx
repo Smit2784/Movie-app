@@ -435,8 +435,8 @@ export const ManageMovies = ({ onBack }) => {
                                     type="submit"
                                     className={`flex-1 py-4 rounded-2xl font-black text-white transition-all shadow-xl uppercase text-xs tracking-widest ${
                                         isEditing
-                                            ? "bg-gradient-to-r from-orange-500 to-amber-500 shadow-orange-200 hover:scale-[1.02]"
-                                            : "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-blue-200 hover:scale-[1.02]"
+                                            ? "bg-linear-to-r from-orange-500 to-amber-500 shadow-orange-200 hover:scale-[1.02]"
+                                            : "bg-linear-to-r from-blue-600 to-indigo-600 shadow-blue-200 hover:scale-[1.02]"
                                     }`}
                                 >
                                     {isEditing
@@ -471,12 +471,12 @@ export const ManageMovies = ({ onBack }) => {
                         {movies.map((movie) => (
                             <div
                                 key={movie._id}
-                                className="group bg-white p-5 rounded-[2rem] shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 flex gap-6 relative overflow-hidden"
+                                className="group bg-white p-5 rounded-4xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 flex gap-6 relative overflow-hidden"
                             >
                                 {/* Decorative Background Elements */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] -z-0 transition-all group-hover:bg-blue-50/50"></div>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] z-0 transition-all group-hover:bg-blue-50/50"></div>
 
-                                <div className="relative z-10 w-32 h-48 flex-shrink-0">
+                                <div className="relative z-10 w-32 h-48 shrink-0">
                                     <img
                                         src={movie.poster}
                                         alt=""

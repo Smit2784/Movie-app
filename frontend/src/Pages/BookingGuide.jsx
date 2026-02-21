@@ -91,12 +91,12 @@ export const BookingGuide = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
             {/* Header */}
-            <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-16">
+            <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-16">
                 <div className="container mx-auto px-6 text-center">
                     <h1 className="text-5xl lg:text-6xl font-black mb-6 leading-tight">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-400">
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-yellow-400">
                             Booking Guide
                         </span>
                     </h1>
@@ -117,7 +117,7 @@ export const BookingGuide = () => {
                                     onClick={() => goToStep(index)}
                                     className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
                                         index === currentStep
-                                            ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-110"
+                                            ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-110"
                                             : index < currentStep
                                               ? "bg-green-500 text-white"
                                               : "bg-gray-200 text-gray-500 hover:bg-gray-300"
@@ -146,7 +146,7 @@ export const BookingGuide = () => {
                             {/* Left Side - Content */}
                             <div className="p-8 lg:p-12">
                                 <div className="flex items-center mb-6">
-                                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-3xl mr-4">
+                                    <div className="w-16 h-16 bg-linear-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-3xl mr-4">
                                         {bookingSteps[currentStep].icon}
                                     </div>
                                     <div>
@@ -170,7 +170,7 @@ export const BookingGuide = () => {
                                                 key={index}
                                                 className="flex items-start"
                                             >
-                                                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 mt-1 shrink-0">
                                                     <span className="text-white text-xs">
                                                         ✓
                                                     </span>
@@ -217,7 +217,7 @@ export const BookingGuide = () => {
                                             currentStep ===
                                             bookingSteps.length - 1
                                         }
-                                        className="flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg"
+                                        className="flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg"
                                     >
                                         <span>Next</span>
                                         <svg
@@ -238,9 +238,9 @@ export const BookingGuide = () => {
                             </div>
 
                             {/* Right Side - Visual */}
-                            <div className="bg-gradient-to-br from-purple-100 to-blue-100 p-8 lg:p-12 flex items-center justify-center">
+                            <div className="bg-linear-to-br from-purple-100 to-blue-100 p-8 lg:p-12 flex items-center justify-center">
                                 <div className="text-center">
-                                    <div className="w-32 h-32 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-6xl mx-auto mb-6">
+                                    <div className="w-32 h-32 bg-linear-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-6xl mx-auto mb-6">
                                         {bookingSteps[currentStep].icon}
                                     </div>
                                     <h3 className="text-2xl font-bold text-gray-800 mb-4">
@@ -260,7 +260,7 @@ export const BookingGuide = () => {
                 </div>
 
                 {/* Quick Tips */}
-                <div className="mt-16 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-3xl p-8 border border-yellow-200">
+                <div className="mt-16 bg-linear-to-r from-yellow-50 to-orange-50 rounded-3xl p-8 border border-yellow-200">
                     <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
                         💡 Pro Tips for a Better Experience
                     </h3>

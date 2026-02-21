@@ -11,12 +11,13 @@ import {
 import {
     Home,
     AuthComponent,
-    ManageTheaters,
     ManageMovies,
-    ManageShows,
     UserList,
     AdminDashboard,
     AdminBookings,
+    VendorDashboard,
+    VendorManageTheaters,
+    VendorManageShows,
     Header,
     AboutUs,
     ContactUs,
@@ -34,9 +35,9 @@ import {
     NotFound,
     PrivacyPolicy,
     TermsOfService,
-} from "./Index/Index.js";
+} from "./Index/Index.jsx";
 
-import AuthProvider, { useAuth } from "./Contexts/AuthProvider.js";
+import AuthProvider, { useAuth } from "./Contexts/AuthProvider.jsx";
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -76,7 +77,7 @@ const LayoutContent = () => {
     return (
         <>
             <Header />
-            <main className="flex-grow">
+            <main className="grow">
                 <Outlet />
             </main>
             <Footer />
@@ -212,6 +213,21 @@ function AdminDashboardWithNavigation() {
         />
     );
 }
+// Vendor Wrappers
+function VendorDashboardWithNavigation() {
+    const navigate = useNavigate();
+    return (
+        <VendorDashboard
+            setCurrentPage={(page) => {
+                if (page.startsWith("vendor-")) {
+                    navigate(page.replace("vendor-", "/vendor/"));
+                } else {
+                    navigate(page);
+                }
+            }}
+        />
+    );
+}
 
 function ManageMoviesWithNavigation() {
     const navigate = useNavigate();
@@ -221,9 +237,19 @@ function ManageShowsWithNavigation() {
     const navigate = useNavigate();
     return <ManageShows onBack={() => navigate("/admin/dashboard")} />;
 }
+function VendorManageShowsWithNavigation() {
+    const navigate = useNavigate();
+    return <VendorManageShows onBack={() => navigate("/vendor/dashboard")} />;
+}
 function ManageTheatersWithNavigation() {
     const navigate = useNavigate();
     return <ManageTheaters onBack={() => navigate("/admin/dashboard")} />;
+}
+function VendorManageTheatersWithNavigation() {
+    const navigate = useNavigate();
+    return (
+        <VendorManageTheaters onBack={() => navigate("/vendor/dashboard")} />
+    );
 }
 function UserListWithNavigation() {
     const navigate = useNavigate();
@@ -327,6 +353,41 @@ const router = createBrowserRouter([
                 ),
             },
 
+            // Vendor Routes
+            {
+                path: "vendor",
+                children: [
+                    {
+                        index: true,
+                        element: <Navigate to="dashboard" replace />,
+                    },
+                    {
+                        path: "dashboard",
+                        element: (
+                            <ProtectedRoute allowedRoles={["vendor"]}>
+                                <VendorDashboardWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "shows",
+                        element: (
+                            <ProtectedRoute allowedRoles={["vendor"]}>
+                                <VendorManageShowsWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "theaters",
+                        element: (
+                            <ProtectedRoute allowedRoles={["vendor"]}>
+                                <VendorManageTheatersWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                ],
+            },
+
             // Admin Routes
             {
                 path: "admin",
@@ -338,7 +399,7 @@ const router = createBrowserRouter([
                     {
                         path: "dashboard",
                         element: (
-                            <ProtectedRoute allowedRoles={["admin", "vendor"]}>
+                            <ProtectedRoute allowedRoles={["admin"]}>
                                 <AdminDashboardWithNavigation />
                             </ProtectedRoute>
                         ),
@@ -354,7 +415,7 @@ const router = createBrowserRouter([
                     {
                         path: "shows",
                         element: (
-                            <ProtectedRoute allowedRoles={["vendor", "admin"]}>
+                            <ProtectedRoute allowedRoles={["admin"]}>
                                 <ManageShowsWithNavigation />
                             </ProtectedRoute>
                         ),
@@ -362,7 +423,7 @@ const router = createBrowserRouter([
                     {
                         path: "theaters",
                         element: (
-                            <ProtectedRoute allowedRoles={["vendor", "admin"]}>
+                            <ProtectedRoute allowedRoles={["admin"]}>
                                 <ManageTheatersWithNavigation />
                             </ProtectedRoute>
                         ),

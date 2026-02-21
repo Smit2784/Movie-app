@@ -1,8 +1,8 @@
 export const PaymentSuccess = ({ paymentResult, booking, onGoHome }) => {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center px-4">
             <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center">
-                <div className="w-24 h-24 mx-auto bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                <div className="w-24 h-24 mx-auto bg-linear-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mb-6 animate-bounce">
                     <svg
                         className="w-12 h-12 text-white"
                         fill="none"
@@ -59,7 +59,7 @@ export const PaymentSuccess = ({ paymentResult, booking, onGoHome }) => {
                 <div className="space-y-3">
                     <button
                         onClick={() => window.print()}
-                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
+                        className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
                     >
                         Download Ticket
                     </button>

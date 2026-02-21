@@ -1,11 +1,12 @@
 import Home from "../Pages/Home";
 import { AuthComponent } from "../Pages/Auth";
-import { ManageTheaters } from "../Pages/Admin/ManageTheaters";
 import { ManageMovies } from "../Pages/Admin/ManageMovies";
-import { ManageShows } from "../Pages/Admin/ManageShows";
 import { UserList } from "../Pages/Admin/UserList";
 import { AdminDashboard } from "../Pages/Admin/AdminDashboard";
 import { AdminBookings } from "../Pages/Admin/AdminBookings";
+import { VendorDashboard } from "../Pages/Vendor/VendorDashboard";
+import { ManageTheaters as VendorManageTheaters } from "../Pages/Vendor/ManageTheaters";
+import { ManageShows as VendorManageShows } from "../Pages/Vendor/ManageShows";
 import { Header } from "../Layouts/Header";
 import { AboutUs } from "../Pages/AboutUs";
 import { ContactUs } from "../Pages/ContactUs";
@@ -27,12 +28,13 @@ import TermsOfService from "../Pages/TermsOfService";
 export {
     Home,
     AuthComponent,
-    ManageTheaters,
     ManageMovies,
-    ManageShows,
     UserList,
     AdminDashboard,
     AdminBookings,
+    VendorDashboard,
+    VendorManageTheaters,
+    VendorManageShows,
     Header,
     AboutUs,
     ContactUs,

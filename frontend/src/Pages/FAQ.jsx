@@ -108,12 +108,12 @@ export const FAQ = () => {
         .filter((category) => category.questions.length > 0);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
             {/* Header */}
-            <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-16">
+            <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-16">
                 <div className="container mx-auto px-6 text-center">
                     <h1 className="text-5xl lg:text-6xl font-black mb-6 leading-tight">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-400">
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-yellow-400">
                             Frequently Asked Questions
                         </span>
                     </h1>
@@ -153,7 +153,7 @@ export const FAQ = () => {
                 {/* Quick Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
                     <div className="bg-white rounded-2xl shadow-lg p-6 text-center border border-purple-100">
-                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-12 h-12 bg-linear-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span className="text-2xl text-white">📋</span>
                         </div>
                         <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -162,7 +162,7 @@ export const FAQ = () => {
                         <p className="text-gray-600">Common Questions</p>
                     </div>
                     <div className="bg-white rounded-2xl shadow-lg p-6 text-center border border-green-100">
-                        <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-12 h-12 bg-linear-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span className="text-2xl text-white">⚡</span>
                         </div>
                         <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -171,7 +171,7 @@ export const FAQ = () => {
                         <p className="text-gray-600">Support Available</p>
                     </div>
                     <div className="bg-white rounded-2xl shadow-lg p-6 text-center border border-yellow-100">
-                        <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-12 h-12 bg-linear-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span className="text-2xl text-white">💬</span>
                         </div>
                         <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -212,7 +212,7 @@ export const FAQ = () => {
                         filteredFAQ.map((category, categoryIndex) => (
                             <div key={categoryIndex} className="mb-12">
                                 <h2 className="text-3xl font-bold text-gray-800 mb-8 flex items-center">
-                                    <div className="w-2 h-8 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full mr-4"></div>
+                                    <div className="w-2 h-8 bg-linear-to-b from-purple-500 to-blue-500 rounded-full mr-4"></div>
                                     {category.category}
                                 </h2>
 
@@ -240,7 +240,7 @@ export const FAQ = () => {
                                                             {item.q}
                                                         </h3>
                                                         <div
-                                                            className={`w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white transition-transform duration-300 ${
+                                                            className={`w-8 h-8 flex items-center justify-center rounded-full bg-linear-to-r from-purple-500 to-blue-500 text-white transition-transform duration-300 ${
                                                                 isActive
                                                                     ? "rotate-45"
                                                                     : ""
@@ -290,7 +290,7 @@ export const FAQ = () => {
                 </div>
 
                 {/* Contact Support Section */}
-                <div className="mt-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl p-8 text-white text-center">
+                <div className="mt-10 bg-linear-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl p-8 text-white text-center">
                     <h3 className="text-3xl font-bold mb-4">
                         Still Need Help?
                     </h3>

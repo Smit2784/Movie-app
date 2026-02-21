@@ -98,7 +98,7 @@ export const AdminDashboard = ({ setCurrentPage }) => {
 
             {/* Sidebar */}
             <aside className="w-full md:w-72 bg-slate-950 text-white flex flex-col relative z-20 shadow-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
 
                 <div className="relative z-10 flex flex-col h-full p-6">
                     {/* Brand */}
@@ -106,7 +106,7 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                         <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/40">
                             <Activity size={24} className="text-white" />
                         </div>
-                        <h2 className="text-xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+                        <h2 className="text-xl font-black tracking-tight bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400">
                             CineAdmin
                         </h2>
                     </div>
@@ -119,7 +119,7 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                                 onClick={() => setCurrentPage(item.id)}
                                 className={`w-full flex items-center justify-between p-3.5 rounded-xl transition-all duration-300 group ${
                                     item.id === "admin-dashboard"
-                                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/40"
+                                        ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/40"
                                         : "text-slate-400 hover:bg-white/5 hover:text-white"
                                 }`}
                             >
@@ -164,7 +164,7 @@ export const AdminDashboard = ({ setCurrentPage }) => {
             {/* Main Content */}
             <main className="flex-1 p-6 md:p-10 lg:p-14 overflow-y-auto relative">
                 {/* Background Decoration */}
-                <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-b from-blue-50/50 to-transparent -z-10"></div>
+                <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-linear-to-b from-blue-50/50 to-transparent -z-10"></div>
 
                 <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div className="animate-fadeInUp">
@@ -256,36 +256,14 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                             </div>
 
                             <div className="flex flex-wrap gap-5">
-                                {user?.role === "admin" && (
-                                    <ActionButton
-                                        onClick={() =>
-                                            setCurrentPage("admin-movies")
-                                        }
-                                        label="Add New Movie"
-                                        icon={<Film size={20} />}
-                                        theme="blue"
-                                    />
-                                )}
-                                {user?.role === "vendor" && (
-                                    <>
-                                        <ActionButton
-                                            onClick={() =>
-                                                setCurrentPage("admin-shows")
-                                            }
-                                            label="Schedule Show"
-                                            icon={<Calendar size={20} />}
-                                            theme="violet"
-                                        />
-                                        <ActionButton
-                                            onClick={() =>
-                                                setCurrentPage("admin-theaters")
-                                            }
-                                            label="Setup Theater"
-                                            icon={<Building2 size={20} />}
-                                            theme="emerald"
-                                        />
-                                    </>
-                                )}
+                                <ActionButton
+                                    onClick={() =>
+                                        setCurrentPage("admin-movies")
+                                    }
+                                    label="Add New Movie"
+                                    icon={<Film size={20} />}
+                                    theme="blue"
+                                />
                             </div>
                         </div>
                     </div>
@@ -306,12 +284,12 @@ const StatCard = ({ title, value, icon, color, delay }) => {
 
     return (
         <div
-            className="animate-fadeInUp group bg-white p-8 rounded-[2rem] shadow-lg border border-slate-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+            className="animate-fadeInUp group bg-white p-8 rounded-4xl shadow-lg border border-slate-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
             style={{ animationDelay: `${delay}ms` }}
         >
             <div className="flex justify-between items-start mb-6">
                 <div
-                    className={`p-4 rounded-2xl bg-gradient-to-br ${themes[color].split(" shadow")[0]} text-white shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                    className={`p-4 rounded-2xl bg-linear-to-br ${themes[color].split(" shadow")[0]} text-white shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}
                 >
                     {icon}
                 </div>

@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require("../controllers/authController");
 const { authenticateToken } = require("../middleware/authMiddleware");
 const authAdmin = require("../middleware/authAdmin");
+const authAdminOrVendor = require("../middleware/authAdminOrVendor");
 
 // Public
 router.post("/auth/register", authController.registerUser);
@@ -30,7 +31,7 @@ router.put(
 router.get(
     "/admin/stats",
     authenticateToken,
-    authAdmin,
+    authAdminOrVendor,
     authController.getAdminStats,
 );
 

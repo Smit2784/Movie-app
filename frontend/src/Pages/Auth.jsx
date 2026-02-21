@@ -192,7 +192,7 @@ export const AuthComponent = ({ setCurrentPage }) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
             {/* Animated Background Elements */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-20 left-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-40 animate-pulse"></div>
@@ -201,9 +201,9 @@ export const AuthComponent = ({ setCurrentPage }) => {
             </div>
 
             {/* Main Card Container */}
-            <div className="max-w-5xl w-full bg-white/95 backdrop-blur-sm rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10 border border-white/20">
+            <div className="max-w-5xl w-full bg-white/95 backdrop-blur-sm rounded-4xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10 border border-white/20">
                 {/* Left Side - Branding (45% width on desktop) */}
-                <div className="md:w-[45%] bg-gradient-to-br from-indigo-600/90 to-blue-700/90 p-10 text-white flex flex-col justify-between relative overflow-hidden">
+                <div className="md:w-[45%] bg-linear-to-br from-indigo-600/90 to-blue-700/90 p-10 text-white flex flex-col justify-between relative overflow-hidden">
                     {/* Decorative circles inside card */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
@@ -240,7 +240,7 @@ export const AuthComponent = ({ setCurrentPage }) => {
                     </div>
 
                     {/* <div className="relative z-10 mt-12 md:mt-0">
-                        <div className="bg-gradient-to-r from-white/10 to-indigo-600/10 rounded-2xl p-5 backdrop-blur-md border border-white/10 shadow-inner">
+                        <div className="bg-linear-to-r from-white/10 to-indigo-600/10 rounded-2xl p-5 backdrop-blur-md border border-white/10 shadow-inner">
                             <div className="flex text-yellow-300 mb-2 text-sm">
                                 ★★★★★
                             </div>
@@ -249,7 +249,7 @@ export const AuthComponent = ({ setCurrentPage }) => {
                                 process is so smooth!"
                             </p>
                             <div className="flex items-center">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-bold shadow-md">
+                                <div className="w-8 h-8 rounded-full bg-linear-to-tr from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-bold shadow-md">
                                     AS
                                 </div>
                                 <div className="ml-3">
@@ -290,7 +290,7 @@ export const AuthComponent = ({ setCurrentPage }) => {
                             <div className="bg-gray-100 p-1.5 rounded-full inline-flex relative shadow-inner">
                                 {/* Slider Background */}
                                 <div
-                                    className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-white rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isLogin ? "left-1.5" : "left-[calc(50%+3px)]"}`}
+                                    className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-white rounded-full shadow-sm transition-all duration-300 ease-in-out ${isLogin ? "left-1.5" : "left-[calc(50%+3px)]"}`}
                                 ></div>
 
                                 <button
@@ -477,27 +477,10 @@ export const AuthComponent = ({ setCurrentPage }) => {
                             </div>
                         )}
 
-                        {isLogin && !isForgotPassword && (
-                            <div className="flex justify-end">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsForgotPassword(true);
-                                        setError("");
-                                        setSuccessMessage("");
-                                        setFieldErrors({});
-                                    }}
-                                    className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
-                                >
-                                    Forgot Password?
-                                </button>
-                            </div>
-                        )}
-
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 flex items-center justify-center space-x-2 mt-6"
+                            className="w-full bg-linear-to-r from-indigo-600 to-blue-600 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 flex items-center justify-center space-x-2 mt-6"
                         >
                             {loading ? (
                                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -516,6 +499,23 @@ export const AuthComponent = ({ setCurrentPage }) => {
                                 </>
                             )}
                         </button>
+
+                          {isLogin && !isForgotPassword && (
+                            <div className="flex justify-center">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsForgotPassword(true);
+                                        setError("");
+                                        setSuccessMessage("");
+                                        setFieldErrors({});
+                                    }}
+                                    className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
+                                >
+                                    Forgot Password?
+                                </button>
+                            </div> 
+                        )}
 
                         {isForgotPassword && (
                             <div className="flex justify-center mt-4">

@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Movie = require("../models/Movie");
 const Theater = require("../models/Theater");
 const Booking = require("../models/Booking");
+const Show = require("../models/Show");
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET =
@@ -311,23 +312,54 @@ exports.updateUserRole = async (req, res) => {
 
 exports.getAdminStats = async (req, res) => {
     try {
-        const [movieCount, theaterCount, userCount, bookingCount] =
-            await Promise.all([
-                Movie.countDocuments(),
-                Theater.countDocuments(),
-                User.countDocuments(),
-                Booking.countDocuments(),
-            ]);
+        const user = await User.findById(req.user.userId);
 
-        res.status(200).json({
-            success: true,
-            stats: {
-                movies: movieCount,
-                theaters: theaterCount,
-                users: userCount,
-                bookings: bookingCount,
-            },
-        });
+        if (user.role === "vendor") {
+            const userId = req.user.userId;
+
+            // Vendor Stats
+            const theaters = await Theater.find({ vendorId: userId });
+            const theaterIds = theaters.map((t) => t._id);
+
+            const shows = await Show.find({ theater: { $in: theaterIds } });
+            const showIds = shows.map((s) => s._id);
+
+            const theaterCount = theaters.length;
+            const showCount = shows.length;
+
+            const bookings = await Booking.find({
+                show: { $in: showIds.length > 0 ? showIds : [] },
+            });
+            const bookingCount = bookings.length;
+
+            return res.status(200).json({
+                success: true,
+                stats: {
+                    theaters: theaterCount,
+                    shows: showCount,
+                    bookings: bookingCount,
+                },
+            });
+        } else {
+            // Admin Stats
+            const [movieCount, theaterCount, userCount, bookingCount] =
+                await Promise.all([
+                    Movie.countDocuments(),
+                    Theater.countDocuments(),
+                    User.countDocuments(),
+                    Booking.countDocuments(),
+                ]);
+
+            res.status(200).json({
+                success: true,
+                stats: {
+                    movies: movieCount,
+                    theaters: theaterCount,
+                    users: userCount,
+                    bookings: bookingCount,
+                },
+            });
+        }
     } catch (err) {
         console.error("Stats Error:", err);
         res.status(500).json({

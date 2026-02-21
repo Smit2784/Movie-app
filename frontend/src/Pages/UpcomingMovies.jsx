@@ -112,14 +112,14 @@ const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {
         <div className="relative" ref={dropdownRef}>
             {/* Dropdown Trigger Button */}
             <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-green-500 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="relative w-72 bg-white/95 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl px-6 py-4 flex items-center justify-between hover:bg-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/30"
                 >
                     <div className="flex items-center space-x-3">
                         <div
-                            className={`w-8 h-8 bg-gradient-to-r ${selectedCategoryData.color} rounded-full flex items-center justify-center text-white shadow-lg`}
+                            className={`w-8 h-8 bg-linear-to-r ${selectedCategoryData.color} rounded-full flex items-center justify-center text-white shadow-lg`}
                         >
                             <span className="text-sm">
                                 {selectedCategoryData.icon}
@@ -182,7 +182,7 @@ const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {
                                         }}
                                     >
                                         <div
-                                            className={`w-10 h-10 bg-gradient-to-r ${category.color} rounded-full flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-200`}
+                                            className={`w-10 h-10 bg-linear-to-r ${category.color} rounded-full flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-200`}
                                         >
                                             <span className="text-lg">
                                                 {category.icon}
@@ -263,10 +263,10 @@ export const SearchAndCategoryFilter = ({
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-center">
                 {/* Search Bar */}
                 <div className="relative group flex-1 max-w-2xl">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                    <div className="absolute inset-0 bg-linear-to-r from-purple-500 to-blue-500 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
                     <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl p-2 border border-white/20 shadow-2xl">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0 ml-4">
+                            <div className="shrink-0 ml-4">
                                 <Search className="h-6 w-6 text-gray-400" />
                             </div>
                             <input
@@ -276,7 +276,7 @@ export const SearchAndCategoryFilter = ({
                                 value={searchTerm}
                                 onChange={(e) => onSearchChange(e.target.value)}
                             />
-                            <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-4 rounded-2xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 mr-2">
+                            <button className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-6 py-4 rounded-2xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 mr-2">
                                 Search
                             </button>
                         </div>
@@ -284,7 +284,7 @@ export const SearchAndCategoryFilter = ({
                 </div>
 
                 {/* Enhanced Category Dropdown */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                     <EnhancedCategoryDropdown
                         selectedCategory={selectedCategory}
                         onCategoryChange={onCategoryChange}
@@ -368,7 +368,7 @@ const UpcomingMovieCard = ({ movie, onSelect, index }) => {
         >
             <div className="relative overflow-hidden">
                 {!imageLoaded && (
-                    <div className="w-full h-80 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 animate-pulse flex items-center justify-center">
+                    <div className="w-full h-80 bg-linear-to-br from-gray-200 via-gray-100 to-gray-200 animate-pulse flex items-center justify-center">
                         <div className="text-center">
                             <Film className="h-16 w-16 text-gray-400 mx-auto mb-4 animate-bounce" />
                             <div className="w-20 h-2 bg-gray-300 rounded-full animate-pulse"></div>
@@ -390,11 +390,11 @@ const UpcomingMovieCard = ({ movie, onSelect, index }) => {
                     }}
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
                 {/* Coming Soon Button instead of Book Now */}
                 <div className="absolute bottom-6 left-6 right-6 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 opacity-0 group-hover:opacity-100">
-                    <button className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                    <button className="w-full bg-linear-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
                         Notify Me 🔔
                     </button>
                 </div>
@@ -414,7 +414,7 @@ const UpcomingMovieCard = ({ movie, onSelect, index }) => {
         </div> */}
 
                 {/* Countdown Badge */}
-                <div className="absolute bottom-4 right-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                <div className="absolute bottom-4 right-4 bg-linear-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold">
                     {formatReleaseDate(movie.releaseDate)}
                 </div>
             </div>
@@ -440,7 +440,7 @@ const UpcomingMovieCard = ({ movie, onSelect, index }) => {
         </div> */}
 
                 <div className="flex items-center justify-center mb-6">
-                    <span className="inline-block bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-sm font-bold px-4 py-2 rounded-full border border-purple-200">
+                    <span className="inline-block bg-linear-to-r from-purple-100 to-pink-100 text-purple-700 text-sm font-bold px-4 py-2 rounded-full border border-purple-200">
                         {movie.genre}
                     </span>
                 </div>
@@ -590,7 +590,7 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
                 <div className="text-center">
                     <div className="relative">
                         <div className="w-20 h-20 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-6"></div>
@@ -608,9 +608,9 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
             {/* Hero Section */}
-            <div className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white overflow-hidden">
+            <div className="relative bg-linear-to-br from-indigo-900 via-purple-900 to-pink-900 text-white overflow-hidden">
                 {/* Animated Background */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -645,7 +645,7 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                             <span className="block text-white drop-shadow-2xl">
                                 Upcoming
                             </span>
-                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 drop-shadow-2xl">
+                            <span className="block text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400 drop-shadow-2xl">
                                 Blockbusters
                             </span>
                         </h1>
@@ -713,14 +713,14 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
                     <div className="mb-8 lg:mb-0">
                         <div className="flex items-center space-x-3 mb-4">
-                            <div className="w-12 h-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"></div>
+                            <div className="w-12 h-1 bg-linear-to-r from-purple-600 to-pink-600 rounded-full"></div>
                             <span className="text-purple-600 font-semibold uppercase tracking-wide text-sm">
                                 Coming Soon
                             </span>
                         </div>
                         <h2 className="text-5xl lg:text-6xl font-black text-gray-800 mb-4 leading-tight">
                             Future{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-pink-600">
                                 Cinema
                             </span>
                         </h2>
@@ -764,10 +764,10 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
 
                     {/* Seed Button - Show if no movies */}
                     {upcomingMovies.length === 0 && !error && (
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                             <button
                                 onClick={seedUpcomingMovies}
-                                className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 group"
+                                className="relative overflow-hidden bg-linear-to-r from-purple-600 via-pink-600 to-purple-700 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 group"
                             >
                                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                                 <div className="relative flex items-center space-x-3">
@@ -783,7 +783,7 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                 {error && (
                     <div className="text-center py-24">
                         <div className="max-w-lg mx-auto">
-                            <div className="w-32 h-32 mx-auto bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mb-6">
+                            <div className="w-32 h-32 mx-auto bg-linear-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mb-6">
                                 <svg
                                     className="h-16 w-16 text-red-400"
                                     fill="none"
@@ -806,7 +806,7 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                             </p>
                             <button
                                 onClick={() => window.location.reload()}
-                                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                                className="bg-linear-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                             >
                                 Try Again
                             </button>
@@ -819,7 +819,7 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                     <div className="text-center py-24">
                         <div className="max-w-lg mx-auto">
                             <div className="relative mb-8">
-                                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-6">
+                                <div className="w-32 h-32 mx-auto bg-linear-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-6">
                                     <Calendar className="h-16 w-16 text-purple-400" />
                                 </div>
                                 <div className="absolute inset-0 w-32 h-32 mx-auto border-4 border-purple-200 rounded-full animate-ping"></div>
@@ -834,7 +834,7 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                             </p>
                             <button
                                 onClick={seedUpcomingMovies}
-                                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                                className="bg-linear-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                             >
                                 Add Upcoming Movies 🎬
                             </button>

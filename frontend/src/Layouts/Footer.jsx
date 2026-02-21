@@ -14,8 +14,8 @@ export const Footer = () => {
     return (
         <footer className="relative bg-[#020617] text-white pt-24 pb-12 overflow-hidden mt-auto">
             {/* Background Decorative Elements */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] -z-0"></div>
-            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] -z-0"></div>
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] z-0"></div>
+            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] z-0"></div>
 
             <div className="container mx-auto px-6 relative z-10">
                 {/* Main Footer Content */}
@@ -33,7 +33,7 @@ export const Footer = () => {
                                     alt="logo"
                                 />
                             </div>
-                            {/* <h3 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
+                            {/* <h3 className="text-3xl font-black tracking-tighter bg-linear-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
                                 MovieTix
                             </h3> */}
                         </Link>
@@ -120,7 +120,7 @@ export const Footer = () => {
                 </div>
 
                 {/* Stats Belt */}
-                <div className="grid grid-cols-2 justify-center place-items-center md:grid-cols-4 gap-8 py-12 border-y border-white/5 mb-12 bg-white/[0.02] rounded-[2rem] px-8 backdrop-blur-sm">
+                <div className="grid grid-cols-2 justify-center place-items-center md:grid-cols-4 gap-8 py-12 border-y border-white/5 mb-12 bg-white/2 rounded-4xl px-8 backdrop-blur-sm">
                     <StatItem
                         value="5M+"
                         label="Happy Customers"

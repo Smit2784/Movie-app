@@ -53,6 +53,28 @@ exports.getShowById = async (req, res) => {
     }
 };
 
+// ADMIN: Get shows for vendor
+exports.getAdminShows = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const theaters = await Theater.find({ vendorId: userId });
+        const theaterIds = theaters.map((t) => t._id);
+
+        const shows = await Show.find({ theater: { $in: theaterIds } })
+            .populate("movie")
+            .populate("theater")
+            .sort({ date: -1, time: 1 }); // Sorted by date then time
+
+        res.json(shows);
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching vendor shows",
+            error: error.message,
+        });
+    }
+};
+
 // ADMIN: Create Show
 exports.createShow = async (req, res) => {
     try {
@@ -70,11 +92,9 @@ exports.createShow = async (req, res) => {
             return res.status(404).json({ message: "Theater not found" });
 
         if (theater.vendorId.toString() !== req.user.userId) {
-            return res
-                .status(403)
-                .json({
-                    message: "Not authorized to add shows to this theater",
-                });
+            return res.status(403).json({
+                message: "Not authorized to add shows to this theater",
+            });
         }
 
         const availableSeats = theater.capacity;

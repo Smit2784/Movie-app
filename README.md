@@ -1,6 +1,6 @@
 # 🎬 MovieTix - Movie Ticket Booking Platform
 
-A full-stack movie ticket booking web application built with React and Node.js that allows users to browse movies, book tickets, manage bookings, and purchase gift cards.
+A full-stack movie ticket booking web application built with React and Node.js that allows users to browse movies, book tickets, manage bookings, purchase gift cards, and includes roles for Users, Vendors, and Administrators.
 
 ## 🌟 Features
 
@@ -47,22 +47,30 @@ A full-stack movie ticket booking web application built with React and Node.js t
     - Booking guide for first-time users
     - PDF ticket generation
 
+### Vendor Features
+
+- **📊 Vendor Dashboard**: Dedicated overview of relevant statistics like managed theaters, shows, and overall bookings.
+- **🎭 Theater Management**: Ability to exclusively manage own theater locations and screens.
+- **📅 Show Management**: Schedule shows and manage cinema timings specific to vendor-owned theaters.
+- **👥 Seamless Access**: Dedicated vendor-specific dashboard separate from general users and admins.
+
 ### Admin Features
 
-- **� Admin Dashboard**: overview of business metrics
-- **🎬 Movie Management**: Add, update, and remove movies
-- **🎭 Theater Management**: Manage theater locations and screens
-- **📅 Show Management**: Schedule shows and manage cinema timings
+- **📈 Admin Dashboard**: High-level overview of overall business metrics.
+- **🎬 Movie Management**: Add, update, and remove movies available on the platform.
+- **🎭 Platform Management**: Global management of all theaters and shows.
+- **� User Role Management**: Manage users and update roles (e.g., promote a User to a Vendor).
 
-## �🛠️ Tech Stack
+## 🛠️ Tech Stack
 
 ### Frontend
 
-- **React** 19.1.1 - UI library
-- **TailwindCSS** 3.4.4 - Styling
+- **React** 19.2.4 - UI library
+- **Vite** 7.3.1 - Build tool and development server
+- **TailwindCSS** 4.2.0 - Styling framework
+- **React Router DOM** 7.13.0 - Navigation
 - **Lucide React** - Icons
 - **jsPDF** - PDF ticket generation
-- **React Router** - Navigation
 - **Context API** - State Management
 
 ### Backend
@@ -78,7 +86,7 @@ A full-stack movie ticket booking web application built with React and Node.js t
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js** (v14 or higher)
+- **Node.js** (v18 or higher recommended)
 - **MongoDB** (v4.4 or higher)
 - **npm** or **yarn** package manager
 
@@ -124,15 +132,15 @@ cd ../frontend
 # Install dependencies
 npm install
 
-# Start the React development server
-npm start
+# Start the Vite development server
+npm run dev
 ```
 
-The frontend application will run on `http://localhost:3000`
+The frontend application will routinely run on `http://localhost:5173` (default Vite port).
 
 ## 📁 Project Structure
 
-```
+```text
 Movie-app/
 ├── backend/
 │   ├── config/
@@ -171,39 +179,47 @@ Movie-app/
     ├── public/
     ├── src/
     │   ├── Contexts/
-    │   │   └── AuthProvider.js
+    │   │   └── AuthProvider.jsx
     │   ├── Layouts/
-    │   │   ├── Footer.js
-    │   │   └── Header.js
+    │   │   ├── Footer.jsx
+    │   │   └── Header.jsx
     │   ├── Pages/
     │   │   ├── Admin/
-    │   │   │   ├── AddMovie.js
-    │   │   │   ├── AdminDashboard.js
-    │   │   │   ├── ManageMovies.js
-    │   │   │   ├── ManageShows.js
-    │   │   │   ├── ManageTheaters.js
-    │   │   │   └── ManageUsers.js
-    │   │   ├── AboutUs.js
-    │   │   ├── Auth.js
-    │   │   ├── BookingGuide.js
-    │   │   ├── BookingPage.js
-    │   │   ├── ContactUs.js
-    │   │   ├── FAQ.js
-    │   │   ├── GiftCards.js
-    │   │   ├── Home.js
-    │   │   ├── MovieDetails.js
-    │   │   ├── MyBookings.js
-    │   │   ├── Payment.js
-    │   │   ├── PaymentSuccess.js
-    │   │   ├── SeatSelection.js
-    │   │   ├── UpcomingMovies.js
-    │   │   └── UpdateProfile.js
+    │   │   │   ├── AddMovie.jsx
+    │   │   │   ├── AdminDashboard.jsx
+    │   │   │   ├── ManageMovies.jsx
+    │   │   │   ├── ManageShows.jsx
+    │   │   │   ├── ManageTheaters.jsx
+    │   │   │   └── ManageUsers.jsx
+    │   │   ├── Vendor/
+    │   │   │   ├── ManageShows.jsx
+    │   │   │   ├── ManageTheaters.jsx
+    │   │   │   └── VendorDashboard.jsx
+    │   │   ├── AboutUs.jsx
+    │   │   ├── Auth.jsx
+    │   │   ├── BookingGuide.jsx
+    │   │   ├── BookingPage.jsx
+    │   │   ├── ContactUs.jsx
+    │   │   ├── FAQ.jsx
+    │   │   ├── GiftCards.jsx
+    │   │   ├── Home.jsx
+    │   │   ├── MovieDetails.jsx
+    │   │   ├── MyBookings.jsx
+    │   │   ├── NotFound.jsx
+    │   │   ├── Payment.jsx
+    │   │   ├── PaymentSuccess.jsx
+    │   │   ├── PrivacyPolicy.jsx
+    │   │   ├── SeatSelection.jsx
+    │   │   ├── TermsOfService.jsx
+    │   │   ├── UpcomingMovies.jsx
+    │   │   └── UpdateProfile.jsx
     │   ├── App.css
-    │   ├── App.js
+    │   ├── App.jsx
     │   ├── index.css
-    │   └── index.js
+    │   └── main.jsx
     ├── package.json
-    └── tailwind.config.js
+    ├── tailwind.config.js
+    └── vite.config.js
 ```
 
 ## 🔌 API Endpoints
@@ -223,7 +239,7 @@ Movie-app/
 
 ### Shows
 
-- `GET /api/shows` - Get shows (filter by movieId, date)
+- `GET /api/shows` - Get shows (filter by movieId, date, or vendor role)
 - `GET /api/shows/:id` - Get show by ID
 
 ### Bookings
@@ -247,7 +263,8 @@ Movie-app/
 
 ### Theaters
 
-- `POST /api/theaters` - Create theater (authenticated)
+- `POST /api/theaters` - Create theater (authenticated, vendor/admin specific)
+- `GET /api/theaters` - Get all theaters (filtered by vendor ownership if applicable)
 
 ## 💾 Database Models
 
@@ -255,6 +272,7 @@ Movie-app/
 
 - Name, Email, Password (hashed)
 - Phone number
+- Role (`user`, `vendor`, `admin`)
 - Wallet balance
 - Timestamps
 
@@ -270,11 +288,13 @@ Movie-app/
 - Name, Location
 - Capacity, Screens
 - Facilities
+- Vendor Owner (User reference)
 
 ### Show
 
 - Movie reference
 - Theater reference
+- Vendor Owner Reference
 - Date, Time
 - Available seats, Booked seats
 - Price
@@ -312,9 +332,15 @@ NODE_ENV=development
 ### Authentication Flow
 
 - JWT-based authentication
-- Tokens stored in localStorage
-- Protected routes with authentication middleware
+- Tokens stored securely context/localStorage
+- Protected routes with authentication middleware mapping roles (`admin`, `vendor`)
 - Password encryption using bcryptjs
+
+### Role-Based Access Control
+
+- Users are grouped by roles allowing diverse permissions capabilities.
+- Admins can observe all data across theaters, users, and shows.
+- Vendors perform operations purely isolated to their own theaters and shows using a protected vendor routing architecture.
 
 ### Booking System
 
@@ -332,15 +358,16 @@ NODE_ENV=development
 
 ## 🎨 UI Components
 
-- **Header** - Navigation with user authentication status
-- **Footer** - Site links and information
-- **Home** - Movie listings with filters
+- **Header** - Main navigation with dedicated dropdown functionality and secure user context displays
+- **Footer** - Site links, terms, privacy pages and information
+- **Home** - Movie listings with active filters
 - **MovieDetails** - Detailed movie information and show selection
-- **SeatSelection** - Interactive seat map
-- **PaymentPage** - Multiple payment options
-- **MyBookings** - Booking history with cancel option
-- **GiftCards** - Purchase and redeem gift cards
-- **Admin Dashboard** - Management portal for administrators
+- **SeatSelection** - Interactive seat map rendering state accurately
+- **PaymentPage** - Multiple payment integrations efficiently rendered
+- **MyBookings** - Booking history showing complete states and cancellation mechanisms
+- **GiftCards** - Interface handling purchasing and redemption
+- **Vendor Dashboard** - Isolated management views offering insights tailored strictly to individual vendor metrics
+- **Admin Dashboard** - Full administrative management portal
 
 ## 🚧 Future Enhancements
 
@@ -376,5 +403,5 @@ This project is licensed under the ISC License.
 
 - MongoDB for database
 - React team for the amazing library
-- TailwindCSS for styling utilities
+- TailwindCSS for modern styling utilities
 - All open-source contributors

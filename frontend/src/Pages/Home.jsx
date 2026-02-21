@@ -16,7 +16,7 @@ const EnhancedMovieCard = ({ movie, onSelect, index }) => {
         >
             <div className="relative overflow-hidden">
                 {!imageLoaded && (
-                    <div className="w-full h-80 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 animate-pulse flex items-center justify-center">
+                    <div className="w-full h-80 bg-linear-to-br from-gray-200 via-gray-100 to-gray-200 animate-pulse flex items-center justify-center">
                         <div className="text-center">
                             <Film className="h-16 w-16 text-gray-400 mx-auto mb-4 animate-bounce" />
                             <div className="w-20 h-2 bg-gray-300 rounded-full animate-pulse"></div>
@@ -33,10 +33,10 @@ const EnhancedMovieCard = ({ movie, onSelect, index }) => {
                     onLoad={() => setImageLoaded(true)}
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
                 <div className="absolute bottom-6 left-6 right-6 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 opacity-0 group-hover:opacity-100">
-                    <button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                    <button className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
                         Book Now →
                     </button>
                 </div>
@@ -69,7 +69,7 @@ const EnhancedMovieCard = ({ movie, onSelect, index }) => {
                 </div>
 
                 <div className="flex items-center justify-center mb-6">
-                    <span className="inline-block bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 text-sm font-bold px-4 py-2 rounded-full border border-purple-200">
+                    <span className="inline-block bg-linear-to-r from-purple-100 to-blue-100 text-purple-700 text-sm font-bold px-4 py-2 rounded-full border border-purple-200">
                         {movie.genre}
                     </span>
                 </div>
@@ -157,7 +157,7 @@ const Home = ({ onMovieSelect }) => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
                 <div className="text-center">
                     <div className="relative">
                         <div className="w-20 h-20 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-6"></div>
@@ -174,9 +174,9 @@ const Home = ({ onMovieSelect }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
             {/* Enhanced Hero Section */}
-            <div className="relative bg-gradient-to-br from-purple-900 via-violet-900 to-indigo-900 text-white overflow-hidden">
+            <div className="relative bg-linear-to-br from-purple-900 via-violet-900 to-indigo-900 text-white overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -190,7 +190,7 @@ const Home = ({ onMovieSelect }) => {
                             <span className="block text-white drop-shadow-2xl">
                                 Book Your
                             </span>
-                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 drop-shadow-2xl">
+                            <span className="block text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400 drop-shadow-2xl">
                                 Movie Tickets
                             </span>
                         </h1>
@@ -260,14 +260,14 @@ const Home = ({ onMovieSelect }) => {
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
                     <div className="mb-8 lg:mb-0">
                         <div className="flex items-center space-x-3 mb-4">
-                            <div className="w-12 h-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"></div>
+                            <div className="w-12 h-1 bg-linear-to-r from-purple-600 to-blue-600 rounded-full"></div>
                             <span className="text-purple-600 font-semibold uppercase tracking-wide text-sm">
                                 Now Playing
                             </span>
                         </div>
                         <h2 className="text-5xl lg:text-6xl font-black text-gray-800 mb-4 leading-tight">
                             Latest{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-600">
                                 Blockbusters
                             </span>
                         </h2>
@@ -311,10 +311,10 @@ const Home = ({ onMovieSelect }) => {
                     </div>
 
                     {movies.length === 0 && (
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                             <button
                                 onClick={seedDatabase}
-                                className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-purple-700 to-blue-600 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 group"
+                                className="relative overflow-hidden bg-linear-to-r from-purple-600 via-purple-700 to-blue-600 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 group"
                             >
                                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                                 <div className="relative flex items-center space-x-3">
@@ -330,7 +330,7 @@ const Home = ({ onMovieSelect }) => {
                     <div className="text-center py-24">
                         <div className="max-w-lg mx-auto">
                             <div className="relative mb-8">
-                                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
+                                <div className="w-32 h-32 mx-auto bg-linear-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
                                     <Film className="h-16 w-16 text-purple-400" />
                                 </div>
                                 <div className="absolute inset-0 w-32 h-32 mx-auto border-4 border-purple-200 rounded-full animate-ping"></div>
@@ -352,7 +352,7 @@ const Home = ({ onMovieSelect }) => {
                                 <div className="space-x-4">
                                     <button
                                         onClick={() => setSearchTerm("")}
-                                        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                                        className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                                     >
                                         Clear Search
                                     </button>

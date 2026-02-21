@@ -98,7 +98,7 @@ export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
     });
 
     return (
-        <div className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-3xl shadow-2xl max-w-6xl mx-auto border border-gray-100">
+        <div className="bg-linear-to-br from-white to-gray-50 p-8 rounded-3xl shadow-2xl max-w-6xl mx-auto border border-gray-100">
             {/* Header */}
 
             <div className="text-center mb-8">
@@ -122,12 +122,12 @@ export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
 
             <div className="relative mb-12">
                 <div className="w-full max-w-4xl mx-auto">
-                    <div className="h-8 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 rounded-t-3xl shadow-lg flex items-center justify-center">
+                    <div className="h-8 bg-linear-to-r from-purple-600 via-blue-600 to-indigo-600 rounded-t-3xl shadow-lg flex items-center justify-center">
                         <span className="text-white font-bold text-lg tracking-widest">
                             SCREEN
                         </span>
                     </div>
-                    <div className="h-2 bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 rounded-b-lg opacity-50"></div>
+                    <div className="h-2 bg-linear-to-r from-purple-400 via-blue-400 to-indigo-400 rounded-b-lg opacity-50"></div>
                 </div>
                 <div className="text-center mt-2">
                     <span className="text-xs text-gray-500 font-medium">
@@ -220,7 +220,7 @@ export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
 
             {/* Selection Summary */}
 
-            <div className="mt-10 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200">
+            <div className="mt-10 bg-linear-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     <div className="flex items-center space-x-6">
                         <div className="text-center">

@@ -116,7 +116,7 @@ export const AdminBookings = ({ onBack }) => {
                                             {/* User Info */}
                                             <td className="p-6">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-md">
+                                                    <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-md">
                                                         {booking.user ? booking.user.name.charAt(0).toUpperCase() : "?"}
                                                     </div>
                                                     <div>

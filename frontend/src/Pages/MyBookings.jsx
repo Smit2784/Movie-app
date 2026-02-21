@@ -102,7 +102,7 @@ export const MyBookings = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 flex items-center justify-center">
+            <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50 flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
                     <div className="text-xl font-semibold text-gray-700">
@@ -114,11 +114,11 @@ export const MyBookings = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
-            <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-12">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
+            <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-12">
                 <div className="container mx-auto px-6">
                     <h1 className="text-4xl lg:text-5xl font-black mb-4 leading-tight text-center">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400">
                             My Bookings
                         </span>
                     </h1>
@@ -169,7 +169,7 @@ export const MyBookings = () => {
                             You haven't made any movie bookings yet. Start
                             exploring our latest movies!
                         </p>
-                        <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                        <button className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                             Browse Movies
                         </button>
                     </div>
@@ -265,7 +265,7 @@ export const MyBookings = () => {
                                                 <span className="text-sm text-gray-600">
                                                     Total Amount:
                                                 </span>
-                                                <span className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+                                                <span className="text-xl font-black text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-600">
                                                     ₹{booking.totalAmount}
                                                 </span>
                                             </div>
@@ -297,7 +297,7 @@ export const MyBookings = () => {
                                                             )
                                                         }
                                                         disabled={isCancelling}
-                                                        className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                                        className="flex-1 bg-linear-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                                                     >
                                                         {isCancelling ? (
                                                             <div className="flex items-center justify-center space-x-2">
@@ -321,7 +321,7 @@ export const MyBookings = () => {
                                                     !hasShowStarted
                                                         ? "flex-1"
                                                         : "w-full"
-                                                } bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105`}
+                                                } bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105`}
                                             >
                                                 {isCancelled
                                                     ? "View Cancelled Ticket"

@@ -24,11 +24,11 @@ export const AboutUs = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
-            <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-20">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
+            <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-20">
                 <div className="container mx-auto px-6 text-center">
                     <h1 className="text-5xl lg:text-6xl font-black mb-6 leading-tight">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400">
                             About MovieTix
                         </span>
                     </h1>
@@ -44,14 +44,14 @@ export const AboutUs = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
                         <div className="mb-6">
-                            <div className="w-12 h-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mb-4"></div>
+                            <div className="w-12 h-1 bg-linear-to-r from-purple-600 to-blue-600 rounded-full mb-4"></div>
                             <span className="text-purple-600 font-semibold uppercase tracking-wide text-sm">
                                 Our Story
                             </span>
                         </div>
                         <h2 className="text-4xl lg:text-5xl font-black text-gray-800 mb-6 leading-tight">
                             Where Cinema Meets{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-600">
                                 Innovation
                             </span>
                         </h2>
@@ -71,7 +71,7 @@ export const AboutUs = () => {
                         </p>
                     </div>
                     <div className="relative">
-                        <div className="bg-gradient-to-br from-purple-400 to-blue-500 rounded-3xl p-8 text-white">
+                        <div className="bg-linear-to-br from-purple-400 to-blue-500 rounded-3xl p-8 text-white">
                             <div className="grid grid-cols-2 gap-8 text-center">
                                 <div>
                                     <div className="text-4xl font-black mb-2">
@@ -134,7 +134,7 @@ export const AboutUs = () => {
                                         alt={member.name}
                                         className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </div>
                                 <div className="p-8">
                                     <h3 className="text-xl font-bold text-gray-800 mb-2">
