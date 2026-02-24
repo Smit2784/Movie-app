@@ -24,6 +24,7 @@ import { UpdateProfile } from "../Pages/UpdateProfile";
 import NotFound from "../Pages/NotFound";
 import PrivacyPolicy from "../Pages/PrivacyPolicy";
 import TermsOfService from "../Pages/TermsOfService";
+import LatestOffers from "../Pages/LatestOffers";
 
 export {
     Home,
@@ -52,4 +53,5 @@ export {
     NotFound,
     PrivacyPolicy,
     TermsOfService,
+    LatestOffers,
 };

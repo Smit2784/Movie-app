@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ArrowUp } from "lucide-react";
 import {
     createBrowserRouter,
     RouterProvider,
@@ -35,6 +36,7 @@ import {
     NotFound,
     PrivacyPolicy,
     TermsOfService,
+    LatestOffers,
 } from "./Index/Index.jsx";
 
 import AuthProvider, { useAuth } from "./Contexts/AuthProvider.jsx";
@@ -63,10 +65,59 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     return children;
 };
 
+// Scroll components
+const ScrollToTop = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+};
+
+const ScrollToTopButton = () => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const toggleVisibility = () => {
+            if (window.pageYOffset > 300) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
+        };
+
+        window.addEventListener("scroll", toggleVisibility);
+        return () => window.removeEventListener("scroll", toggleVisibility);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    if (!isVisible) return null;
+
+    return (
+        <button
+            onClick={scrollToTop}
+            className="fixed bottom-24 right-4 lg:bottom-8 lg:right-8 z-50 p-3 rounded-full bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:bg-purple-500 hover:scale-110 transition-all duration-300"
+            aria-label="Scroll to top"
+        >
+            <ArrowUp size={20} />
+        </button>
+    );
+};
+
 // Layout Component
 const RootLayout = () => {
     return (
         <div className="App min-h-screen flex flex-col">
+            <ScrollToTop />
+            <ScrollToTopButton />
             <LayoutContent />
         </div>
     );
@@ -303,6 +354,10 @@ const router = createBrowserRouter([
             {
                 path: "upcoming-movies",
                 element: <UpcomingMoviesWithNavigation />,
+            },
+            {
+                path: "latest-offers",
+                element: <LatestOffers />,
             },
 
             // Protected User Routes

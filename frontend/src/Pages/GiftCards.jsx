@@ -300,7 +300,7 @@ export const GiftCards = () => {
                                     <p className="text-sm opacity-90 mb-4">
                                         From: {senderName || "Your Name"}
                                     </p>
-                                    <p className="text-xs opacity-75 bg-white bg-opacity-20 p-2 rounded">
+                                    <p className="text-xs opacity-75 text-white bg-gray-400 p-2 rounded">
                                         {message ||
                                             "Enjoy movies with MovieTix!"}
                                     </p>

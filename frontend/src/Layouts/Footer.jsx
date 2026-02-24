@@ -70,7 +70,7 @@ export const Footer = () => {
                                 label="Upcoming Movies"
                             />
                             <FooterLink to="/giftcards" label="Gift Cards" />
-                            <FooterLink to="/" label="Latest Offers" />
+                            <FooterLink to="/latest-offers" label="Latest Offers" />
                         </ul>
                     </div>
 

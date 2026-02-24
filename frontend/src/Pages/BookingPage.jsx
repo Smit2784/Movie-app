@@ -88,10 +88,25 @@ export const BookingPage = ({ show: propShow, onBack, onBookingComplete }) => {
             <div className="container mx-auto px-4">
                 <button
                     onClick={onBack}
-                    className="mb-6 text-purple-600 hover:text-purple-800 flex items-center space-x-2"
+                    className="group flex items-center space-x-3 text-purple-600 hover:text-purple-700 transition-all duration-300 mb-6"
                 >
-                    <span className="text-lg font-semibold transition-transform duration-300 hover:scale-105">
-                        ⬅️ Back to Movie Details
+                    <div className="bg-purple-100 rounded-full p-3 group-hover:bg-purple-200 transition-all duration-300">
+                        <svg
+                            className="h-6 w-6 transform group-hover:-translate-x-1 transition-transform duration-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 19l-7-7 7-7"
+                            />
+                        </svg>
+                    </div>
+                    <span className="text-lg font-semibold">
+                        Back to Movie Details
                     </span>
                 </button>
 
