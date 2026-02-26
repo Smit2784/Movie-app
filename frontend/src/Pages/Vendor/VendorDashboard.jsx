@@ -116,7 +116,7 @@ export const VendorDashboard = ({ setCurrentPage }) => {
                         ))}
                     </nav>
 
-                    {/* Exit */}
+                    {/* Exit
                     <div className="pt-6 border-t border-white/10 mt-auto">
                         <button
                             onClick={() => setCurrentPage("home")}
@@ -130,7 +130,7 @@ export const VendorDashboard = ({ setCurrentPage }) => {
                                 Exit Control Center
                             </span>
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </aside>
 

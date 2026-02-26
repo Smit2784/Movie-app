@@ -15,7 +15,6 @@ export const useAuth = () => {
 export const API_BASE_URL = "http://localhost:5000/api";
 // export const API_BASE_URL = "https://q89xmctr-5000.inc1.devtunnels.ms/api";
 
-
 // API Functions
 export const api = {
     // Auth
@@ -289,6 +288,16 @@ export const api = {
     },
 };
 
+const decodeToken = (token) => {
+    try {
+        const payload = token.split(".")[1];
+        const decoded = atob(payload);
+        return JSON.parse(decoded);
+    } catch (e) {
+        return null;
+    }
+};
+
 // Auth Provider Component
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -313,8 +322,44 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser && token) {
-            setUser(JSON.parse(storedUser));
-            refreshWalletBalance();
+            const decodedToken = decodeToken(token);
+            if (decodedToken && decodedToken.exp) {
+                const currentTime = Date.now() / 1000;
+                if (decodedToken.exp < currentTime) {
+                    // Token expired
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    setToken(null);
+                    setUser(null);
+                    setWalletBalance(0);
+                    setLoading(false);
+                    return;
+                } else {
+                    // Token valid, set up expiration timer
+                    const timeUntilExpiration =
+                        (decodedToken.exp - currentTime) * 1000;
+                    const timeoutId = setTimeout(() => {
+                        console.log(
+                            "Token expired, automatically logging out...",
+                        );
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        setToken(null);
+                        setUser(null);
+                        setWalletBalance(0);
+                        alert("Your session has expired. Please log in again.");
+                        window.location.href = "/auth"; // Force redirect to login
+                    }, timeUntilExpiration);
+
+                    setUser(JSON.parse(storedUser));
+                    refreshWalletBalance();
+                    setLoading(false);
+                    return () => clearTimeout(timeoutId);
+                }
+            } else {
+                setUser(JSON.parse(storedUser));
+                refreshWalletBalance();
+            }
         }
         setLoading(false);
     }, [token]);

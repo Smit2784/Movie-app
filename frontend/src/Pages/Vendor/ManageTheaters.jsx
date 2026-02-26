@@ -287,6 +287,8 @@ export const ManageTheaters = ({ onBack }) => {
                                     </label>
                                     <input
                                         type="number"
+                                        min={1}
+                                        max={400}
                                         placeholder="350"
                                         className={`w-full p-4 bg-slate-50 border-2 ${errors.capacity ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-emerald-500 outline-none transition-all font-bold text-slate-700`}
                                         value={newTheater.capacity}
@@ -310,6 +312,8 @@ export const ManageTheaters = ({ onBack }) => {
                                     </label>
                                     <input
                                         type="number"
+                                        min={1}
+                                        max={10}
                                         className={`w-full p-4 bg-slate-50 border-2 ${errors.screens ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-emerald-500 outline-none transition-all font-bold text-slate-700`}
                                         value={newTheater.screens}
                                         onChange={(e) =>

@@ -13,6 +13,7 @@ import {
     Home,
     AuthComponent,
     ManageMovies,
+    ManageUpcomingMovies,
     UserList,
     AdminDashboard,
     AdminBookings,
@@ -284,6 +285,10 @@ function ManageMoviesWithNavigation() {
     const navigate = useNavigate();
     return <ManageMovies onBack={() => navigate("/admin/dashboard")} />;
 }
+function ManageUpcomingMoviesWithNavigation() {
+    const navigate = useNavigate();
+    return <ManageUpcomingMovies onBack={() => navigate("/admin/dashboard")} />;
+}
 function ManageShowsWithNavigation() {
     const navigate = useNavigate();
     return <ManageShows onBack={() => navigate("/admin/dashboard")} />;
@@ -464,6 +469,14 @@ const router = createBrowserRouter([
                         element: (
                             <ProtectedRoute allowedRoles={["admin"]}>
                                 <ManageMoviesWithNavigation />
+                            </ProtectedRoute>
+                        ),
+                    },
+                    {
+                        path: "upcoming-movies",
+                        element: (
+                            <ProtectedRoute allowedRoles={["admin"]}>
+                                <ManageUpcomingMoviesWithNavigation />
                             </ProtectedRoute>
                         ),
                     },

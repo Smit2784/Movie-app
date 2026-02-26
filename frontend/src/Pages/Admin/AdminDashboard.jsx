@@ -58,6 +58,11 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                       icon: <Film size={20} />,
                   },
                   {
+                      id: "admin-upcoming-movies",
+                      label: "Upcoming Movies",
+                      icon: <Calendar size={20} />,
+                  },
+                  {
                       id: "admin-bookings",
                       label: "All Bookings",
                       icon: <CreditCard size={20} />,
@@ -263,6 +268,14 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                                     label="Add New Movie"
                                     icon={<Film size={20} />}
                                     theme="blue"
+                                />
+                                <ActionButton
+                                    onClick={() =>
+                                        setCurrentPage("admin-upcoming-movies")
+                                    }
+                                    label="Add Upcoming Movie"
+                                    icon={<Calendar size={20} />}
+                                    theme="violet"
                                 />
                             </div>
                         </div>

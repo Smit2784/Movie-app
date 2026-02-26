@@ -105,7 +105,9 @@ exports.getUpcomingMovieById = async (req, res) => {
     try {
         const movie = await UpcomingMovie.findById(req.params.id);
         if (!movie) {
-            return res.status(404).json({ message: "Upcoming movie not found" });
+            return res
+                .status(404)
+                .json({ message: "Upcoming movie not found" });
         }
         res.json(movie);
     } catch (error) {
@@ -120,40 +122,44 @@ exports.seedUpcomingMovies = async (req, res) => {
         const upcomingMoviesData = [
             {
                 title: "Captain America: Brave New World",
-                description: "Sam Wilson takes on the mantle of Captain America in a world full of new threats.",
+                description:
+                    "Sam Wilson takes on the mantle of Captain America in a world full of new threats.",
                 poster: "https://image.tmdb.org/t/p/original/twFcwq0d6fWq57z5g2bL3g.jpg",
                 releaseDate: new Date("2025-02-14"),
                 genre: "Action, Adventure, Sci-Fi",
                 director: "Julius Onah",
-                videoId: "1pHDWnXmK7Y"
+                videoId: "1pHDWnXmK7Y",
             },
             {
                 title: "Superman: Legacy",
-                description: "A new vision for the Man of Steel as he balances his Kryptonian heritage with his human upbringing.",
+                description:
+                    "A new vision for the Man of Steel as he balances his Kryptonian heritage with his human upbringing.",
                 poster: "https://image.tmdb.org/t/p/original/zVMyvNowgbsBAL6O6esWfRpAcArg.jpg",
                 releaseDate: new Date("2025-07-11"),
                 genre: "Action, Adventure, Sci-Fi",
                 director: "James Gunn",
-                videoId: "T5W3g4VPolI"
+                videoId: "T5W3g4VPolI",
             },
             {
                 title: "The Fantastic Four",
-                description: "Marvel's first family returns to the big screen in a new MCU adaptation.",
+                description:
+                    "Marvel's first family returns to the big screen in a new MCU adaptation.",
                 poster: "https://image.tmdb.org/t/p/original/8gLhu8UeZgQ2ZlX9r1B1H.jpg",
                 releaseDate: new Date("2025-05-02"),
                 genre: "Action, Adventure, Sci-Fi",
                 director: "Matt Shakman",
-                videoId: "eOrK6oW-q1I"
+                videoId: "eOrK6oW-q1I",
             },
             {
                 title: "Thunderbolts",
-                description: "A group of anti-heroes is assembled for a government mission.",
+                description:
+                    "A group of anti-heroes is assembled for a government mission.",
                 poster: "https://image.tmdb.org/t/p/original/t0M4v1w5K.jpg",
                 releaseDate: new Date("2025-05-05"),
                 genre: "Action, Adventure, Crime",
                 director: "Jake Schreier",
-                videoId: "P5uK-2WfE.jpg"
-            }
+                videoId: "P5uK-2WfE.jpg",
+            },
         ];
 
         const existingUpcoming = await UpcomingMovie.countDocuments();
@@ -167,9 +173,12 @@ exports.seedUpcomingMovies = async (req, res) => {
             });
         }
 
-        const insertedMovies = await UpcomingMovie.insertMany(upcomingMoviesData, {
-            ordered: false,
-        });
+        const insertedMovies = await UpcomingMovie.insertMany(
+            upcomingMoviesData,
+            {
+                ordered: false,
+            },
+        );
 
         res.json({
             success: true,
@@ -178,7 +187,6 @@ exports.seedUpcomingMovies = async (req, res) => {
             insertedIds: insertedMovies.map((m) => m._id),
             totalUpcomingMovies: await UpcomingMovie.countDocuments(),
         });
-
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -192,8 +200,17 @@ exports.seedUpcomingMovies = async (req, res) => {
 exports.createMovie = async (req, res) => {
     try {
         const {
-            title, description, genre, duration, rating, poster,
-            releaseDate, language, director, cast, price
+            title,
+            description,
+            genre,
+            duration,
+            rating,
+            poster,
+            releaseDate,
+            language,
+            director,
+            cast,
+            price,
         } = req.body;
 
         const movie = new Movie({
@@ -206,12 +223,17 @@ exports.createMovie = async (req, res) => {
             releaseDate: new Date(releaseDate),
             language,
             director,
-            cast: Array.isArray(cast) ? cast : cast.split(",").map((c) => c.trim()),
+            cast: Array.isArray(cast)
+                ? cast
+                : cast.split(",").map((c) => c.trim()),
             price: Number(price),
         });
 
         await movie.save();
-        res.status(201).json({ success: true, message: "Movie saved to Atlas!" });
+        res.status(201).json({
+            success: true,
+            message: "Movie saved to Atlas!",
+        });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
@@ -223,7 +245,7 @@ exports.updateMovie = async (req, res) => {
         const updatedMovie = await Movie.findByIdAndUpdate(
             req.params.id,
             req.body,
-            { new: true }
+            { new: true },
         );
         if (!updatedMovie)
             return res.status(404).json({ message: "Movie not found" });
@@ -242,7 +264,79 @@ exports.deleteMovie = async (req, res) => {
     try {
         const result = await Movie.findByIdAndDelete(req.params.id);
         if (!result)
-            return res.status(404).json({ success: false, message: "Movie not found" });
+            return res
+                .status(404)
+                .json({ success: false, message: "Movie not found" });
+
+        res.json({ success: true, message: "Deleted from Atlas" });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+// ADMIN: Add Upcoming Movie
+exports.createUpcomingMovie = async (req, res) => {
+    try {
+        const {
+            title,
+            description,
+            genre,
+            poster,
+            releaseDate,
+            director,
+            videoId,
+        } = req.body;
+
+        const movie = new UpcomingMovie({
+            title,
+            description,
+            genre,
+            poster,
+            releaseDate: new Date(releaseDate),
+            director,
+            videoId,
+        });
+
+        await movie.save();
+        res.status(201).json({
+            success: true,
+            message: "Upcoming Movie saved to Atlas!",
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+// ADMIN: Update Upcoming Movie
+exports.updateUpcomingMovie = async (req, res) => {
+    try {
+        const updatedMovie = await UpcomingMovie.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true },
+        );
+        if (!updatedMovie)
+            return res
+                .status(404)
+                .json({ message: "Upcoming Movie not found" });
+        res.json({
+            success: true,
+            movie: updatedMovie,
+            message: "Upcoming Movie updated",
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Update failed" });
+    }
+};
+
+// ADMIN: Delete Upcoming Movie
+exports.deleteUpcomingMovie = async (req, res) => {
+    try {
+        const result = await UpcomingMovie.findByIdAndDelete(req.params.id);
+        if (!result)
+            return res
+                .status(404)
+                .json({ success: false, message: "Upcoming Movie not found" });
 
         res.json({ success: true, message: "Deleted from Atlas" });
     } catch (error) {

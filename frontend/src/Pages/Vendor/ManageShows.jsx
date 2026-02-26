@@ -259,6 +259,11 @@ export const ManageShows = ({ onBack }) => {
                                     <input
                                         type="date"
                                         className={`w-full p-4 bg-slate-50 border-2 ${errors.date ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-600`}
+                                        min={
+                                            new Date()
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
                                         value={newShow.date}
                                         onChange={(e) =>
                                             setNewShow({

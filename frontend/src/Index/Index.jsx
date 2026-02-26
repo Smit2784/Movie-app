@@ -1,6 +1,7 @@
 import Home from "../Pages/Home";
 import { AuthComponent } from "../Pages/Auth";
 import { ManageMovies } from "../Pages/Admin/ManageMovies";
+import { ManageUpcomingMovies } from "../Pages/Admin/ManageUpcomingMovies";
 import { UserList } from "../Pages/Admin/UserList";
 import { AdminDashboard } from "../Pages/Admin/AdminDashboard";
 import { AdminBookings } from "../Pages/Admin/AdminBookings";
@@ -30,6 +31,7 @@ export {
     Home,
     AuthComponent,
     ManageMovies,
+    ManageUpcomingMovies,
     UserList,
     AdminDashboard,
     AdminBookings,

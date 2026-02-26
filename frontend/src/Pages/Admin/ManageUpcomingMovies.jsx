@@ -4,22 +4,16 @@ import {
     Trash2,
     Film,
     Edit,
-    Star,
     Clock,
     AlertCircle,
     ChevronLeft,
-    Languages,
     User,
-    Users as UsersIcon,
-    DollarSign,
     Calendar as CalendarIcon,
+    Youtube,
 } from "lucide-react";
-import {
-    validatePositiveNumber,
-    validateMinLength,
-} from "../../utils/validation";
+import { validateMinLength } from "../../utils/validation";
 
-export const ManageMovies = ({ onBack }) => {
+export const ManageUpcomingMovies = ({ onBack }) => {
     const [movies, setMovies] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editId, setEditId] = useState(null);
@@ -27,14 +21,10 @@ export const ManageMovies = ({ onBack }) => {
         title: "",
         description: "",
         genre: "",
-        duration: "",
-        rating: "",
         poster: "",
         releaseDate: "",
-        language: "",
         director: "",
-        cast: "",
-        price: "",
+        videoId: "",
     });
     const [errors, setErrors] = useState({});
 
@@ -44,11 +34,13 @@ export const ManageMovies = ({ onBack }) => {
 
     const fetchMovies = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/movies");
+            const res = await fetch(
+                "http://localhost:5000/api/upcoming-movies",
+            );
             const data = await res.json();
             setMovies(data);
         } catch (error) {
-            console.error("Error fetching movies:", error);
+            console.error("Error fetching upcoming movies:", error);
         }
     };
 
@@ -59,18 +51,12 @@ export const ManageMovies = ({ onBack }) => {
             title: movie.title,
             description: movie.description,
             genre: movie.genre || "",
-            duration: movie.duration,
-            rating: movie.rating,
             poster: movie.poster,
             releaseDate: movie.releaseDate
                 ? new Date(movie.releaseDate).toISOString().split("T")[0]
                 : "",
-            language: movie.language,
-            director: movie.director,
-            cast: Array.isArray(movie.cast)
-                ? movie.cast.join(", ")
-                : movie.cast,
-            price: movie.price,
+            director: movie.director || "",
+            videoId: movie.videoId || "",
         });
         setErrors({});
     };
@@ -82,14 +68,10 @@ export const ManageMovies = ({ onBack }) => {
             title: "",
             description: "",
             genre: "",
-            duration: "",
-            rating: "",
             poster: "",
             releaseDate: "",
-            language: "",
             director: "",
-            cast: "",
-            price: "",
+            videoId: "",
         });
         setErrors({});
     };
@@ -107,20 +89,6 @@ export const ManageMovies = ({ onBack }) => {
         );
         if (descriptionError) newErrors.description = descriptionError;
 
-        const durationError = validatePositiveNumber(
-            newMovie.duration,
-            "Duration",
-        );
-        if (durationError) newErrors.duration = durationError;
-
-        const ratingError = validatePositiveNumber(newMovie.rating, "Rating");
-        if (ratingError) newErrors.rating = ratingError;
-        else if (Number(newMovie.rating) > 10)
-            newErrors.rating = "Rating cannot be more than 10";
-
-        const priceError = validatePositiveNumber(newMovie.price, "Price");
-        if (priceError) newErrors.price = priceError;
-
         if (!newMovie.releaseDate)
             newErrors.releaseDate = "Release date is required";
 
@@ -137,18 +105,11 @@ export const ManageMovies = ({ onBack }) => {
 
         const movieData = {
             ...newMovie,
-            duration: Number(newMovie.duration),
-            rating: Number(newMovie.rating),
-            price: Number(newMovie.price),
-            cast: newMovie.cast
-                .split(",")
-                .map((item) => item.trim())
-                .filter((item) => item !== ""),
         };
 
         const url = isEditing
-            ? `http://localhost:5000/api/admin/movies/${editId}`
-            : "http://localhost:5000/api/admin/movies";
+            ? `http://localhost:5000/api/admin/upcoming-movies/${editId}`
+            : "http://localhost:5000/api/admin/upcoming-movies";
 
         const method = isEditing ? "PUT" : "POST";
 
@@ -166,8 +127,8 @@ export const ManageMovies = ({ onBack }) => {
             handleCancelEdit();
             alert(
                 isEditing
-                    ? "Movie updated successfully!"
-                    : "Movie added successfully!",
+                    ? "Upcoming Movie updated successfully!"
+                    : "Upcoming Movie added successfully!",
             );
         } else {
             alert("Operation failed. See console.");
@@ -176,11 +137,18 @@ export const ManageMovies = ({ onBack }) => {
 
     const handleDelete = async (id) => {
         const token = localStorage.getItem("token");
-        if (window.confirm("Are you sure you want to delete this title?")) {
-            await fetch(`http://localhost:5000/api/admin/movies/${id}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
+        if (
+            window.confirm(
+                "Are you sure you want to delete this upcoming movie?",
+            )
+        ) {
+            await fetch(
+                `http://localhost:5000/api/admin/upcoming-movies/${id}`,
+                {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                },
+            );
             fetchMovies();
         }
     };
@@ -211,7 +179,7 @@ export const ManageMovies = ({ onBack }) => {
 
                 <div className="hidden md:flex items-center gap-2 text-slate-400 text-sm font-bold tracking-widest uppercase">
                     <Film size={16} />
-                    <span>Content Management System</span>
+                    <span>Upcoming Movies Content Management</span>
                 </div>
             </nav>
 
@@ -221,7 +189,7 @@ export const ManageMovies = ({ onBack }) => {
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-white h-fit sticky top-10 animate-slideIn">
                         <div className="flex items-center gap-4 mb-8">
                             <div
-                                className={`p-4 rounded-2xl shadow-lg ${isEditing ? "bg-orange-500 text-white shadow-orange-200" : "bg-blue-600 text-white shadow-blue-200"}`}
+                                className={`p-4 rounded-2xl shadow-lg ${isEditing ? "bg-orange-500 text-white shadow-orange-200" : "bg-purple-600 text-white shadow-purple-200"}`}
                             >
                                 {isEditing ? (
                                     <Edit size={24} />
@@ -231,12 +199,14 @@ export const ManageMovies = ({ onBack }) => {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-black tracking-tight text-slate-800">
-                                    {isEditing ? "Modify Movie" : "New Movie"}
+                                    {isEditing
+                                        ? "Modify Upcoming Movie"
+                                        : "New Upcoming Movie"}
                                 </h2>
                                 <p className="text-slate-400 font-semibold text-sm uppercase tracking-wider">
                                     {isEditing
                                         ? "Editing Database Entry"
-                                        : "Expand your library"}
+                                        : "Expand future library"}
                                 </p>
                             </div>
                         </div>
@@ -245,8 +215,8 @@ export const ManageMovies = ({ onBack }) => {
                             <div className="group relative">
                                 <input
                                     type="text"
-                                    placeholder="Movie Title"
-                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.title ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-700 placeholder:text-slate-300`}
+                                    placeholder="Upcoming Movie Title"
+                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.title ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all font-bold text-slate-700 placeholder:text-slate-300`}
                                     value={newMovie.title}
                                     onChange={(e) =>
                                         setNewMovie({
@@ -265,7 +235,7 @@ export const ManageMovies = ({ onBack }) => {
                             <div>
                                 <textarea
                                     placeholder="Plot Synopsis"
-                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.description ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-600 h-32 resize-none placeholder:text-slate-300`}
+                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.description ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all font-medium text-slate-600 h-32 resize-none placeholder:text-slate-300`}
                                     value={newMovie.description}
                                     onChange={(e) =>
                                         setNewMovie({
@@ -281,91 +251,14 @@ export const ManageMovies = ({ onBack }) => {
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <InputField
-                                    icon={<Film size={16} />}
-                                    placeholder="Genre"
-                                    value={newMovie.genre}
-                                    onChange={(val) =>
-                                        setNewMovie({ ...newMovie, genre: val })
-                                    }
-                                />
-                                <InputField
-                                    icon={<Languages size={16} />}
-                                    placeholder="Language"
-                                    value={newMovie.language}
-                                    onChange={(val) =>
-                                        setNewMovie({
-                                            ...newMovie,
-                                            language: val,
-                                        })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-3">
-                                <div>
-                                    <InputField
-                                        icon={<Clock size={16} />}
-                                        type="number"
-                                        placeholder="Mins"
-                                        value={newMovie.duration}
-                                        onChange={(val) =>
-                                            setNewMovie({
-                                                ...newMovie,
-                                                duration: val,
-                                            })
-                                        }
-                                        error={errors.duration}
-                                    />
-                                    {errors.duration && (
-                                        <p className="text-red-500 text-xs mt-1 ml-1">
-                                            {errors.duration}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <InputField
-                                        icon={<Star size={16} />}
-                                        type="number"
-                                        step="0.1"
-                                        placeholder="Rating"
-                                        value={newMovie.rating}
-                                        onChange={(val) =>
-                                            setNewMovie({
-                                                ...newMovie,
-                                                rating: val,
-                                            })
-                                        }
-                                        error={errors.rating}
-                                    />
-                                    {errors.rating && (
-                                        <p className="text-red-500 text-xs mt-1 ml-1">
-                                            {errors.rating}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <InputField
-                                        icon={<DollarSign size={16} />}
-                                        type="number"
-                                        placeholder="Price"
-                                        value={newMovie.price}
-                                        onChange={(val) =>
-                                            setNewMovie({
-                                                ...newMovie,
-                                                price: val,
-                                            })
-                                        }
-                                        error={errors.price}
-                                    />
-                                    {errors.price && (
-                                        <p className="text-red-500 text-xs mt-1 ml-1">
-                                            {errors.price}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
+                            <InputField
+                                icon={<Film size={16} />}
+                                placeholder="Genre"
+                                value={newMovie.genre}
+                                onChange={(val) =>
+                                    setNewMovie({ ...newMovie, genre: val })
+                                }
+                            />
 
                             <InputField
                                 icon={<AlertCircle size={16} />}
@@ -384,12 +277,12 @@ export const ManageMovies = ({ onBack }) => {
                                     />
                                     <input
                                         type="date"
-                                        max={
+                                        min={
                                             new Date()
                                                 .toISOString()
                                                 .split("T")[0]
                                         }
-                                        className={`w-full p-4 pl-12 bg-slate-50 border-2 ${errors.releaseDate ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-500`}
+                                        className={`w-full p-4 pl-12 bg-slate-50 border-2 ${errors.releaseDate ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-purple-500 outline-none transition-all font-bold text-slate-500`}
                                         value={newMovie.releaseDate}
                                         onChange={(e) =>
                                             setNewMovie({
@@ -417,14 +310,14 @@ export const ManageMovies = ({ onBack }) => {
                                 />
                             </div>
 
-                            <InputField
-                                icon={<UsersIcon size={16} />}
-                                placeholder="Cast (comma separated)"
-                                value={newMovie.cast}
+                            {/* <InputField
+                                icon={<Youtube size={16} />}
+                                placeholder="YouTube Trailer Video ID"
+                                value={newMovie.videoId}
                                 onChange={(val) =>
-                                    setNewMovie({ ...newMovie, cast: val })
+                                    setNewMovie({ ...newMovie, videoId: val })
                                 }
-                            />
+                            /> */}
 
                             <div className="flex gap-4 pt-6">
                                 {isEditing && (
@@ -441,7 +334,7 @@ export const ManageMovies = ({ onBack }) => {
                                     className={`flex-1 py-4 rounded-2xl font-black text-white transition-all shadow-xl uppercase text-xs tracking-widest ${
                                         isEditing
                                             ? "bg-linear-to-r from-orange-500 to-amber-500 shadow-orange-200 hover:scale-[1.02]"
-                                            : "bg-linear-to-r from-blue-600 to-indigo-600 shadow-blue-200 hover:scale-[1.02]"
+                                            : "bg-linear-to-r from-purple-600 to-indigo-600 shadow-purple-200 hover:scale-[1.02]"
                                     }`}
                                 >
                                     {isEditing
@@ -461,13 +354,13 @@ export const ManageMovies = ({ onBack }) => {
                     <div className="flex items-end justify-between px-2">
                         <div>
                             <h2 className="text-4xl font-black text-slate-900 tracking-tight">
-                                Library{" "}
+                                Upcoming{" "}
                                 <span className="text-slate-400 italic font-light">
-                                    Archive
+                                    Titles
                                 </span>
                             </h2>
                             <p className="text-slate-500 font-bold mt-1 uppercase tracking-[0.2em] text-xs">
-                                Manage {movies.length} Global Titles
+                                Manage {movies.length} Upcoming Global Titles
                             </p>
                         </div>
                     </div>
@@ -479,7 +372,7 @@ export const ManageMovies = ({ onBack }) => {
                                 className="group bg-white p-5 rounded-4xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 flex gap-6 relative overflow-hidden"
                             >
                                 {/* Decorative Background Elements */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] z-0 transition-all group-hover:bg-blue-50/50"></div>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] z-0 transition-all group-hover:bg-purple-50/50"></div>
 
                                 <div className="relative z-10 w-32 h-48 shrink-0">
                                     <img
@@ -487,45 +380,34 @@ export const ManageMovies = ({ onBack }) => {
                                         alt=""
                                         className="w-full h-full object-cover rounded-2xl shadow-lg transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-2"
                                     />
-                                    <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                                        <Star
-                                            size={12}
-                                            className="text-amber-500"
-                                            fill="currentColor"
-                                        />
-                                        <span className="text-[10px] font-black text-slate-800">
-                                            {movie.rating}
-                                        </span>
+                                    <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm text-[10px] font-black text-slate-800">
+                                        Upcoming
                                     </div>
                                 </div>
 
                                 <div className="flex-1 flex flex-col justify-between py-1 relative z-10">
                                     <div>
                                         <div className="flex justify-between items-start mb-1">
-                                            <h3 className="font-black text-xl text-slate-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                                            <h3 className="font-black text-xl text-slate-800 line-clamp-1 group-hover:text-purple-600 transition-colors">
                                                 {movie.title}
                                             </h3>
                                         </div>
 
                                         <div className="flex flex-wrap gap-2 mb-3">
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 bg-slate-50 px-2 py-1 rounded-md">
-                                                {movie.language}
-                                            </span>
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-blue-500 bg-blue-50 px-2 py-1 rounded-md">
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-purple-500 bg-purple-50 px-2 py-1 rounded-md">
                                                 {movie.genre}
                                             </span>
                                         </div>
 
                                         <div className="flex items-center gap-4 text-slate-400 font-bold text-xs uppercase tracking-tighter">
                                             <span className="flex items-center gap-1.5 text-slate-500">
-                                                <Clock
+                                                <CalendarIcon
                                                     size={14}
                                                     className="text-slate-300"
                                                 />{" "}
-                                                {movie.duration}m
-                                            </span>
-                                            <span className="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full text-[11px]">
-                                                ₹{movie.price}
+                                                {new Date(
+                                                    movie.releaseDate,
+                                                ).toLocaleDateString()}
                                             </span>
                                         </div>
                                     </div>
@@ -536,7 +418,7 @@ export const ManageMovies = ({ onBack }) => {
                                                 onClick={() =>
                                                     handleEdit(movie)
                                                 }
-                                                className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 transition-all"
+                                                className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-purple-600 hover:text-white hover:shadow-lg hover:shadow-purple-200 transition-all"
                                             >
                                                 <Edit size={16} />
                                             </button>
@@ -564,11 +446,10 @@ export const ManageMovies = ({ onBack }) => {
                                 <Film size={48} />
                             </div>
                             <h3 className="text-xl font-black text-slate-800">
-                                No Titles Found
+                                No Upcoming Titles Found
                             </h3>
                             <p className="text-slate-400 font-medium">
-                                Start building your cinema empire by adding your
-                                first movie.
+                                Start adding future releases.
                             </p>
                         </div>
                     )}
@@ -581,13 +462,13 @@ export const ManageMovies = ({ onBack }) => {
 // Internal Helper Components for Cleanliness
 const InputField = ({ icon, error, ...props }) => (
     <div className="relative group">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-purple-500 transition-colors">
             {icon}
         </div>
         <input
             {...props}
             onChange={(e) => props.onChange(e.target.value)}
-            className={`w-full p-4 pl-12 bg-slate-50 border-2 ${error ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-600 placeholder:text-slate-300 placeholder:font-normal text-sm`}
+            className={`w-full p-4 pl-12 bg-slate-50 border-2 ${error ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-purple-500 outline-none transition-all font-bold text-slate-600 placeholder:text-slate-300 placeholder:font-normal text-sm`}
         />
     </div>
 );

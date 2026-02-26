@@ -41,7 +41,7 @@ export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
     const generateSeats = () => {
         const totalCapacity =
             currentShow.theater?.capacity || currentShow.totalSeats || 120;
-        const seatsPerRow = 15;
+        const seatsPerRow = 15;  // 15 seats per row
         const numRows = Math.ceil(totalCapacity / seatsPerRow);
         const seats = [];
 

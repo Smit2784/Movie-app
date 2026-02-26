@@ -12,8 +12,42 @@ router.get("/upcoming-movies/:id", movieController.getUpcomingMovieById);
 router.get("/seed-upcoming-movies", movieController.seedUpcomingMovies);
 
 // Admin
-router.post("/admin/movies", authenticateToken, authAdmin, movieController.createMovie);
-router.put("/admin/movies/:id", authenticateToken, authAdmin, movieController.updateMovie);
-router.delete("/admin/movies/:id", authenticateToken, authAdmin, movieController.deleteMovie);
+router.post(
+    "/admin/movies",
+    authenticateToken,
+    authAdmin,
+    movieController.createMovie,
+);
+router.put(
+    "/admin/movies/:id",
+    authenticateToken,
+    authAdmin,
+    movieController.updateMovie,
+);
+router.delete(
+    "/admin/movies/:id",
+    authenticateToken,
+    authAdmin,
+    movieController.deleteMovie,
+);
+
+router.post(
+    "/admin/upcoming-movies",
+    authenticateToken,
+    authAdmin,
+    movieController.createUpcomingMovie,
+);
+router.put(
+    "/admin/upcoming-movies/:id",
+    authenticateToken,
+    authAdmin,
+    movieController.updateUpcomingMovie,
+);
+router.delete(
+    "/admin/upcoming-movies/:id",
+    authenticateToken,
+    authAdmin,
+    movieController.deleteUpcomingMovie,
+);
 
 module.exports = router;

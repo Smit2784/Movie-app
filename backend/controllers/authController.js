@@ -21,7 +21,7 @@ exports.registerUser = async (req, res) => {
         await user.save();
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-            expiresIn: "24h",
+            expiresIn: "5s",
         });
 
         res.status(201).json({
