@@ -76,7 +76,7 @@ export const Header = () => {
                                 <img
                                     src={logo}
                                     alt="MovieTix Logo"
-                                    className="h-36 w-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300"
+                                    className="h-15 w-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300"
                                 />
                             </div>
                             {/* <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-linear-to-r from-white via-purple-200 to-purple-400">

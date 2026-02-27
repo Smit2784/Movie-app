@@ -29,7 +29,7 @@ export const Footer = () => {
                             <div className="p-2 group-hover:border-purple-500/50 transition-colors">
                                 <img
                                     src={logo}
-                                    className="h-36 w-auto transform group-hover:scale-110 transition-transform duration-500"
+                                    className="h-25 mb-10 w-auto transform group-hover:scale-110 transition-transform duration-500"
                                     alt="logo"
                                 />
                             </div>
