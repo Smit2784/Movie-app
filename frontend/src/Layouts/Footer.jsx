@@ -10,7 +10,7 @@ import {
     Youtube,
 } from "lucide-react";
 
-export const Footer = () => {
+const Footer = () => {
     return (
         <footer className="relative bg-[#020617] text-white pt-24 pb-12 overflow-hidden mt-auto">
             {/* Background Decorative Elements */}
@@ -212,3 +212,5 @@ const StatItem = ({ value, label, color }) => (
         </div>
     </div>
 );
+
+export default Footer;

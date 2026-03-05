@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import {
     createBrowserRouter,
@@ -8,37 +8,47 @@ import {
     useLocation,
     useNavigate,
 } from "react-router-dom";
+import Header from "./Layouts/Header.jsx";
+import Footer from "./Layouts/Footer.jsx";
 
-import {
-    Home,
-    AuthComponent,
-    ManageMovies,
-    ManageUpcomingMovies,
-    UserList,
-    AdminDashboard,
-    AdminBookings,
-    VendorDashboard,
-    VendorManageTheaters,
-    VendorManageShows,
-    Header,
-    AboutUs,
-    ContactUs,
-    MyBookings,
-    MovieDetails,
-    BookingPage,
-    PaymentPage,
-    FAQ,
-    BookingGuide,
-    UpcomingMovies,
-    PaymentSuccess,
-    GiftCards,
-    Footer,
-    UpdateProfile,
-    NotFound,
-    PrivacyPolicy,
-    TermsOfService,
-    LatestOffers,
-} from "./Index/Index.jsx";
+const Home = React.lazy(() => import("./Pages/Home.jsx"));
+const AuthComponent = React.lazy(() => import("./Pages/Auth.jsx"));
+const ManageMovies = React.lazy(() => import("./Pages/Admin/ManageMovies.jsx"));
+const ManageUpcomingMovies = React.lazy(
+    () => import("./Pages/Admin/ManageUpcomingMovies.jsx"),
+);
+const UserList = React.lazy(() => import("./Pages/Admin/UserList.jsx"));
+const AdminDashboard = React.lazy(
+    () => import("./Pages/Admin/AdminDashboard.jsx"),
+);
+const AdminBookings = React.lazy(
+    () => import("./Pages/Admin/AdminBookings.jsx"),
+);
+const VendorDashboard = React.lazy(
+    () => import("./Pages/Vendor/VendorDashboard.jsx"),
+);
+const VendorManageTheaters = React.lazy(
+    () => import("./Pages/Vendor/ManageTheaters.jsx"),
+);
+const VendorManageShows = React.lazy(
+    () => import("./Pages/Vendor/ManageShows.jsx"),
+);
+const AboutUs = React.lazy(() => import("./Pages/AboutUs.jsx"));
+const ContactUs = React.lazy(() => import("./Pages/ContactUs.jsx"));
+const MyBookings = React.lazy(() => import("./Pages/MyBookings.jsx"));
+const MovieDetails = React.lazy(() => import("./Pages/MovieDetails.jsx"));
+const BookingPage = React.lazy(() => import("./Pages/BookingPage.jsx"));
+const PaymentPage = React.lazy(() => import("./Pages/Payment.jsx"));
+const FAQ = React.lazy(() => import("./Pages/FAQ.jsx"));
+const BookingGuide = React.lazy(() => import("./Pages/BookingGuide.jsx"));
+const UpcomingMovies = React.lazy(() => import("./Pages/UpcomingMovies.jsx"));
+const PaymentSuccess = React.lazy(() => import("./Pages/PaymentSuccess.jsx"));
+const GiftCards = React.lazy(() => import("./Pages/GiftCards.jsx"));
+const UpdateProfile = React.lazy(() => import("./Pages/UpdateProfile.jsx"));
+const NotFound = React.lazy(() => import("./Pages/NotFound.jsx"));
+const PrivacyPolicy = React.lazy(() => import("./Pages/PrivacyPolicy.jsx"));
+const TermsOfService = React.lazy(() => import("./Pages/TermsOfService.jsx"));
+const LatestOffers = React.lazy(() => import("./Pages/LatestOffers.jsx"));
 
 import AuthProvider, { useAuth } from "./Contexts/AuthProvider.jsx";
 
@@ -130,7 +140,9 @@ const LayoutContent = () => {
         <>
             <Header />
             <main className="grow">
-                <Outlet />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Outlet />
+                </Suspense>
             </main>
             <Footer />
         </>
@@ -291,7 +303,7 @@ function ManageUpcomingMoviesWithNavigation() {
 }
 function ManageShowsWithNavigation() {
     const navigate = useNavigate();
-    return <ManageShows onBack={() => navigate("/admin/dashboard")} />;
+    return <VendorManageShows onBack={() => navigate("/admin/dashboard")} />;
 }
 function VendorManageShowsWithNavigation() {
     const navigate = useNavigate();
@@ -299,7 +311,7 @@ function VendorManageShowsWithNavigation() {
 }
 function ManageTheatersWithNavigation() {
     const navigate = useNavigate();
-    return <ManageTheaters onBack={() => navigate("/admin/dashboard")} />;
+    return <VendorManageTheaters onBack={() => navigate("/admin/dashboard")} />;
 }
 function VendorManageTheatersWithNavigation() {
     const navigate = useNavigate();
@@ -519,12 +531,32 @@ const router = createBrowserRouter([
     // Auth Route - Outside of RootLayout to hide Header/Footer
     {
         path: "/auth",
-        element: <AuthWrapper />,
+        element: (
+            <Suspense
+                fallback={
+                    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                        Loading...
+                    </div>
+                }
+            >
+                <AuthWrapper />
+            </Suspense>
+        ),
     },
     // Catch all - Outside of RootLayout to hide Header/Footer
     {
         path: "*",
-        element: <NotFound />,
+        element: (
+            <Suspense
+                fallback={
+                    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                        Loading...
+                    </div>
+                }
+            >
+                <NotFound />
+            </Suspense>
+        ),
     },
 ]);
 

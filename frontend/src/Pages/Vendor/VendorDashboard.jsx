@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider";
 
-export const VendorDashboard = ({ setCurrentPage }) => {
+const VendorDashboard = ({ setCurrentPage }) => {
     const { user } = useAuth();
     const [stats, setStats] = useState({
         theaters: 0,
@@ -177,7 +177,7 @@ export const VendorDashboard = ({ setCurrentPage }) => {
                 </header>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-14">
                     <StatCard
                         title="Your Theaters"
                         value={stats.theaters}
@@ -192,13 +192,13 @@ export const VendorDashboard = ({ setCurrentPage }) => {
                         color="violet"
                         delay="200"
                     />
-                    <StatCard
+                    {/* <StatCard
                         title="Show Bookings"
                         value={stats.bookings}
                         icon={<TrendingUp size={22} />}
                         color="orange"
                         delay="300"
-                    />
+                    /> */}
                 </div>
 
                 {/* Quick Management Section */}
@@ -245,7 +245,7 @@ export const VendorDashboard = ({ setCurrentPage }) => {
     );
 };
 
-const StatCard = ({ title, value, icon, color, delay }) => {
+const   StatCard = ({ title, value, icon, color, delay }) => {
     const themes = {
         emerald:
             "from-emerald-500 to-teal-600 shadow-emerald-200 text-emerald-600",
@@ -302,3 +302,5 @@ const ActionButton = ({ onClick, label, icon, theme }) => {
         </button>
     );
 };
+
+export default VendorDashboard;

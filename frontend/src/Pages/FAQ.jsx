@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const FAQ = () => {
+const FAQ = () => {
     const [activeIndex, setActiveIndex] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -306,3 +306,5 @@ export const FAQ = () => {
         </div>
     );
 };
+
+export default FAQ;

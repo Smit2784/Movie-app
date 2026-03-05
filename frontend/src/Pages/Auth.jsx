@@ -16,7 +16,7 @@ import {
 } from "../utils/validation";
 import logo from "../logo.png";
 
-export const AuthComponent = ({ setCurrentPage }) => {
+const AuthComponent = ({ setCurrentPage }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [otpSent, setOtpSent] = useState(false);
@@ -560,3 +560,5 @@ export const AuthComponent = ({ setCurrentPage }) => {
         </div>
     );
 };
+
+export default AuthComponent;

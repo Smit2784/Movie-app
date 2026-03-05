@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Gift, Heart, Star, Calendar, CreditCard, Wallet } from "lucide-react";
 import { useAuth, api, API_BASE_URL } from "../Contexts/AuthProvider";
 
-export const GiftCards = () => {
+const GiftCards = () => {
     const [activeTab, setActiveTab] = useState("purchase");
     const [selectedAmount, setSelectedAmount] = useState(500);
     const [customAmount, setCustomAmount] = useState("");

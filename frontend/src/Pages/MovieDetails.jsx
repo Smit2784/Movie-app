@@ -3,7 +3,7 @@ import { Calendar, Star, User } from "lucide-react";
 import { useAuth, api } from "../Contexts/AuthProvider";
 import { useParams } from "react-router-dom";
 
-export const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
+const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
     const { id } = useParams();
     const [movie, setMovie] = useState(propMovie || null);
     const [shows, setShows] = useState([]);
@@ -542,5 +542,5 @@ const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
         </div>
     );
 };
-
-// BookingPage and BookingSummary components removed. Usage moved to dedicated file.
+ 
+export default MovieDetails;

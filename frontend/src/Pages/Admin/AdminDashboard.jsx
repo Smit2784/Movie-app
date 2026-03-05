@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider";
 
-export const AdminDashboard = ({ setCurrentPage }) => {
+const AdminDashboard = ({ setCurrentPage }) => {
     const { user } = useAuth();
     const [stats, setStats] = useState({
         movies: 0,
@@ -148,7 +148,7 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                         ))}
                     </nav>
 
-                    {/* Exit */}
+                    {/* Exit
                     <div className="pt-6 border-t border-white/10 mt-auto">
                         <button
                             onClick={() => setCurrentPage("home")}
@@ -162,7 +162,7 @@ export const AdminDashboard = ({ setCurrentPage }) => {
                                 Exit Control Center
                             </span>
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </aside>
 
@@ -350,3 +350,5 @@ const ActionButton = ({ onClick, label, icon, theme }) => {
         </button>
     );
 };
+
+export default AdminDashboard;

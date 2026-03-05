@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { SeatSelection } from "./SeatSelection";
+import SeatSelection from "./SeatSelection";
 import { api, useAuth } from "../Contexts/AuthProvider";
 
-export const BookingPage = ({ show: propShow, onBack, onBookingComplete }) => {
+const BookingPage = ({ show: propShow, onBack, onBookingComplete }) => {
     const { showId } = useParams();
     const [show, setShow] = useState(propShow || null);
     const [selectedSeats, setSelectedSeats] = useState([]);
@@ -184,3 +184,5 @@ const BookingSummary = ({ show, selectedSeats, onConfirmBooking, loading }) => {
         </div>
     );
 };
+
+export default BookingPage;

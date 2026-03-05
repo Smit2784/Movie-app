@@ -15,7 +15,7 @@ import logo from "../logo.png";
 import { useAuth } from "../Contexts/AuthProvider";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-export const Header = () => {
+const Header = () => {
     const { user, logout, token, walletBalance, refreshWalletBalance } =
         useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -322,3 +322,5 @@ const DropdownItem = ({ to, icon, label, onClick, isActive }) => (
         {label}
     </Link>
 );
+
+export default Header;

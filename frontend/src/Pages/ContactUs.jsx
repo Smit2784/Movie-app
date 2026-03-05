@@ -6,7 +6,7 @@ import {
     validateMinLength,
 } from "../utils/validation";
 
-export const ContactUs = () => {
+const ContactUs = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -298,3 +298,5 @@ export const ContactUs = () => {
         </div>
     );
 };
+
+export default ContactUs;

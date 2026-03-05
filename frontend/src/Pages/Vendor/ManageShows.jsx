@@ -12,8 +12,9 @@ import {
     CalendarCheck,
 } from "lucide-react";
 import { validatePositiveNumber } from "../../utils/validation";
+import { Pagination } from "../../Components/Pagination";
 
-export const ManageShows = ({ onBack }) => {
+const ManageShows = ({ onBack }) => {
     const [shows, setShows] = useState([]);
     const [movies, setMovies] = useState([]);
     const [theaters, setTheaters] = useState([]);
@@ -26,6 +27,10 @@ export const ManageShows = ({ onBack }) => {
         price: "",
     });
     const [errors, setErrors] = useState({});
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
         fetchShows();
@@ -46,6 +51,7 @@ export const ManageShows = ({ onBack }) => {
             );
             const data = await resAll.json();
             setShows(data);
+            setCurrentPage(1);
         } catch (error) {
             console.error("Error fetching shows:", error);
         }
@@ -374,96 +380,155 @@ export const ManageShows = ({ onBack }) => {
                                 </div>
                             ) : (
                                 <div className="grid gap-4">
-                                    {shows.map((show) => (
-                                        <div
-                                            key={show._id}
-                                            className="group flex items-center justify-between p-5 bg-slate-50/50 rounded-3xl border border-transparent hover:border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-slate-100 transition-all duration-300"
-                                        >
-                                            <div className="flex items-center gap-6">
-                                                {/* Movie Thumbnail */}
-                                                <div className="w-20 h-28 bg-white p-1 rounded-2xl shadow-sm overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                                                    {show.movie &&
-                                                    show.movie.poster ? (
-                                                        <img
-                                                            src={
+                                    {(() => {
+                                        const totalPages = Math.ceil(
+                                            shows.length / ITEMS_PER_PAGE,
+                                        );
+                                        const startIndex =
+                                            (currentPage - 1) * ITEMS_PER_PAGE;
+                                        const paginatedShows = shows.slice(
+                                            startIndex,
+                                            startIndex + ITEMS_PER_PAGE,
+                                        );
+
+                                        return (
+                                            <>
+                                                {paginatedShows.map((show) => (
+                                                    <div
+                                                        key={show._id}
+                                                        className="group flex items-center justify-between p-5 bg-slate-50/50 rounded-3xl border border-transparent hover:border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-slate-100 transition-all duration-300"
+                                                    >
+                                                        <div className="flex items-center gap-6">
+                                                            {/* Movie Thumbnail */}
+                                                            <div className="w-20 h-28 bg-white p-1 rounded-2xl shadow-sm overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                                                                {show.movie &&
                                                                 show.movie
-                                                                    .poster
-                                                            }
-                                                            alt=""
-                                                            className="w-full h-full object-cover rounded-xl"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                                                            <Film size={24} />
+                                                                    .poster ? (
+                                                                    <img
+                                                                        src={
+                                                                            show
+                                                                                .movie
+                                                                                .poster
+                                                                        }
+                                                                        alt=""
+                                                                        className="w-full h-full object-cover rounded-xl"
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
+                                                                        <Film
+                                                                            size={
+                                                                                24
+                                                                            }
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* Details */}
+                                                            <div className="space-y-3">
+                                                                <h3 className="font-black text-xl text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                                    {show.movie
+                                                                        ? show
+                                                                              .movie
+                                                                              .title
+                                                                        : "Unknown Release"}
+                                                                </h3>
+
+                                                                <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                                                                    <span className="flex items-center gap-2 text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
+                                                                        <MapPin
+                                                                            size={
+                                                                                14
+                                                                            }
+                                                                            className="text-blue-500"
+                                                                        />
+                                                                        {show.theater
+                                                                            ? show
+                                                                                  .theater
+                                                                                  .name
+                                                                            : "Unassigned"}
+                                                                    </span>
+                                                                    <span className="flex items-center gap-2">
+                                                                        <Calendar
+                                                                            size={
+                                                                                14
+                                                                            }
+                                                                        />
+                                                                        {new Date(
+                                                                            show.date,
+                                                                        ).toLocaleDateString(
+                                                                            undefined,
+                                                                            {
+                                                                                month: "short",
+                                                                                day: "numeric",
+                                                                                year: "numeric",
+                                                                            },
+                                                                        )}
+                                                                    </span>
+                                                                    <span className="flex items-center gap-2">
+                                                                        <Clock
+                                                                            size={
+                                                                                14
+                                                                            }
+                                                                        />
+                                                                        {
+                                                                            show.time
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    )}
-                                                </div>
 
-                                                {/* Details */}
-                                                <div className="space-y-3">
-                                                    <h3 className="font-black text-xl text-slate-900 group-hover:text-blue-600 transition-colors">
-                                                        {show.movie
-                                                            ? show.movie.title
-                                                            : "Unknown Release"}
-                                                    </h3>
+                                                        {/* Action & Price */}
+                                                        <div className="flex items-center gap-8 pr-4">
+                                                            <div className="text-right">
+                                                                <span className="text-[10px] font-black text-slate-300 uppercase block mb-1">
+                                                                    Standard
+                                                                </span>
+                                                                <span className="text-2xl font-black text-emerald-600">
+                                                                    ₹
+                                                                    {show.price}
+                                                                </span>
+                                                            </div>
 
-                                                    <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                                                        <span className="flex items-center gap-2 text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
-                                                            <MapPin
-                                                                size={14}
-                                                                className="text-blue-500"
-                                                            />
-                                                            {show.theater
-                                                                ? show.theater
-                                                                      .name
-                                                                : "Unassigned"}
-                                                        </span>
-                                                        <span className="flex items-center gap-2">
-                                                            <Calendar
-                                                                size={14}
-                                                            />
-                                                            {new Date(
-                                                                show.date,
-                                                            ).toLocaleDateString(
-                                                                undefined,
-                                                                {
-                                                                    month: "short",
-                                                                    day: "numeric",
-                                                                    year: "numeric",
-                                                                },
-                                                            )}
-                                                        </span>
-                                                        <span className="flex items-center gap-2">
-                                                            <Clock size={14} />
-                                                            {show.time}
-                                                        </span>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        show._id,
+                                                                    )
+                                                                }
+                                                                className="p-4 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all opacity-0 group-hover:opacity-100 group-hover:rotate-6 active:scale-90"
+                                                                title="Cancel Program"
+                                                            >
+                                                                <Trash2
+                                                                    size={22}
+                                                                />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Action & Price */}
-                                            <div className="flex items-center gap-8 pr-4">
-                                                <div className="text-right">
-                                                    <span className="text-[10px] font-black text-slate-300 uppercase block mb-1">
-                                                        Standard
-                                                    </span>
-                                                    <span className="text-2xl font-black text-emerald-600">
-                                                        ₹{show.price}
-                                                    </span>
-                                                </div>
-
-                                                <button
-                                                    onClick={() =>
-                                                        handleDelete(show._id)
-                                                    }
-                                                    className="p-4 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all opacity-0 group-hover:opacity-100 group-hover:rotate-6 active:scale-90"
-                                                    title="Cancel Program"
-                                                >
-                                                    <Trash2 size={22} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                                                ))}
+                                                {Math.ceil(
+                                                    shows.length /
+                                                        ITEMS_PER_PAGE,
+                                                ) > 1 && (
+                                                    <div className="flex justify-center mt-8 pb-4">
+                                                        <Pagination
+                                                            currentPage={
+                                                                currentPage
+                                                            }
+                                                            totalPages={Math.ceil(
+                                                                shows.length /
+                                                                    ITEMS_PER_PAGE,
+                                                            )}
+                                                            onPageChange={
+                                                                setCurrentPage
+                                                            }
+                                                        />
+                                                    </div>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
                                 </div>
                             )}
                         </div>
@@ -473,3 +538,5 @@ export const ManageShows = ({ onBack }) => {
         </div>
     );
 };
+
+export default ManageShows;

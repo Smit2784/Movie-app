@@ -1,4 +1,4 @@
-export const AboutUs = () => {
+const AboutUs = () => {
     const teamMembers = [
         {
             name: "Smit  Dudhat",
@@ -155,3 +155,5 @@ export const AboutUs = () => {
         </div>
     );
 };
+
+export default AboutUs;

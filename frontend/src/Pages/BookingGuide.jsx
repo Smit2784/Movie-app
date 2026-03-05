@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const BookingGuide = () => {
+const BookingGuide = () => {
     const [currentStep, setCurrentStep] = useState(0);
 
     const bookingSteps = [
@@ -307,3 +307,5 @@ export const BookingGuide = () => {
         </div>
     );
 };
+
+export default BookingGuide;

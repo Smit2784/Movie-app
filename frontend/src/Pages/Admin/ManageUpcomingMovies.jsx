@@ -12,8 +12,9 @@ import {
     Youtube,
 } from "lucide-react";
 import { validateMinLength } from "../../utils/validation";
+import { Pagination } from "../../Components/Pagination";
 
-export const ManageUpcomingMovies = ({ onBack }) => {
+const ManageUpcomingMovies = ({ onBack }) => {
     const [movies, setMovies] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editId, setEditId] = useState(null);
@@ -28,6 +29,10 @@ export const ManageUpcomingMovies = ({ onBack }) => {
     });
     const [errors, setErrors] = useState({});
 
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
     useEffect(() => {
         fetchMovies();
     }, []);
@@ -39,6 +44,7 @@ export const ManageUpcomingMovies = ({ onBack }) => {
             );
             const data = await res.json();
             setMovies(data);
+            setCurrentPage(1); // Reset page on fetch
         } catch (error) {
             console.error("Error fetching upcoming movies:", error);
         }
@@ -365,80 +371,108 @@ export const ManageUpcomingMovies = ({ onBack }) => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {movies.map((movie) => (
-                            <div
-                                key={movie._id}
-                                className="group bg-white p-5 rounded-4xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 flex gap-6 relative overflow-hidden"
-                            >
-                                {/* Decorative Background Elements */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] z-0 transition-all group-hover:bg-purple-50/50"></div>
+                    {/* Pagination Calculation */}
+                    {(() => {
+                        const totalPages = Math.ceil(
+                            movies.length / ITEMS_PER_PAGE,
+                        );
+                        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                        const paginatedMovies = movies.slice(
+                            startIndex,
+                            startIndex + ITEMS_PER_PAGE,
+                        );
 
-                                <div className="relative z-10 w-32 h-48 shrink-0">
-                                    <img
-                                        src={movie.poster}
-                                        alt=""
-                                        className="w-full h-full object-cover rounded-2xl shadow-lg transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-2"
+                        return (
+                            <>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    {paginatedMovies.map((movie) => (
+                                        <div
+                                            key={movie._id}
+                                            className="group bg-white p-5 rounded-4xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 flex gap-6 relative overflow-hidden"
+                                        >
+                                            {/* Decorative Background Elements */}
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem] z-0 transition-all group-hover:bg-purple-50/50"></div>
+
+                                            <div className="relative z-10 w-32 h-48 shrink-0">
+                                                <img
+                                                    src={movie.poster}
+                                                    alt=""
+                                                    className="w-full h-full object-cover rounded-2xl shadow-lg transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-2"
+                                                />
+                                                <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm text-[10px] font-black text-slate-800">
+                                                    Upcoming
+                                                </div>
+                                            </div>
+
+                                            <div className="flex-1 flex flex-col justify-between py-1 relative z-10">
+                                                <div>
+                                                    <div className="flex justify-between items-start mb-1">
+                                                        <h3 className="font-black text-xl text-slate-800 line-clamp-1 group-hover:text-purple-600 transition-colors">
+                                                            {movie.title}
+                                                        </h3>
+                                                    </div>
+
+                                                    <div className="flex flex-wrap gap-2 mb-3">
+                                                        <span className="text-[10px] font-black uppercase tracking-wider text-purple-500 bg-purple-50 px-2 py-1 rounded-md">
+                                                            {movie.genre}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-4 text-slate-400 font-bold text-xs uppercase tracking-tighter">
+                                                        <span className="flex items-center gap-1.5 text-slate-500">
+                                                            <CalendarIcon
+                                                                size={14}
+                                                                className="text-slate-300"
+                                                            />{" "}
+                                                            {new Date(
+                                                                movie.releaseDate,
+                                                            ).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() =>
+                                                                handleEdit(
+                                                                    movie,
+                                                                )
+                                                            }
+                                                            className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-purple-600 hover:text-white hover:shadow-lg hover:shadow-purple-200 transition-all"
+                                                        >
+                                                            <Edit size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    movie._id,
+                                                                )
+                                                            }
+                                                            className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-200 transition-all"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                    <span className="text-[10px] font-bold text-slate-300 italic">
+                                                        ID: ...
+                                                        {movie._id.slice(-6)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                {totalPages > 1 && (
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={setCurrentPage}
                                     />
-                                    <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm text-[10px] font-black text-slate-800">
-                                        Upcoming
-                                    </div>
-                                </div>
-
-                                <div className="flex-1 flex flex-col justify-between py-1 relative z-10">
-                                    <div>
-                                        <div className="flex justify-between items-start mb-1">
-                                            <h3 className="font-black text-xl text-slate-800 line-clamp-1 group-hover:text-purple-600 transition-colors">
-                                                {movie.title}
-                                            </h3>
-                                        </div>
-
-                                        <div className="flex flex-wrap gap-2 mb-3">
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-purple-500 bg-purple-50 px-2 py-1 rounded-md">
-                                                {movie.genre}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center gap-4 text-slate-400 font-bold text-xs uppercase tracking-tighter">
-                                            <span className="flex items-center gap-1.5 text-slate-500">
-                                                <CalendarIcon
-                                                    size={14}
-                                                    className="text-slate-300"
-                                                />{" "}
-                                                {new Date(
-                                                    movie.releaseDate,
-                                                ).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() =>
-                                                    handleEdit(movie)
-                                                }
-                                                className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-purple-600 hover:text-white hover:shadow-lg hover:shadow-purple-200 transition-all"
-                                            >
-                                                <Edit size={16} />
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    handleDelete(movie._id)
-                                                }
-                                                className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-200 transition-all"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                        <span className="text-[10px] font-bold text-slate-300 italic">
-                                            ID: ...{movie._id.slice(-6)}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                )}
+                            </>
+                        );
+                    })()}
 
                     {movies.length === 0 && (
                         <div className="bg-white p-20 rounded-[3rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
@@ -472,3 +506,5 @@ const InputField = ({ icon, error, ...props }) => (
         />
     </div>
 );
+
+export default ManageUpcomingMovies;

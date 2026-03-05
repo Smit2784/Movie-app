@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Lock, Eye, Database, Globe } from "lucide-react";
 
-export const PrivacyPolicy = () => {
+const PrivacyPolicy = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    return (
+    return (    
         <div className="min-h-screen bg-gray-50 flex flex-col items-center py-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl w-full bg-white rounded-3xl shadow-xl overflow-hidden p-8 md:p-12 border border-gray-100 relative">
                 {/* Decorative background */}

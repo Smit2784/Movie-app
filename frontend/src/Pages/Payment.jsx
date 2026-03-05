@@ -8,7 +8,7 @@ import {
     validateUPI,
 } from "../utils/validation";
 
-export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
+const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
     const [paymentMethod, setPaymentMethod] = useState("card");
     const [isProcessing, setIsProcessing] = useState(false);
     const [pageWalletBalance, setPageWalletBalance] = useState(0);
@@ -759,3 +759,5 @@ export const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
         </div>
     );
 };
+
+export default PaymentPage;

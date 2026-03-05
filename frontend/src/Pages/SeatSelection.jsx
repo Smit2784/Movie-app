@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../Contexts/AuthProvider";
 
-export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
+const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
     const [currentShow, setCurrentShow] = useState(show);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -277,3 +277,5 @@ export const SeatSelection = ({ show, onSeatSelect, selectedSeats }) => {
         </div>
     );
 };
+
+export default SeatSelection;

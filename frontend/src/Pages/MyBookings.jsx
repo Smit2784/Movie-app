@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, MapPin, Clock, User, Ticket } from "lucide-react";
 import { useAuth, api } from "../Contexts/AuthProvider";
+import { Pagination } from "../Components/Pagination";
+import { useNavigate } from "react-router-dom";
 
-export const MyBookings = () => {
+const MyBookings = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cancellingIds, setCancellingIds] = useState(new Set());
     const [walletBalance, setWalletBalance] = useState(0);
     const [refundNotifications, setRefundNotifications] = useState(new Map());
     const { token } = useAuth();
+    const navigate = useNavigate();
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 6;
 
     useEffect(() => {
         if (token) {
@@ -28,6 +35,7 @@ export const MyBookings = () => {
             console.error("Error fetching bookings:", error);
         } finally {
             setLoading(false);
+            setCurrentPage(1); // Reset page on new fetch
         }
     };
 
@@ -113,6 +121,14 @@ export const MyBookings = () => {
         );
     }
 
+    // Calculate pagination values
+    const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedBookings = bookings.slice(
+        startIndex,
+        startIndex + ITEMS_PER_PAGE,
+    );
+
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50">
             <div className="bg-linear-to-r from-purple-900 via-blue-900 to-indigo-900 text-white py-12">
@@ -169,196 +185,228 @@ export const MyBookings = () => {
                             You haven't made any movie bookings yet. Start
                             exploring our latest movies!
                         </p>
-                        <button className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                        <button
+                            onClick={() => navigate("/")}
+                            className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                        >
                             Browse Movies
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {bookings.map((booking) => {
-                            const isCancelling = cancellingIds.has(booking._id);
-                            const isCancelled = booking.status === "cancelled";
-                            const showDate = new Date(booking.show.date);
-                            const showTime = booking.show.time;
-                            const [hours, minutes] = showTime.split(":");
-                            const showDateTime = new Date(showDate);
-                            showDateTime.setHours(
-                                parseInt(hours),
-                                parseInt(minutes),
-                            );
-                            const hasShowStarted = showDateTime <= new Date();
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {paginatedBookings.map((booking) => {
+                                const isCancelling = cancellingIds.has(
+                                    booking._id,
+                                );
+                                const isCancelled =
+                                    booking.status === "cancelled";
 
-                            return (
-                                <div
-                                    key={booking._id}
-                                    className={`bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300 ${
-                                        isCancelled ? "opacity-75" : ""
-                                    }`}
-                                >
-                                    <div className="p-8">
-                                        {/* Status Badge */}
+                                if (!booking.show) return null;
 
-                                        <div className="flex justify-between items-start mb-6">
-                                            <h3 className="font-bold text-xl text-gray-800">
-                                                {booking.show.movie.title}
-                                            </h3>
-                                            <span
-                                                className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
-                                                    isCancelled
-                                                        ? "bg-red-100 text-red-800"
-                                                        : "bg-green-100 text-green-800"
-                                                }`}
-                                            >
-                                                {isCancelled
-                                                    ? "Cancelled"
-                                                    : "Confirmed"}
-                                            </span>
-                                        </div>
+                                const showDate = new Date(booking.show.date);
+                                const showTime = booking.show.time;
+                                const [hours, minutes] = showTime.split(":");
+                                const showDateTime = new Date(showDate);
+                                showDateTime.setHours(
+                                    parseInt(hours),
+                                    parseInt(minutes),
+                                );
+                                const hasShowStarted =
+                                    showDateTime <= new Date();
 
-                                        {/* Booking Details */}
+                                return (
+                                    <div
+                                        key={booking._id}
+                                        className={`bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300 ${
+                                            isCancelled ? "opacity-75" : ""
+                                        }`}
+                                    >
+                                        <div className="p-8">
+                                            {/* Status Badge */}
 
-                                        <div className="space-y-4 text-sm text-gray-600 mb-6">
-                                            <div className="flex items-center">
-                                                <MapPin className="h-5 w-5 mr-3 text-purple-600" />
-                                                <span className="font-medium">
-                                                    {booking.show.theater.name}
+                                            <div className="flex justify-between items-start mb-6">
+                                                <h3 className="font-bold text-xl text-gray-800">
+                                                    {booking.show.movie.title}
+                                                </h3>
+                                                <span
+                                                    className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                                                        isCancelled
+                                                            ? "bg-red-100 text-red-800"
+                                                            : "bg-green-100 text-green-800"
+                                                    }`}
+                                                >
+                                                    {isCancelled
+                                                        ? "Cancelled"
+                                                        : "Confirmed"}
                                                 </span>
                                             </div>
-                                            <div className="flex items-center">
-                                                <Calendar className="h-5 w-5 mr-3 text-blue-600" />
-                                                <span>
-                                                    {showDate.toLocaleDateString(
-                                                        "en-IN",
+
+                                            {/* Booking Details */}
+
+                                            <div className="space-y-4 text-sm text-gray-600 mb-6">
+                                                <div className="flex items-center">
+                                                    <MapPin className="h-5 w-5 mr-3 text-purple-600" />
+                                                    <span className="font-medium">
                                                         {
-                                                            weekday: "long",
-                                                            year: "numeric",
-                                                            month: "long",
-                                                            day: "numeric",
-                                                        },
-                                                    )}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <Clock className="h-5 w-5 mr-3 text-green-600" />
-                                                <span>{booking.show.time}</span>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <User className="h-5 w-5 mr-3 text-orange-600" />
-                                                <span className="font-semibold">
-                                                    {booking.seats.join(", ")}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Booking Summary */}
-
-                                        <div className="border-t border-gray-100 pt-6 mb-6">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className="text-sm text-gray-600">
-                                                    Seats:
-                                                </span>
-                                                <span className="font-semibold text-gray-800">
-                                                    {booking.seats.length}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className="text-sm text-gray-600">
-                                                    Total Amount:
-                                                </span>
-                                                <span className="text-xl font-black text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-600">
-                                                    ₹{booking.totalAmount}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-xs text-gray-500">
-                                                    Booking ID:
-                                                </span>
-                                                <span className="text-xs text-gray-500 font-mono">
-                                                    {booking._id.slice(-8)}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Action Buttons */}
-
-                                        <div className="flex space-x-3">
-                                            {/* Cancel Button */}
-
-                                            {!isCancelled &&
-                                                !hasShowStarted && (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleCancelBooking(
-                                                                booking._id,
-                                                                booking.show
-                                                                    .movie
-                                                                    .title,
-                                                                booking.totalAmount,
-                                                            )
+                                                            booking.show.theater
+                                                                .name
                                                         }
-                                                        disabled={isCancelling}
-                                                        className="flex-1 bg-linear-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                                                    >
-                                                        {isCancelling ? (
-                                                            <div className="flex items-center justify-center space-x-2">
-                                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                                                <span>
-                                                                    Cancelling...
-                                                                </span>
-                                                            </div>
-                                                        ) : (
-                                                            "Cancel Booking"
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <Calendar className="h-5 w-5 mr-3 text-blue-600" />
+                                                    <span>
+                                                        {showDate.toLocaleDateString(
+                                                            "en-IN",
+                                                            {
+                                                                weekday: "long",
+                                                                year: "numeric",
+                                                                month: "long",
+                                                                day: "numeric",
+                                                            },
                                                         )}
-                                                    </button>
-                                                )}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <Clock className="h-5 w-5 mr-3 text-green-600" />
+                                                    <span>
+                                                        {booking.show.time}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <User className="h-5 w-5 mr-3 text-orange-600" />
+                                                    <span className="font-semibold">
+                                                        {booking.seats.join(
+                                                            ", ",
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            </div>
 
-                                            {/* View Ticket Button */}
+                                            {/* Booking Summary */}
 
-                                            <button
-                                                onClick={() => window.print()}
-                                                className={`${
-                                                    !isCancelled &&
-                                                    !hasShowStarted
-                                                        ? "flex-1"
-                                                        : "w-full"
-                                                } bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105`}
-                                            >
-                                                {isCancelled
-                                                    ? "View Cancelled Ticket"
-                                                    : "View Ticket"}
-                                            </button>
+                                            <div className="border-t border-gray-100 pt-6 mb-6">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className="text-sm text-gray-600">
+                                                        Seats:
+                                                    </span>
+                                                    <span className="font-semibold text-gray-800">
+                                                        {booking.seats.length}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className="text-sm text-gray-600">
+                                                        Total Amount:
+                                                    </span>
+                                                    <span className="text-xl font-black text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-600">
+                                                        ₹{booking.totalAmount}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-xs text-gray-500">
+                                                        Booking ID:
+                                                    </span>
+                                                    <span className="text-xs text-gray-500 font-mono">
+                                                        {booking._id.slice(-8)}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Action Buttons */}
+
+                                            <div className="flex space-x-3">
+                                                {/* Cancel Button */}
+
+                                                {!isCancelled &&
+                                                    !hasShowStarted && (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleCancelBooking(
+                                                                    booking._id,
+                                                                    booking.show
+                                                                        .movie
+                                                                        .title,
+                                                                    booking.totalAmount,
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                isCancelling
+                                                            }
+                                                            className="flex-1 bg-linear-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                                        >
+                                                            {isCancelling ? (
+                                                                <div className="flex items-center justify-center space-x-2">
+                                                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                                                    <span>
+                                                                        Cancelling...
+                                                                    </span>
+                                                                </div>
+                                                            ) : (
+                                                                "Cancel Booking"
+                                                            )}
+                                                        </button>
+                                                    )}
+
+                                                {/* View Ticket Button */}
+
+                                                <button
+                                                    onClick={() =>
+                                                        window.print()
+                                                    }
+                                                    className={`${
+                                                        !isCancelled &&
+                                                        !hasShowStarted
+                                                            ? "flex-1"
+                                                            : "w-full"
+                                                    } bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105`}
+                                                >
+                                                    {isCancelled
+                                                        ? "View Cancelled Ticket"
+                                                        : "View Ticket"}
+                                                </button>
+                                            </div>
+                                            {/* Cancellation Info */}
+
+                                            {isCancelled && (
+                                                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                                    <p className="text-red-700 text-sm font-medium">
+                                                        ⚠️ This booking has been
+                                                        cancelled. Refund will
+                                                        be processed within 5-7
+                                                        working days.
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {/* Show Started Info */}
+
+                                            {!isCancelled && hasShowStarted && (
+                                                <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                                                    <p className="text-gray-600 text-sm">
+                                                        ℹ️ Show has started.
+                                                        Cancellation is no
+                                                        longer available.
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
-                                        {/* Cancellation Info */}
-
-                                        {isCancelled && (
-                                            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-                                                <p className="text-red-700 text-sm font-medium">
-                                                    ⚠️ This booking has been
-                                                    cancelled. Refund will be
-                                                    processed within 5-7 working
-                                                    days.
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {/* Show Started Info */}
-
-                                        {!isCancelled && hasShowStarted && (
-                                            <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-                                                <p className="text-gray-600 text-sm">
-                                                    ℹ️ Show has started.
-                                                    Cancellation is no longer
-                                                    available.
-                                                </p>
-                                            </div>
-                                        )}
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                        {totalPages > 1 && (
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                            />
+                        )}
+                    </>
                 )}
             </div>
         </div>
     );
 };
+
+export default MyBookings;

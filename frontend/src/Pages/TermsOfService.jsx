@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FileText, AlertCircle, CheckCircle, HelpCircle } from "lucide-react";
 
-export const TermsOfService = () => {
+const TermsOfService = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);

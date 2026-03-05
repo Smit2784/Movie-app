@@ -3,7 +3,7 @@ import { useAuth } from "../Contexts/AuthProvider";
 import { User, Lock, Save, ArrowLeft } from "lucide-react";
 import { validateName, validatePassword } from "../utils/validation";
 
-export const UpdateProfile = ({ onBack }) => {
+const UpdateProfile = ({ onBack }) => {
     const { user, token, updateUser } = useAuth();
     const [formData, setFormData] = useState({
         name: user?.name || "",
@@ -275,3 +275,5 @@ export const UpdateProfile = ({ onBack }) => {
         </div>
     );
 };
+
+export default UpdateProfile;

@@ -12,11 +12,12 @@ import {
     Zap,
 } from "lucide-react";
 import {
-    validateMinLength,
     validatePositiveNumber,
+    validateMinLength,
 } from "../../utils/validation";
+import { Pagination } from "../../Components/Pagination";
 
-export const ManageTheaters = ({ onBack }) => {
+const ManageTheaters = ({ onBack }) => {
     const [theaters, setTheaters] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editId, setEditId] = useState(null);
@@ -28,6 +29,10 @@ export const ManageTheaters = ({ onBack }) => {
         facilities: "",
     });
     const [errors, setErrors] = useState({});
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
         fetchTheaters();
@@ -45,7 +50,10 @@ export const ManageTheaters = ({ onBack }) => {
                 },
             );
             const data = await res.json();
-            if (data.theater) setTheaters(data.theater);
+            if (data.theater) {
+                setTheaters(data.theater);
+                setCurrentPage(1);
+            }
         } catch (error) {
             console.error("Error fetching theaters:", error);
         }
@@ -395,103 +403,164 @@ export const ManageTheaters = ({ onBack }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {theaters.length > 0 ? (
-                            theaters.map((theater) => (
-                                <div
-                                    key={theater._id}
-                                    className="group bg-white p-6 rounded-[2.5rem] shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 relative overflow-hidden"
-                                >
-                                    {/* Ambient Glow */}
-                                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-50 rounded-full group-hover:bg-emerald-100 transition-colors duration-500 blur-3xl opacity-50"></div>
+                            (() => {
+                                const totalPages = Math.ceil(
+                                    theaters.length / ITEMS_PER_PAGE,
+                                );
+                                const startIndex =
+                                    (currentPage - 1) * ITEMS_PER_PAGE;
+                                const paginatedTheaters = theaters.slice(
+                                    startIndex,
+                                    startIndex + ITEMS_PER_PAGE,
+                                );
 
-                                    <div className="relative z-10">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <h3 className="text-2xl font-black text-slate-800 tracking-tight group-hover:text-emerald-600 transition-colors">
-                                                    {theater.name}
-                                                </h3>
-                                                <p className="text-slate-400 text-xs font-bold flex items-center gap-1.5 mt-1 uppercase tracking-tighter">
-                                                    <MapPin
-                                                        size={12}
-                                                        className="text-emerald-500"
-                                                    />
-                                                    {theater.location}
-                                                </p>
-                                            </div>
-                                            <div className="flex gap-1">
-                                                <button
-                                                    onClick={() =>
-                                                        handleEdit(theater)
-                                                    }
-                                                    className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300"
-                                                >
-                                                    <Edit size={16} />
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handleDelete(
-                                                            theater._id,
-                                                        )
-                                                    }
-                                                    className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
-                                        </div>
+                                return (
+                                    <>
+                                        {paginatedTheaters.map((theater) => (
+                                            <div
+                                                key={theater._id}
+                                                className="group bg-white p-6 rounded-[2.5rem] shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 relative overflow-hidden"
+                                            >
+                                                {/* Ambient Glow */}
+                                                <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-50 rounded-full group-hover:bg-emerald-100 transition-colors duration-500 blur-3xl opacity-50"></div>
 
-                                        <div className="grid grid-cols-2 gap-4 py-5 border-y border-slate-50">
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-slate-300 uppercase font-black tracking-widest mb-1">
-                                                    Total Capacity
-                                                </span>
-                                                <span className="text-slate-700 font-black text-lg flex items-center gap-2">
-                                                    <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
-                                                        <Armchair size={14} />
+                                                <div className="relative z-10">
+                                                    <div className="flex justify-between items-start mb-4">
+                                                        <div>
+                                                            <h3 className="text-2xl font-black text-slate-800 tracking-tight group-hover:text-emerald-600 transition-colors">
+                                                                {theater.name}
+                                                            </h3>
+                                                            <p className="text-slate-400 text-xs font-bold flex items-center gap-1.5 mt-1 uppercase tracking-tighter">
+                                                                <MapPin
+                                                                    size={12}
+                                                                    className="text-emerald-500"
+                                                                />
+                                                                {
+                                                                    theater.location
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-1">
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleEdit(
+                                                                        theater,
+                                                                    )
+                                                                }
+                                                                className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300"
+                                                            >
+                                                                <Edit
+                                                                    size={16}
+                                                                />
+                                                            </button>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        theater._id,
+                                                                    )
+                                                                }
+                                                                className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300"
+                                                            >
+                                                                <Trash2
+                                                                    size={16}
+                                                                />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    {theater.capacity} Seats
-                                                </span>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-slate-300 uppercase font-black tracking-widest mb-1">
-                                                    Projection Units
-                                                </span>
-                                                <span className="text-slate-700 font-black text-lg flex items-center gap-2">
-                                                    <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600">
-                                                        <Monitor size={14} />
-                                                    </div>
-                                                    {theater.screens} Units
-                                                </span>
-                                            </div>
-                                        </div>
 
-                                        <div className="flex flex-wrap gap-2 mt-5">
-                                            {theater.facilities &&
-                                            theater.facilities.length > 0 ? (
-                                                theater.facilities.map(
-                                                    (fac, i) => (
-                                                        <span
-                                                            key={i}
-                                                            className="px-3 py-1.5 bg-slate-50 text-slate-500 text-[10px] font-black rounded-lg border border-slate-100 flex items-center gap-2 group-hover:bg-white group-hover:border-emerald-100 group-hover:text-emerald-600 transition-all duration-300"
-                                                        >
-                                                            <Zap
-                                                                size={10}
-                                                                className="text-emerald-400"
-                                                            />
-                                                            {fac}
-                                                        </span>
-                                                    ),
-                                                )
-                                            ) : (
-                                                <span className="text-[10px] text-slate-300 font-bold italic py-1">
-                                                    Basic Infrastructure Only
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
+                                                    <div className="grid grid-cols-2 gap-4 py-5 border-y border-slate-50">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[10px] text-slate-300 uppercase font-black tracking-widest mb-1">
+                                                                Total Capacity
+                                                            </span>
+                                                            <span className="text-slate-700 font-black text-lg flex items-center gap-2">
+                                                                <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
+                                                                    <Armchair
+                                                                        size={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                                {
+                                                                    theater.capacity
+                                                                }{" "}
+                                                                Seats
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[10px] text-slate-300 uppercase font-black tracking-widest mb-1">
+                                                                Projection Units
+                                                            </span>
+                                                            <span className="text-slate-700 font-black text-lg flex items-center gap-2">
+                                                                <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600">
+                                                                    <Monitor
+                                                                        size={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                                {
+                                                                    theater.screens
+                                                                }{" "}
+                                                                Units
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex flex-wrap gap-2 mt-5">
+                                                        {theater.facilities &&
+                                                        theater.facilities
+                                                            .length > 0 ? (
+                                                            theater.facilities.map(
+                                                                (fac, i) => (
+                                                                    <span
+                                                                        key={i}
+                                                                        className="px-3 py-1.5 bg-slate-50 text-slate-500 text-[10px] font-black rounded-lg border border-slate-100 flex items-center gap-2 group-hover:bg-white group-hover:border-emerald-100 group-hover:text-emerald-600 transition-all duration-300"
+                                                                    >
+                                                                        <Zap
+                                                                            size={
+                                                                                10
+                                                                            }
+                                                                            className="text-emerald-400"
+                                                                        />
+                                                                        {fac}
+                                                                    </span>
+                                                                ),
+                                                            )
+                                                        ) : (
+                                                            <span className="text-[10px] text-slate-300 font-bold italic py-1">
+                                                                Basic
+                                                                Infrastructure
+                                                                Only
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        {/* Pagination Component */}
+                                        {Math.ceil(
+                                            theaters.length / ITEMS_PER_PAGE,
+                                        ) > 1 && (
+                                            <div className="col-span-1 md:col-span-2 flex justify-center mt-6">
+                                                <Pagination
+                                                    currentPage={currentPage}
+                                                    totalPages={Math.ceil(
+                                                        theaters.length /
+                                                            ITEMS_PER_PAGE,
+                                                    )}
+                                                    onPageChange={
+                                                        setCurrentPage
+                                                    }
+                                                />
+                                            </div>
+                                        )}
+                                    </>
+                                );
+                            })()
                         ) : (
-                            <div className="col-span-2 py-20 bg-white rounded-[3rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
+                            <div className="col-span-1 md:col-span-2 py-20 bg-white rounded-[3rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
                                 <div className="p-8 bg-slate-50 rounded-full text-slate-200 mb-6">
                                     <Building2 size={64} />
                                 </div>
@@ -510,3 +579,5 @@ export const ManageTheaters = ({ onBack }) => {
         </div>
     );
 };
+
+export default ManageTheaters;

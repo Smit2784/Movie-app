@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Calendar, Film, Search } from "lucide-react";
 import { api } from "../Contexts/AuthProvider";
+import { Pagination } from "../Components/Pagination";
 
 // Category Dropdown Component
 const EnhancedCategoryDropdown = ({ selectedCategory, onCategoryChange }) => {
@@ -489,6 +490,10 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
 
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 8;
+
     // ✅ UPDATED: Fetch upcoming movies from the new API
     useEffect(() => {
         const fetchUpcomingMovies = async () => {
@@ -533,6 +538,19 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
 
         fetchUpcomingMovies();
     }, [selectedCategory, searchTerm]); // Re-fetch when filters change
+
+    // Reset pagination when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, selectedCategory]);
+
+    // Calculate pagination values
+    const totalPages = Math.ceil(upcomingMovies.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedMovies = upcomingMovies.slice(
+        startIndex,
+        startIndex + ITEMS_PER_PAGE,
+    );
 
     // ✅ UPDATED: Seed upcoming movies function
     const seedUpcomingMovies = async () => {
@@ -841,19 +859,31 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                        {upcomingMovies.map((movie, index) => (
-                            <UpcomingMovieCard
-                                key={movie._id}
-                                movie={{
-                                    ...movie,
-                                    status: getMovieStatus(movie.releaseDate), // Add dynamic status
-                                }}
-                                onSelect={onMovieSelect}
-                                index={index}
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            {paginatedMovies.map((movie, index) => (
+                                <UpcomingMovieCard
+                                    key={movie._id}
+                                    movie={{
+                                        ...movie,
+                                        status: getMovieStatus(
+                                            movie.releaseDate,
+                                        ), // Add dynamic status
+                                    }}
+                                    onSelect={onMovieSelect}
+                                    index={index}
+                                />
+                            ))}
+                        </div>
+
+                        {totalPages > 1 && (
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
                             />
-                        ))}
-                    </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

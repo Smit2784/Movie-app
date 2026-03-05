@@ -3,6 +3,7 @@ import { api } from "../Contexts/AuthProvider";
 import { SearchAndCategoryFilter } from "./UpcomingMovies";
 import { Film } from "lucide-react";
 import { Star, Clock } from "lucide-react";
+import { Pagination } from "../Components/Pagination";
 
 //Movie Card Component
 const EnhancedMovieCard = ({ movie, onSelect, index }) => {
@@ -101,6 +102,10 @@ const Home = ({ onMovieSelect }) => {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [loading, setLoading] = useState(true);
 
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 8;
+
     useEffect(() => {
         fetchMovies();
     }, []);
@@ -154,6 +159,19 @@ const Home = ({ onMovieSelect }) => {
 
         return matchesSearch && matchesCategory;
     });
+
+    // Reset pagination when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, selectedCategory]);
+
+    // Calculate pagination values
+    const totalPages = Math.ceil(filteredMovies.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedMovies = filteredMovies.slice(
+        startIndex,
+        startIndex + ITEMS_PER_PAGE,
+    );
 
     if (loading) {
         return (
@@ -369,16 +387,26 @@ const Home = ({ onMovieSelect }) => {
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                        {filteredMovies.map((movie, index) => (
-                            <EnhancedMovieCard
-                                key={movie._id}
-                                movie={movie}
-                                onSelect={onMovieSelect}
-                                index={index}
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            {paginatedMovies.map((movie, index) => (
+                                <EnhancedMovieCard
+                                    key={movie._id}
+                                    movie={movie}
+                                    onSelect={onMovieSelect}
+                                    index={index}
+                                />
+                            ))}
+                        </div>
+
+                        {totalPages > 1 && (
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
                             />
-                        ))}
-                    </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
