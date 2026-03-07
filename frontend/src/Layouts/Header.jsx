@@ -281,7 +281,7 @@ const Header = () => {
                         <Link
                             key={link.path}
                             to={link.path}
-                            className={`flex flex-col items-center gap-1 p-2 min-w-[64px] transition-all duration-300 ${
+                            className={`flex flex-col items-center gap-1 p-2 min-w-16 transition-all duration-300 ${
                                 isActive(link.path)
                                     ? "text-purple-400"
                                     : "text-slate-400 hover:text-white"

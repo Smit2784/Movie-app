@@ -483,7 +483,7 @@ const UpcomingMovieCard = ({ movie, onSelect, index }) => {
 };
 
 // Complete UpcomingMovies Component with Your Enhanced Card Style
-export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
+const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
     const [upcomingMovies, setUpcomingMovies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -889,3 +889,5 @@ export const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
         </div>
     );
 };
+
+export default UpcomingMovies;
