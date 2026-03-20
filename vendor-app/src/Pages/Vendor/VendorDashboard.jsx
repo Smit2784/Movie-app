@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
     Building2,
@@ -11,8 +12,9 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider";
 
-const VendorDashboard = ({ setCurrentPage }) => {
+const VendorDashboard = () => {
     const { user } = useAuth();
+    const navigate = useNavigate()
     const [stats, setStats] = useState({
         theaters: 0,
         shows: 0,
@@ -68,52 +70,6 @@ const VendorDashboard = ({ setCurrentPage }) => {
                 }
                 .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
             `}</style>
-
-            {/* Sidebar */}
-            {/* <aside className="w-full md:w-72 bg-slate-950 text-white flex flex-col relative z-20 shadow-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,var(--tw-gradient-stops))] from-violet-900/20 via-transparent to-transparent"></div>
-
-                <div className="relative z-10 flex flex-col h-full p-6">
-                    <div className="mb-12 flex items-center gap-3 px-2">
-                        <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/40">
-                            <Activity size={24} className="text-white" />
-                        </div>
-                        <h2 className="text-xl font-black tracking-tight bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400">
-                            Vendor Portal
-                        </h2>
-                    </div>
-                    <nav className="space-y-1.5 flex-1">
-                        {menuItems.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => setCurrentPage(item.id)}
-                                className={`w-full flex items-center justify-between p-3.5 rounded-xl transition-all duration-300 group ${
-                                    item.id === "vendor-dashboard"
-                                        ? "bg-linear-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-900/40"
-                                        : "text-slate-400 hover:bg-white/5 hover:text-white"
-                                }`}
-                            >
-                                <div className="flex items-center gap-4">
-                                    <span
-                                        className={`${item.id === "vendor-dashboard" ? "text-white" : "group-hover:text-violet-400"} transition-colors`}
-                                    >
-                                        {item.icon}
-                                    </span>
-                                    <span className="font-semibold text-sm tracking-wide">
-                                        {item.label}
-                                    </span>
-                                </div>
-                                {item.id === "vendor-dashboard" && (
-                                    <ChevronRight
-                                        size={14}
-                                        className="opacity-50"
-                                    />
-                                )}
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-            </aside> */}
 
             {/* Main Content */}
             <main className="flex-1 p-6 md:p-10 lg:p-14 overflow-y-auto relative">
@@ -203,7 +159,7 @@ const VendorDashboard = ({ setCurrentPage }) => {
                             <div className="flex flex-wrap gap-5">
                                 <ActionButton
                                     onClick={() =>
-                                        setCurrentPage("vendor-shows")
+                                        navigate("/shows")
                                     }
                                     label="Schedule Show"
                                     icon={<Calendar size={20} />}
@@ -211,7 +167,7 @@ const VendorDashboard = ({ setCurrentPage }) => {
                                 />
                                 <ActionButton
                                     onClick={() =>
-                                        setCurrentPage("vendor-theaters")
+                                        navigate("/theaters")
                                     }
                                     label="Setup Theater"
                                     icon={<Building2 size={20} />}

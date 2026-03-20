@@ -53,7 +53,7 @@ const Footer = () => {
                                     Support Email
                                 </p>
                                 <p className="text-sm font-bold text-slate-200">
-                                    bookings@movietix.com
+                                    MovieTix00@gmail.com
                                 </p>
                             </div>
                         </div>
@@ -70,7 +70,7 @@ const Footer = () => {
                                 label="Upcoming Movies"
                             />
                             <FooterLink to="/giftcards" label="Gift Cards" />
-                            <FooterLink to="/latest-offers" label="Latest Offers" />
+                            {/* <FooterLink to="/latest-offers" label="Latest Offers" /> */}
                         </ul>
                     </div>
 
@@ -147,11 +147,11 @@ const Footer = () => {
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-center md:text-left order-2 md:order-1">
                         <p className="text-slate-500 text-sm font-bold">
-                            © 2026{" "}
+                            &copy; {new Date().getFullYear()} &nbsp; 
                             <span className="text-white font-black tracking-tight">
                                 MOVIETIX
                             </span>
-                            . All rights reserved.
+                            . &nbsp;All rights reserved.
                         </p>
                     </div>
 

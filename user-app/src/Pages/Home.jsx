@@ -198,7 +198,7 @@ const Home = ({ onMovieSelect }) => {
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-                    <div className="absolute top-40 right-20 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+                    <div className="absolute top-40 right-20 w-72 h-72 bg-mauve-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
                     <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
                 </div>
 
@@ -206,7 +206,7 @@ const Home = ({ onMovieSelect }) => {
                     <div className="text-center max-w-6xl mx-auto">
                         <h1 className="text-6xl lg:text-8xl font-black mb-8 leading-tight">
                             <span className="block text-white drop-shadow-2xl">
-                                Book Your
+                                Book Your   
                             </span>
                             <span className="block text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400 drop-shadow-2xl">
                                 Movie Tickets

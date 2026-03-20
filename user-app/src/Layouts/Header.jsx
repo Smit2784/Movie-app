@@ -154,7 +154,8 @@ const Header = () => {
                                                     {user.name}
                                                 </p>
                                                 <p className="text-[10px] font-bold text-purple-300/70 uppercase tracking-tighter italic">
-                                                    {user.role}
+                                                    {/* {user.role} */}
+                                                    USER
                                                 </p>
                                             </div>
                                             <ChevronDown
@@ -203,7 +204,7 @@ const Header = () => {
                                                         )}
                                                     />
 
-                                                    {(user.role === "admin" ||
+                                                    {/* {(user.role === "admin" ||
                                                         user.role ===
                                                             "vendor") && (
                                                         <DropdownItem
@@ -237,7 +238,7 @@ const Header = () => {
                                                                     : "/vendor",
                                                             )}
                                                         />
-                                                    )}
+                                                    )} */}
 
                                                     <button
                                                         onClick={() => {

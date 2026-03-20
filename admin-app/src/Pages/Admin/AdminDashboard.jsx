@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
     Film,
@@ -14,8 +15,9 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider";
 
-const AdminDashboard = ({ setCurrentPage }) => {
+const AdminDashboard = () => {
     const { user } = useAuth();
+    const navigate = useNavigate()
     const [stats, setStats] = useState({
         movies: 0,
         theaters: 0,
@@ -100,52 +102,6 @@ const AdminDashboard = ({ setCurrentPage }) => {
                 }
                 .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
             `}</style>
-
-            {/* Sidebar */}
-            {/* <aside className="w-full md:w-72 bg-slate-950 text-white flex flex-col relative z-20 shadow-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
-
-                <div className="relative z-10 flex flex-col h-full p-6"> 
-                    <div className="mb-12 flex items-center gap-3 px-2">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/40">
-                            <Activity size={24} className="text-white" />
-                        </div>
-                        <h2 className="text-xl font-black tracking-tight bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400">
-                            CineAdmin
-                        </h2>
-                    </div>  
-                    <nav className="space-y-1.5 flex-1">
-                        {menuItems.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => setCurrentPage(item.id)}
-                                className={`w-full flex items-center justify-between p-3.5 rounded-xl transition-all duration-300 group ${
-                                    item.id === "admin-dashboard"
-                                        ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/40"
-                                        : "text-slate-400 hover:bg-white/5 hover:text-white"
-                                }`}
-                            >
-                                <div className="flex items-center gap-4">
-                                    <span
-                                        className={`${item.id === "admin-dashboard" ? "text-white" : "group-hover:text-blue-400"} transition-colors`}
-                                    >
-                                        {item.icon}
-                                    </span>
-                                    <span className="font-semibold text-sm tracking-wide">
-                                        {item.label}
-                                    </span>
-                                </div>
-                                {item.id === "admin-dashboard" && (
-                                    <ChevronRight
-                                        size={14}
-                                        className="opacity-50"
-                                    />
-                                )}
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-            </aside> */}
 
             {/* Main Content */}
             <main className="flex-1 p-6 md:p-10 lg:p-14 overflow-y-auto relative">
@@ -244,7 +200,7 @@ const AdminDashboard = ({ setCurrentPage }) => {
                             <div className="flex flex-wrap gap-5">
                                 <ActionButton
                                     onClick={() =>
-                                        setCurrentPage("admin-movies")
+                                        navigate("/movies")
                                     }
                                     label="Add New Movie"
                                     icon={<Film size={20} />}
@@ -252,7 +208,7 @@ const AdminDashboard = ({ setCurrentPage }) => {
                                 />
                                 <ActionButton
                                     onClick={() =>
-                                        setCurrentPage("admin-upcoming-movies")
+                                        navigate("/upcoming-movies")
                                     }
                                     label="Add Upcoming Movie"
                                     icon={<Calendar size={20} />}

@@ -1,6 +1,8 @@
 const Booking = require("../models/Booking");
 const Show = require("../models/Show");
 const User = require("../models/User");
+const sendBookingMail = require("../utils/sendBookingMail");
+const sendCancellationMail = require("../utils/sendCancellationMail");
 
 // Create Booking
 exports.createBooking = async (req, res) => {
@@ -22,13 +24,14 @@ exports.createBooking = async (req, res) => {
                 $push: { bookedSeats: { $each: requestedSeatsStr } },
                 $inc: { availableSeats: -seats.length },
             },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true },
         );
 
         if (!updatedShow) {
             return res.status(400).json({
                 success: false,
-                message: "Selected seats are no longer available. Please refresh and choose different seats.",
+                message:
+                    "Selected seats are no longer available. Please refresh and choose different seats.",
             });
         }
 
@@ -47,9 +50,23 @@ exports.createBooking = async (req, res) => {
         const booking = new Booking(bookingData);
         const savedBooking = await booking.save();
 
-        const populatedBooking = await Booking.findById(savedBooking._id).populate({
+        const populatedBooking = await Booking.findById(
+            savedBooking._id,
+        ).populate({
             path: "show",
             populate: [{ path: "movie" }, { path: "theater" }],
+        });
+
+        // SEND BOOKING CONFIRMATION MAIL
+        const user = await User.findById(req.user.userId);
+
+        await sendBookingMail(user, {
+            _id: populatedBooking._id,
+            movieTitle: populatedBooking.show.movie.title,
+            theatreName: populatedBooking.show.theater.name,
+            showTime: populatedBooking.show.time,
+            seats: populatedBooking.seats,
+            totalAmount: populatedBooking.totalAmount,
         });
 
         res.status(201).json({
@@ -64,7 +81,7 @@ exports.createBooking = async (req, res) => {
                     $pull: { bookedSeats: { $in: reservedSeats } },
                     $inc: { availableSeats: reservedSeats.length },
                 });
-            } catch (rollbackError) { }
+            } catch (rollbackError) {}
         }
 
         res.status(500).json({
@@ -81,7 +98,10 @@ exports.walletPayment = async (req, res) => {
         const { showId, seats, totalAmount } = req.body;
 
         if (!showId || !seats || !totalAmount) {
-            return res.status(400).json({ success: false, message: "Missing required booking information" });
+            return res.status(400).json({
+                success: false,
+                message: "Missing required booking information",
+            });
         }
 
         const requestedSeatsStr = seats.map((seat) => String(seat));
@@ -92,11 +112,14 @@ exports.walletPayment = async (req, res) => {
                 walletBalance: { $gte: totalAmount },
             },
             { $inc: { walletBalance: -totalAmount } },
-            { new: true }
+            { new: true },
         );
 
         if (!updatedUser) {
-            return res.status(400).json({ success: false, message: "Insufficient wallet balance" });
+            return res.status(400).json({
+                success: false,
+                message: "Insufficient wallet balance",
+            });
         }
 
         const updatedShow = await Show.findOneAndUpdate(
@@ -109,14 +132,17 @@ exports.walletPayment = async (req, res) => {
                 $push: { bookedSeats: { $each: requestedSeatsStr } },
                 $inc: { availableSeats: -seats.length },
             },
-            { new: true }
+            { new: true },
         );
 
         if (!updatedShow) {
             await User.findByIdAndUpdate(req.user.userId, {
                 $inc: { walletBalance: totalAmount },
             });
-            return res.status(400).json({ success: false, message: "Selected seats are no longer available." });
+            return res.status(400).json({
+                success: false,
+                message: "Selected seats are no longer available.",
+            });
         }
 
         const booking = new Booking({
@@ -129,9 +155,23 @@ exports.walletPayment = async (req, res) => {
         });
 
         const savedBooking = await booking.save();
-        const populatedBooking = await Booking.findById(savedBooking._id).populate({
+        const populatedBooking = await Booking.findById(
+            savedBooking._id,
+        ).populate({
             path: "show",
             populate: [{ path: "movie" }, { path: "theater" }],
+        });
+
+        // SEND BOOKING CONFIRMATION MAIL
+        const user = await User.findById(req.user.userId);
+
+        await sendBookingMail(user, {
+            _id: populatedBooking._id,
+            movieTitle: populatedBooking.show.movie.title,
+            theatreName: populatedBooking.show.theater.name,
+            showTime: populatedBooking.show.time,
+            seats: populatedBooking.seats,
+            totalAmount: populatedBooking.totalAmount,
         });
 
         res.status(201).json({
@@ -152,7 +192,14 @@ exports.walletPayment = async (req, res) => {
 // Split Payment
 exports.splitPayment = async (req, res) => {
     try {
-        const { showId, seats, totalAmount, walletAmount, externalPayment, paymentMethod } = req.body;
+        const {
+            showId,
+            seats,
+            totalAmount,
+            walletAmount,
+            externalPayment,
+            paymentMethod,
+        } = req.body;
         const requestedSeatsStr = seats.map((seat) => String(seat));
 
         const updatedUser = await User.findOneAndUpdate(
@@ -161,11 +208,14 @@ exports.splitPayment = async (req, res) => {
                 walletBalance: { $gte: walletAmount },
             },
             { $inc: { walletBalance: -walletAmount } },
-            { new: true }
+            { new: true },
         );
 
         if (!updatedUser) {
-            return res.status(400).json({ success: false, message: "Insufficient wallet balance for split payment" });
+            return res.status(400).json({
+                success: false,
+                message: "Insufficient wallet balance for split payment",
+            });
         }
 
         const updatedShow = await Show.findOneAndUpdate(
@@ -178,12 +228,17 @@ exports.splitPayment = async (req, res) => {
                 $push: { bookedSeats: { $each: requestedSeatsStr } },
                 $inc: { availableSeats: -seats.length },
             },
-            { new: true }
+            { new: true },
         );
 
         if (!updatedShow) {
-            await User.findByIdAndUpdate(req.user.userId, { $inc: { walletBalance: walletAmount } });
-            return res.status(400).json({ success: false, message: "Selected seats are no longer available." });
+            await User.findByIdAndUpdate(req.user.userId, {
+                $inc: { walletBalance: walletAmount },
+            });
+            return res.status(400).json({
+                success: false,
+                message: "Selected seats are no longer available.",
+            });
         }
 
         const booking = new Booking({
@@ -196,9 +251,23 @@ exports.splitPayment = async (req, res) => {
         });
 
         const savedBooking = await booking.save();
-        const populatedBooking = await Booking.findById(savedBooking._id).populate({
+        const populatedBooking = await Booking.findById(
+            savedBooking._id,
+        ).populate({
             path: "show",
             populate: [{ path: "movie" }, { path: "theater" }],
+        });
+
+        // SEND BOOKING CONFIRMATION MAIL
+        const user = await User.findById(req.user.userId);
+
+        await sendBookingMail(user, {
+            _id: populatedBooking._id,
+            movieTitle: populatedBooking.show.movie.title,
+            theatreName: populatedBooking.show.theater.name,
+            showTime: populatedBooking.show.time,
+            seats: populatedBooking.seats,
+            totalAmount: populatedBooking.totalAmount,
         });
 
         res.status(201).json({
@@ -210,7 +279,11 @@ exports.splitPayment = async (req, res) => {
             message: "Split payment successful",
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Split payment failed.", error: error.message });
+        res.status(500).json({
+            success: false,
+            message: "Split payment failed.",
+            error: error.message,
+        });
     }
 };
 
@@ -233,14 +306,22 @@ exports.getUserBookings = async (req, res) => {
 // Cancel Booking
 exports.cancelBooking = async (req, res) => {
     try {
-        const booking = await Booking.findById(req.params.id).populate("show");
+        const booking = await Booking.findById(req.params.id).populate({
+            path: "show",
+            populate: [{ path: "movie" }, { path: "theater" }],
+        });
 
-        if (!booking) return res.status(404).json({ message: "Booking not found" });
+        if (!booking)
+            return res.status(404).json({ message: "Booking not found" });
         if (booking.user.toString() !== req.user.userId) {
-            return res.status(403).json({ message: "You can only cancel your own bookings" });
+            return res
+                .status(403)
+                .json({ message: "You can only cancel your own bookings" });
         }
         if (booking.status === "cancelled") {
-            return res.status(400).json({ message: "Booking is already cancelled" });
+            return res
+                .status(400)
+                .json({ message: "Booking is already cancelled" });
         }
 
         const now = new Date();
@@ -249,12 +330,17 @@ exports.cancelBooking = async (req, res) => {
         showDateTime.setHours(parseInt(hours), parseInt(minutes));
 
         if (showDateTime <= now) {
-            return res.status(400).json({ message: "Cannot cancel booking for a show that has already started" });
+            return res.status(400).json({
+                message:
+                    "Cannot cancel booking for a show that has already started",
+            });
         }
 
         const show = await Show.findById(booking.show._id);
         if (show) {
-            show.bookedSeats = show.bookedSeats.filter((seat) => !booking.seats.includes(seat));
+            show.bookedSeats = show.bookedSeats.filter(
+                (seat) => !booking.seats.includes(seat),
+            );
             show.availableSeats += booking.seats.length;
             await show.save();
         }
@@ -262,21 +348,41 @@ exports.cancelBooking = async (req, res) => {
         booking.status = "cancelled";
         await booking.save();
 
-        setTimeout(async () => {
-            try {
-                await User.findByIdAndUpdate(req.user.userId, { $inc: { walletBalance: booking.totalAmount } });
-            } catch (error) {
-                console.error("Error processing wallet refund:", error);
-            }
-        }, Math.floor(Math.random() * 3000) + 5000);
+        // SEND CANCELLATION MAIL
+        const user = await User.findById(req.user.userId);
+
+        await sendCancellationMail(user, {
+            _id: booking._id,
+            movieTitle: booking.show.movie.title,
+            theatreName: booking.show.theater.name,
+            showTime: booking.show.time,
+            seats: booking.seats,
+        });
+
+        setTimeout(
+            async () => {
+                try {
+                    await User.findByIdAndUpdate(req.user.userId, {
+                        $inc: { walletBalance: booking.totalAmount },
+                    });
+                } catch (error) {
+                    console.error("Error processing wallet refund:", error);
+                }
+            },
+            Math.floor(Math.random() * 3000) + 5000,
+        );
 
         res.json({
-            message: "Booking cancelled successfully. Refund will be credited to your wallet in 5-7 seconds.",
+            message:
+                "Booking cancelled successfully. Refund will be credited to your wallet in 5-7 seconds.",
             booking: booking,
             refundAmount: booking.totalAmount,
         });
     } catch (error) {
-        res.status(500).json({ message: "Failed to cancel booking", error: error.message });
+        res.status(500).json({
+            message: "Failed to cancel booking",
+            error: error.message,
+        });
     }
 };
 
@@ -287,12 +393,18 @@ exports.getAllBookings = async (req, res) => {
             .populate("user", "name email")
             .populate({
                 path: "show",
-                populate: [{ path: "movie", select: "title poster" }, { path: "theater", select: "name location" }],
+                populate: [
+                    { path: "movie", select: "title poster" },
+                    { path: "theater", select: "name location" },
+                ],
             })
             .sort({ createdAt: -1 });
 
         res.json(bookings);
     } catch (error) {
-        res.status(500).json({ message: "Error fetching all bookings", error: error.message });
+        res.status(500).json({
+            message: "Error fetching all bookings",
+            error: error.message,
+        });
     }
 };
