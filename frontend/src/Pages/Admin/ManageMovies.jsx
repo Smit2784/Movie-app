@@ -11,7 +11,7 @@ import {
     Languages,
     User,
     Users as UsersIcon,
-    DollarSign,
+    IndianRupee,
     Calendar as CalendarIcon,
 } from "lucide-react";
 import { Pagination } from "../../Components/Pagination";
@@ -353,7 +353,7 @@ const ManageMovies = ({ onBack }) => {
                                 </div>
                                 <div>
                                     <InputField
-                                        icon={<DollarSign size={16} />}
+                                        icon={<IndianRupee size={16} />}
                                         type="number"
                                         placeholder="Price"
                                         value={newMovie.price}
