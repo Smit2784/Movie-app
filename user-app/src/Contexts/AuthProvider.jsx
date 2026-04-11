@@ -75,10 +75,6 @@ export const api = {
                 params.append("search", search);
             }
 
-            console.log(
-                "🔍 Fetching upcoming movies with params:",
-                params.toString(),
-            );
             const response = await fetch(
                 `${API_BASE_URL}/upcoming-movies?${params}`,
             );
@@ -90,7 +86,7 @@ export const api = {
             }
 
             const result = await response.json();
-            console.log("📊 Upcoming movies received:", result.length);
+            // console.log("📊 Upcoming movies received:", result.length);
             return result;
         } catch (error) {
             console.error("❌ Get upcoming movies error:", error);
@@ -112,9 +108,9 @@ export const api = {
                 },
             );
 
-            console.log("🔍 Response status:", response.status);
+            // console.log("🔍 Response status:", response.status);
             const result = await response.json();
-            console.log("📋 Seed API Response:", result);
+            // console.log("📋 Seed API Response:", result);
 
             if (!response.ok) {
                 throw new Error(

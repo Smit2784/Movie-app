@@ -1,6 +1,7 @@
 const Show = require("../models/Show");
 const Movie = require("../models/Movie");
 const Theater = require("../models/Theater");
+const Booking = require("../models/Booking");
 
 // Get all shows (with filters)
 exports.getShows = async (req, res) => {
@@ -97,6 +98,30 @@ exports.createShow = async (req, res) => {
             });
         }
 
+        // Enforce minimum price: show price must be >= movie's base price 
+        const showPrice = Number(price) || movie.price || 250;
+        if (movie.price && showPrice < movie.price) {
+            return res.status(400).json({
+                success: false,
+                message: `Show price (₹${showPrice}) cannot be less than the movie's base price (₹${movie.price})`,
+                minimumPrice: movie.price,
+            });
+        }
+
+        // Enforce screen limits: count existing shows at the identical date and time
+        const overlappingShowsCount = await Show.countDocuments({
+            theater: theaterId,
+            date: new Date(date),
+            time: time,
+        });
+
+        if (overlappingShowsCount >= theater.screens) {
+            return res.status(400).json({
+                success: false,
+                message: `Theater limit reached: You can only schedule up to ${theater.screens} show(s) at ${time}. Your theater only has ${theater.screens} screen(s).`,
+            });
+        }
+
         const availableSeats = theater.capacity;
 
         const show = new Show({
@@ -104,7 +129,7 @@ exports.createShow = async (req, res) => {
             theater: theaterId,
             date: new Date(date),
             time,
-            price: price || 250,
+            price: showPrice,
             totalSeats: theater.capacity,
             availableSeats: availableSeats,
             bookedSeats: [],
@@ -190,5 +215,40 @@ exports.cleanupSeats = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: "Cleanup failed" });
+    }
+};
+
+// VENDOR: Get bookings for vendor's theaters
+exports.getVendorBookings = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        // Get vendor's theaters
+        const theaters = await Theater.find({ vendorId: userId });
+        const theaterIds = theaters.map((t) => t._id);
+
+        // Get shows in those theaters
+        const shows = await Show.find({ theater: { $in: theaterIds } });
+        const showIds = shows.map((s) => s._id);
+
+        // Get all bookings for those shows
+        const bookings = await Booking.find({ show: { $in: showIds } })
+            .populate("user", "name email")
+            .populate({
+                path: "show",
+                populate: [
+                    { path: "movie", select: "title poster" },
+                    { path: "theater", select: "name location" },
+                ],
+            })
+            .sort({ bookingDate: -1 });
+
+        res.json({ success: true, bookings });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error fetching vendor bookings",
+            error: error.message,
+        });
     }
 };

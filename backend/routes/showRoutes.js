@@ -18,6 +18,12 @@ router.get(
     authVendor,
     showController.getAdminShows,
 );
+router.get(
+    "/vendor/bookings",
+    authenticateToken,
+    authVendor,
+    showController.getVendorBookings,
+);
 router.post(
     "/admin/shows",
     authenticateToken,

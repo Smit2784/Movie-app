@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, Star, User } from "lucide-react";
-import { useAuth, api } from "../Contexts/AuthProvider";
+import { useAuth, api, API_BASE_URL } from "../Contexts/AuthProvider";
 import { useParams } from "react-router-dom";
 
 const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
@@ -12,7 +12,14 @@ const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
     );
     const [loading, setLoading] = useState(!!propMovie);
     const [fetchingMovie, setFetchingMovie] = useState(!propMovie);
-    const { user } = useAuth();
+    const { user, token } = useAuth();
+
+    // Rating state
+    const [averageRating, setAverageRating] = useState(0);
+    const [ratingCount, setRatingCount] = useState(0);
+    const [userRating, setUserRating] = useState(null);
+    const [hoverRating, setHoverRating] = useState(0);
+    const [ratingLoading, setRatingLoading] = useState(false);
 
     useEffect(() => {
         const getMovie = async () => {
@@ -38,10 +45,58 @@ const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
     useEffect(() => {
         if (movie && !isUpcoming) {
             fetchShows();
+            fetchRatings();
         } else {
             setLoading(false);
         }
     }, [movie, selectedDate, isUpcoming]);
+
+    const fetchRatings = async () => {
+        if (!movie) return;
+        try {
+            // Fetch average rating
+            const avgRes = await fetch(`${API_BASE_URL}/movies/${movie._id}/ratings`);
+            const avgData = await avgRes.json();
+            setAverageRating(avgData.averageRating || 0);
+            setRatingCount(avgData.ratingCount || 0);
+
+            // Fetch user's own rating if logged in
+            if (token) {
+                const userRes = await fetch(`${API_BASE_URL}/movies/${movie._id}/ratings/me`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const userData = await userRes.json();
+                setUserRating(userData.userRating);
+            }
+        } catch (error) {
+            console.error("Error fetching ratings:", error);
+        }
+    };
+
+    const handleRatingSubmit = async (score) => {
+        if (!token) return;
+        setRatingLoading(true);
+        try {
+            const res = await fetch(`${API_BASE_URL}/movies/${movie._id}/ratings`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ score }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setUserRating(score);
+                setAverageRating(data.averageRating);
+                setRatingCount(data.ratingCount);
+            }
+        } catch (error) {
+            console.error("Error submitting rating:", error);
+        } finally {
+            setRatingLoading(false);
+        }
+    };
 
     const fetchShows = async () => {
         if (!movie) return;
@@ -223,8 +278,13 @@ const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                 <div className="flex items-center space-x-2">
                                     <Star className="h-6 w-6 text-yellow-400 fill-current" />
                                     <span className="font-bold">
-                                        {movie.rating}/10
+                                        {averageRating}/10
                                     </span>
+                                    {ratingCount > 0 && (
+                                        <span className="text-white/60 text-sm">
+                                            ({ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'})
+                                        </span>
+                                    )}
                                 </div>
                             )}
                             <span className="w-2 h-2 bg-white/50 rounded-full"></span>
@@ -253,7 +313,7 @@ const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                         <div className="flex items-center space-x-2">
                                             <Star className="h-5 w-5 text-yellow-400 fill-current" />
                                             <span className="font-bold text-lg">
-                                                {movie.rating}
+                                                {averageRating}
                                             </span>
                                         </div>
                                     </div>
@@ -336,6 +396,53 @@ const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                         ))}
                                     </div>
                                 </div>
+
+                                {/* User Rating Section */}
+                                {!isUpcoming && (
+                                    <div className="bg-linear-to-br from-amber-50 to-yellow-50 rounded-2xl p-6 border border-amber-100">
+                                        <h4 className="font-bold text-gray-800 mb-3 flex items-center text-xl">
+                                            <Star className="h-6 w-6 mr-3 text-amber-500" />
+                                            Rate this Movie
+                                        </h4>
+                                        {user ? (
+                                            <div>
+                                                <div className="flex items-center gap-1 mb-3">
+                                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
+                                                        <button
+                                                            key={star}
+                                                            disabled={ratingLoading}
+                                                            onClick={() => handleRatingSubmit(star)}
+                                                            onMouseEnter={() => setHoverRating(star)}
+                                                            onMouseLeave={() => setHoverRating(0)}
+                                                            className="transition-all duration-150 transform hover:scale-125 disabled:opacity-50 focus:outline-none"
+                                                        >
+                                                            <Star
+                                                                className={`h-7 w-7 transition-colors duration-150 ${
+                                                                    (hoverRating || userRating || 0) >= star
+                                                                        ? 'text-amber-400 fill-current'
+                                                                        : 'text-gray-300'
+                                                                }`}
+                                                            />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                {userRating ? (
+                                                    <p className="text-sm text-amber-700 font-semibold">
+                                                        You rated this movie {userRating}/10 ⭐
+                                                    </p>
+                                                ) : (
+                                                    <p className="text-sm text-gray-500">
+                                                        Click a star to rate
+                                                    </p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <p className="text-gray-500 italic">
+                                                <a href="/auth" className="text-purple-600 font-semibold hover:underline">Log in</a> to rate this movie
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

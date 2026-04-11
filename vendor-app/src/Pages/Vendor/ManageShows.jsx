@@ -82,8 +82,18 @@ const ManageShows = ({ onBack }) => {
         if (!newShow.date) newErrors.date = "Date is required";
         if (!newShow.time) newErrors.time = "Time is required";
 
-        const priceError = validatePositiveNumber(newShow.price, "Price");
-        if (priceError) newErrors.price = priceError;
+        // Price is optional — if empty, backend defaults to movie base price
+        if (newShow.price) {
+            const priceError = validatePositiveNumber(newShow.price, "Price");
+            if (priceError) {
+                newErrors.price = priceError;
+            } else {
+                const selectedMovie = movies.find((m) => m._id === newShow.movieId);
+                if (selectedMovie && Number(newShow.price) < selectedMovie.price) {
+                    newErrors.price = `Price must be at least ₹${selectedMovie.price} (movie base price)`;
+                }
+            }
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -311,21 +321,34 @@ const ManageShows = ({ onBack }) => {
 
                             <div className="space-y-1.5">
                                 <label className="ml-2 text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                    <Tag size={12} /> Base Price (₹)
+                                    <Tag size={12} /> Ticket Price (₹)
                                 </label>
-                                <input
-                                    type="number"
-                                    placeholder="250"
-                                    className={`w-full p-4 bg-slate-50 border-2 ${errors.price ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-700`}
-                                    value={newShow.price}
-                                    onChange={(e) =>
-                                        setNewShow({
-                                            ...newShow,
-                                            price: e.target.value,
-                                        })
-                                    }
-                                    required
-                                />
+                                {(() => {
+                                    const selectedMovie = movies.find((m) => m._id === newShow.movieId);
+                                    const minPrice = selectedMovie ? selectedMovie.price : 0;
+                                    return (
+                                        <>
+                                            <input
+                                                type="number"
+                                                placeholder={minPrice ? `Default: ₹${minPrice}` : "250"}
+                                                min={minPrice || undefined}
+                                                className={`w-full p-4 bg-slate-50 border-2 ${errors.price ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-slate-700`}
+                                                value={newShow.price}
+                                                onChange={(e) =>
+                                                    setNewShow({
+                                                        ...newShow,
+                                                        price: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                            {minPrice > 0 && (
+                                                <p className="text-xs text-blue-500 font-semibold ml-2 mt-1">
+                                                    {newShow.price ? `Min ₹${minPrice}` : `Will use base price: ₹${minPrice}`}
+                                                </p>
+                                            )}
+                                        </>
+                                    );
+                                })()}
                                 {errors.price && (
                                     <p className="text-red-500 text-xs mt-1 ml-2">
                                         {errors.price}

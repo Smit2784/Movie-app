@@ -7,6 +7,7 @@ import {
     ChevronLeft,
     TrendingUp,
     Receipt,
+    Ticket,
 } from "lucide-react";
 import { Pagination } from "../../Components/Pagination";
 
@@ -75,17 +76,38 @@ const AdminBookings = ({ onBack }) => {
                     <span>Dashboard</span>
                 </button>
 
-                <div className="flex items-center gap-4 animate-fadeIn">
-                    <div className="text-right hidden sm:block">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            Net confirmed
-                        </p>
-                        <p className="text-2xl font-black text-emerald-600">
-                            ₹{totalRevenue.toLocaleString()}
-                        </p>
+                <div className="flex items-center gap-6 animate-fadeIn">
+                    {/* Total Bookings Stat */}
+                    <div className="flex items-center gap-4">
+                        <div className="text-right hidden sm:block">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                Total Bookings
+                            </p>
+                            <p className="text-2xl font-black text-blue-600">
+                                {bookings.length}
+                            </p>
+                        </div>
+                        <div className="p-4 bg-blue-500 text-white rounded-2xl shadow-lg shadow-blue-200">
+                            <Ticket size={24} />
+                        </div>
                     </div>
-                    <div className="p-4 bg-emerald-500 text-white rounded-2xl shadow-lg shadow-emerald-200">
-                        <TrendingUp size={24} />
+
+                    {/* Divider */}
+                    <div className="h-12 w-px bg-slate-200 hidden sm:block"></div>
+
+                    {/* Revenue Stat */}
+                    <div className="flex items-center gap-4">
+                        <div className="text-right hidden sm:block">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                Net confirmed
+                            </p>
+                            <p className="text-2xl font-black text-emerald-600">
+                                ₹{totalRevenue.toLocaleString()}
+                            </p>
+                        </div>
+                        <div className="p-4 bg-emerald-500 text-white rounded-2xl shadow-lg shadow-emerald-200">
+                            <TrendingUp size={24} />
+                        </div>
                     </div>
                 </div>
             </nav>

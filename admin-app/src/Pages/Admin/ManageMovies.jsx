@@ -29,7 +29,6 @@ const ManageMovies = ({ onBack }) => {
         description: "",
         genre: "",
         duration: "",
-        rating: "",
         poster: "",
         releaseDate: "",
         language: "",
@@ -66,7 +65,6 @@ const ManageMovies = ({ onBack }) => {
             description: movie.description,
             genre: movie.genre || "",
             duration: movie.duration,
-            rating: movie.rating,
             poster: movie.poster,
             releaseDate: movie.releaseDate
                 ? new Date(movie.releaseDate).toISOString().split("T")[0]
@@ -89,7 +87,6 @@ const ManageMovies = ({ onBack }) => {
             description: "",
             genre: "",
             duration: "",
-            rating: "",
             poster: "",
             releaseDate: "",
             language: "",
@@ -119,10 +116,7 @@ const ManageMovies = ({ onBack }) => {
         );
         if (durationError) newErrors.duration = durationError;
 
-        const ratingError = validatePositiveNumber(newMovie.rating, "Rating");
-        if (ratingError) newErrors.rating = ratingError;
-        else if (Number(newMovie.rating) > 10)
-            newErrors.rating = "Rating cannot be more than 10";
+
 
         const priceError = validatePositiveNumber(newMovie.price, "Price");
         if (priceError) newErrors.price = priceError;
@@ -144,7 +138,6 @@ const ManageMovies = ({ onBack }) => {
         const movieData = {
             ...newMovie,
             duration: Number(newMovie.duration),
-            rating: Number(newMovie.rating),
             price: Number(newMovie.price),
             cast: newMovie.cast
                 .split(",")
@@ -309,7 +302,7 @@ const ManageMovies = ({ onBack }) => {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-3 gap-2">
+                            <div className="grid grid-cols-2 gap-2">
                                 <div>
                                     <InputField
                                         icon={<Clock size={16} />}
@@ -327,27 +320,6 @@ const ManageMovies = ({ onBack }) => {
                                     {errors.duration && (
                                         <p className="text-red-500 text-xs mt-1 ml-1">
                                             {errors.duration}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <InputField
-                                        icon={<Star size={16} />}
-                                        type="number"
-                                        step="0.1"
-                                        placeholder="Rating"
-                                        value={newMovie.rating}
-                                        onChange={(val) =>
-                                            setNewMovie({
-                                                ...newMovie,
-                                                rating: val,
-                                            })
-                                        }
-                                        error={errors.rating}
-                                    />
-                                    {errors.rating && (
-                                        <p className="text-red-500 text-xs mt-1 ml-1">
-                                            {errors.rating}
                                         </p>
                                     )}
                                 </div>

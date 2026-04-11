@@ -9,6 +9,7 @@ import {
     ChevronRight,
     Activity,
     ArrowLeft,
+    Ticket,
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider";
 
@@ -52,6 +53,11 @@ const VendorDashboard = () => {
             id: "vendor-shows",
             label: "Manage Shows",
             icon: <Calendar size={20} />,
+        },
+        {
+            id: "vendor-bookings",
+            label: "View Bookings",
+            icon: <Ticket size={20} />,
         },
         {
             id: "vendor-theaters",

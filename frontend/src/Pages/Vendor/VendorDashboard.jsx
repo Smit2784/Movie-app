@@ -8,6 +8,7 @@ import {
     ChevronRight,
     Activity,
     ArrowLeft,
+    Ticket,
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider";
 
@@ -50,6 +51,11 @@ const VendorDashboard = ({ setCurrentPage }) => {
             id: "vendor-shows",
             label: "Manage Shows",
             icon: <Calendar size={20} />,
+        },
+        {
+            id: "vendor-bookings",
+            label: "View Bookings",
+            icon: <Ticket size={20} />,
         },
         {
             id: "vendor-theaters",
@@ -227,6 +233,14 @@ const VendorDashboard = ({ setCurrentPage }) => {
                                     label="Schedule Show"
                                     icon={<Calendar size={20} />}
                                     theme="violet"
+                                />
+                                <ActionButton
+                                    onClick={() =>
+                                        setCurrentPage("vendor-bookings")
+                                    }
+                                    label="View Bookings"
+                                    icon={<Ticket size={20} />}
+                                    theme="orange"
                                 />
                                 <ActionButton
                                     onClick={() =>

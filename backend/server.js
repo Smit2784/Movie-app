@@ -9,6 +9,7 @@ const theaterRoutes = require("./routes/theaterRoutes");
 const showRoutes = require("./routes/showRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const giftCardRoutes = require("./routes/giftCardRoutes");
+const ratingRoutes = require("./routes/ratingRoutes");
 
 // Initialize app
 const app = express();
@@ -28,6 +29,7 @@ app.use("/api", theaterRoutes);
 app.use("/api", showRoutes);
 app.use("/api", bookingRoutes);
 app.use("/api", giftCardRoutes); // Routes already have /gift-cards prefix inside
+app.use("/api", ratingRoutes);
 
 // Error handling middleware
 app.use((error, req, res, next) => {

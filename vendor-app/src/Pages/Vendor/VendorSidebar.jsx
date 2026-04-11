@@ -9,6 +9,7 @@ import {
     X,
     ChevronRight,
     Store,
+    Ticket,
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider.jsx";
 
@@ -20,6 +21,7 @@ const navItems = [
     },
     { label: "Shows", path: "/shows", icon: <Tv2 size={18} /> },
     { label: "Theaters", path: "/theaters", icon: <Building2 size={18} /> },
+    { label: "Bookings", path: "/bookings", icon: <Ticket size={18} /> },
 ];
 
 const VendorSidebar = ({ collapsed, setCollapsed }) => {

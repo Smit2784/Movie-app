@@ -34,6 +34,9 @@ const VendorManageTheaters = React.lazy(
 const VendorManageShows = React.lazy(
     () => import("../Pages/Vendor/ManageShows.jsx"),
 );
+const VendorBookings = React.lazy(
+    () => import("../Pages/Vendor/VendorBookings.jsx"),
+);
 const AboutUs = React.lazy(() => import("../Pages/AboutUs.jsx"));
 const ContactUs = React.lazy(() => import("../Pages/ContactUs.jsx"));
 const MyBookings = React.lazy(() => import("../Pages/MyBookings.jsx"));
@@ -261,6 +264,10 @@ function VendorManageShowsWithNavigation() {
     const navigate = useNavigate();
     return <VendorManageShows onBack={() => navigate("/vendor/dashboard")} />;
 }
+function VendorBookingsWithNavigation() {
+    const navigate = useNavigate();
+    return <VendorBookings onBack={() => navigate("/vendor/dashboard")} />;
+}
 function ManageTheatersWithNavigation() {
     const navigate = useNavigate();
     return <VendorManageTheaters onBack={() => navigate("/admin/dashboard")} />;
@@ -358,6 +365,14 @@ const AppRouter = () => {
                     element={
                         <ProtectedRoute allowedRoles={["vendor"]}>
                             <VendorManageShowsWithNavigation />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="bookings"
+                    element={
+                        <ProtectedRoute allowedRoles={["vendor"]}>
+                            <VendorBookingsWithNavigation />
                         </ProtectedRoute>
                     }
                 />

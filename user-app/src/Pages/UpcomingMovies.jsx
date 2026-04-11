@@ -500,7 +500,7 @@ const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
             setLoading(true);
             setError(null);
             try {
-                console.log("🔍 Fetching upcoming movies from API...");
+                // console.log("🔍 Fetching upcoming movies from API...");
 
                 // Build categories array for API call
                 const categories =
@@ -512,13 +512,13 @@ const UpcomingMovies = ({ onMovieSelect, onGoHome }) => {
                     searchTerm,
                 );
 
-                console.log("📊 Received upcoming movies:", data);
-                console.log(
-                    "📊 Data type:",
-                    typeof data,
-                    "Is array:",
-                    Array.isArray(data),
-                );
+                // console.log("📊 Received upcoming movies:", data);
+                // console.log(
+                //     "📊 Data type:",
+                //     typeof data,
+                //     "Is array:",
+                //     Array.isArray(data),
+                // );
 
                 // Ensure data is an array
                 if (Array.isArray(data)) {
