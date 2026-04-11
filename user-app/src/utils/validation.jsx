@@ -134,3 +134,60 @@ export const validatePositiveNumber = (value, fieldName = "Field") => {
 
     return null;
 };
+
+export const validateExpiry = (expiry) => {
+    if (!expiry || expiry.trim() === "") {
+        return "Expiry date is required";
+    }
+
+    // Check format MM/YY
+    const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+    if (!expiryRegex.test(expiry)) {
+        return "Expiry must be in MM/YY format";
+    }
+
+    // Check if expired
+    const [month, year] = expiry.split("/");
+    const expDate = new Date(2000 + parseInt(year), parseInt(month));
+    if (expDate < new Date()) {
+        return "Card has expired";
+    }
+
+    return null;
+};
+
+export const validateCardholderName = (name) => {
+    if (!name || name.trim() === "") {
+        return "Cardholder name is required";
+    }
+
+    if (name.trim().length < 3) {
+        return "Name must be at least 3 characters";
+    }
+
+    if (/\d/.test(name)) {
+        return "Name cannot contain numbers";
+    }
+
+    return null;
+};
+
+export const validateBankSelection = (bank) => {
+    if (!bank || bank === "") {
+        return "Please select a bank";
+    }
+    return null;
+};
+
+export const validateAccountNumber = (accNum) => {
+    if (!accNum || accNum.trim() === "") {
+        return "Account number is required";
+    }
+
+    const clean = accNum.replace(/\s/g, "");
+    if (!/^\d{9,18}$/.test(clean)) {
+        return "Account number must be 9-18 digits";
+    }
+
+    return null;
+};

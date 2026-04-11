@@ -115,8 +115,11 @@ const Header = () => {
                             {user ? (
                                 <>
                                     {/* Premium Wallet Display */}
-                                    <div className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl shadow-inner">
-                                        <div className="w-8 h-8 rounded-full bg-amber-400/10 flex items-center justify-center">
+                                    <Link
+                                        to="/wallet"
+                                        className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl shadow-inner hover:bg-white/10 hover:border-amber-400/30 hover:shadow-[0_0_20px_rgba(251,191,36,0.1)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer group"
+                                    >
+                                        <div className="w-8 h-8 rounded-full bg-amber-400/10 flex items-center justify-center group-hover:bg-amber-400/20 transition-colors">
                                             <Wallet
                                                 size={16}
                                                 className="text-amber-400"
@@ -130,7 +133,7 @@ const Header = () => {
                                                 ₹{walletBalance}
                                             </span>
                                         </div>
-                                    </div>
+                                    </Link>
 
                                     {/* User Dropdown */}
                                     <div className="relative" ref={menuRef}>
@@ -203,42 +206,19 @@ const Header = () => {
                                                             "/bookings",
                                                         )}
                                                     />
-
-                                                    {/* {(user.role === "admin" ||
-                                                        user.role ===
-                                                            "vendor") && (
-                                                        <DropdownItem
-                                                            to={
-                                                                user.role ===
-                                                                "admin"
-                                                                    ? "/admin/dashboard"
-                                                                    : "/vendor/dashboard"
-                                                            }
-                                                            icon={
-                                                                <LayoutDashboard
-                                                                    size={18}
-                                                                    className="text-blue-400"
-                                                                />
-                                                            }
-                                                            label={
-                                                                user.role ===
-                                                                "admin"
-                                                                    ? "Admin Control"
-                                                                    : "Vendor Control"
-                                                            }
-                                                            onClick={() =>
-                                                                setIsMenuOpen(
-                                                                    false,
-                                                                )
-                                                            }
-                                                            isActive={location.pathname.startsWith(
-                                                                user.role ===
-                                                                    "admin"
-                                                                    ? "/admin"
-                                                                    : "/vendor",
-                                                            )}
-                                                        />
-                                                    )} */}
+                                                    <DropdownItem
+                                                        to="/wallet"
+                                                        icon={
+                                                            <Wallet size={18} />
+                                                        }
+                                                        label="My Wallet"
+                                                        onClick={() =>
+                                                            setIsMenuOpen(false)
+                                                        }
+                                                        isActive={isActive(
+                                                            "/wallet",
+                                                        )}
+                                                    />
 
                                                     <button
                                                         onClick={() => {

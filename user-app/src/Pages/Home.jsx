@@ -197,9 +197,9 @@ const Home = ({ onMovieSelect }) => {
             <div className="relative bg-linear-to-br from-purple-900 via-violet-900 to-indigo-900 text-white overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
-                    <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-                    <div className="absolute top-40 right-20 w-72 h-72 bg-mauve-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-                    <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+                    <div className="absolute top-20 left-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+                    <div className="absolute top-40 right-20 w-72 h-72 bg-mauve-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+                    <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
                 </div>
 
                 <div className="relative container mx-auto px-6 py-24 lg:py-20">

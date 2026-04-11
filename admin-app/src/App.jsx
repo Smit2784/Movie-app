@@ -4,6 +4,7 @@ import AuthProvider from "./Contexts/AuthProvider.jsx";
 import AdminSidebar from "./Pages/Admin/AdminSidebar.jsx";
 import AppRouter from "./Router.jsx";
 import { Suspense } from "react";
+import ScrollToTopButton from "./Components/GlobalComponents.jsx";
 
 const App = () => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -29,6 +30,7 @@ const App = () => {
                     >
                         <AppRouter />
                     </Suspense>
+                    <ScrollToTopButton />
                 </main>
             </div>
         </AuthProvider>

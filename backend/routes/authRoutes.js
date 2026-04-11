@@ -14,6 +14,10 @@ router.post("/auth/reset-password", authController.resetPassword);
 // User Protected
 router.put("/users/profile", authenticateToken, authController.updateProfile);
 router.get("/user/wallet", authenticateToken, authController.getWalletBalance);
+router.post("/user/wallet/add", authenticateToken, authController.addMoney);
+router.post("/user/wallet/withdraw", authenticateToken, authController.withdrawMoney);
+router.get("/user/wallet/transactions", authenticateToken, authController.getTransactionHistory);
+router.get("/user/wallet/summary", authenticateToken, authController.getWalletSummary);
 
 // Admin Protected
 router.get(

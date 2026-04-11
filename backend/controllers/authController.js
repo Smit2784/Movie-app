@@ -156,6 +156,259 @@ exports.getWalletBalance = async (req, res) => {
     }
 };
 
+// Add Money to Wallet
+const WalletTransaction = require("../models/WalletTransaction");
+
+exports.addMoney = async (req, res) => {
+    try {
+        const { amount, paymentMethod } = req.body;
+        const numAmount = Number(amount);
+
+        // Validation
+        if (!numAmount || numAmount < 100) {
+            return res.status(400).json({
+                success: false,
+                message: "Minimum amount to add is ₹100",
+            });
+        }
+        if (numAmount > 10000) {
+            return res.status(400).json({
+                success: false,
+                message: "Maximum amount per transaction is ₹10,000",
+            });
+        }
+
+        const user = await User.findById(req.user.userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Check wallet cap
+        if (user.walletBalance + numAmount > 50000) {
+            return res.status(400).json({
+                success: false,
+                message: `Wallet balance cannot exceed ₹50,000. You can add up to ₹${50000 - user.walletBalance}`,
+            });
+        }
+
+        // Update balance
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            { $inc: { walletBalance: numAmount } },
+            { new: true },
+        );
+
+        // Create transaction record
+        await WalletTransaction.create({
+            user: req.user.userId,
+            type: "credit",
+            amount: numAmount,
+            category: "add_money",
+            description: `Added ₹${numAmount} via ${paymentMethod || "card"}`,
+            balanceAfter: updatedUser.walletBalance,
+            status: "success",
+            reference: `ADD-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+        });
+
+        res.json({
+            success: true,
+            walletBalance: updatedUser.walletBalance,
+            message: `₹${numAmount} added to wallet successfully`,
+        });
+    } catch (error) {
+        console.error("Add money error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to add money to wallet",
+        });
+    }
+};
+
+// Withdraw Money from Wallet
+exports.withdrawMoney = async (req, res) => {
+    try {
+        const { amount, upiId } = req.body;
+        const numAmount = Number(amount);
+
+        // Validation
+        if (!numAmount || numAmount < 200) {
+            return res.status(400).json({
+                success: false,
+                message: "Minimum withdrawal amount is ₹200",
+            });
+        }
+
+        if (!upiId || !upiId.includes("@")) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a valid UPI ID",
+            });
+        }
+
+        const user = await User.findById(req.user.userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        if (user.walletBalance < numAmount) {
+            return res.status(400).json({
+                success: false,
+                message: "Insufficient wallet balance",
+            });
+        }
+
+        // Update balance
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            { $inc: { walletBalance: -numAmount } },
+            { new: true },
+        );
+
+        // Create transaction record
+        await WalletTransaction.create({
+            user: req.user.userId,
+            type: "debit",
+            amount: numAmount,
+            category: "withdrawal",
+            description: `Withdrawn ₹${numAmount} to UPI ${upiId}`,
+            balanceAfter: updatedUser.walletBalance,
+            status: "success",
+            reference: `WDR-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+        });
+
+        res.json({
+            success: true,
+            walletBalance: updatedUser.walletBalance,
+            message: `₹${numAmount} withdrawn successfully. It will be credited to your UPI within 24 hours.`,
+        });
+    } catch (error) {
+        console.error("Withdraw money error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to withdraw money",
+        });
+    }
+};
+
+// Get Wallet Transaction History
+exports.getTransactionHistory = async (req, res) => {
+    try {
+        const { page = 1, limit = 15, category } = req.query;
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const filter = { user: req.user.userId };
+        if (category && category !== "all") {
+            filter.category = category;
+        }
+
+        const [transactions, total] = await Promise.all([
+            WalletTransaction.find(filter)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(parseInt(limit)),
+            WalletTransaction.countDocuments(filter),
+        ]);
+
+        res.json({
+            success: true,
+            transactions,
+            pagination: {
+                current: parseInt(page),
+                pages: Math.ceil(total / parseInt(limit)),
+                total,
+            },
+        });
+    } catch (error) {
+        console.error("Transaction history error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch transaction history",
+        });
+    }
+};
+
+// Get Wallet Summary
+exports.getWalletSummary = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId).select(
+            "walletBalance",
+        );
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        const [addedResult, spentResult, withdrawnResult, refundResult] =
+            await Promise.all([
+                WalletTransaction.aggregate([
+                    {
+                        $match: {
+                            user: user._id,
+                            category: "add_money",
+                            status: "success",
+                        },
+                    },
+                    { $group: { _id: null, total: { $sum: "$amount" } } },
+                ]),
+                WalletTransaction.aggregate([
+                    {
+                        $match: {
+                            user: user._id,
+                            category: "booking_payment",
+                            status: "success",
+                        },
+                    },
+                    { $group: { _id: null, total: { $sum: "$amount" } } },
+                ]),
+                WalletTransaction.aggregate([
+                    {
+                        $match: {
+                            user: user._id,
+                            category: "withdrawal",
+                            status: "success",
+                        },
+                    },
+                    { $group: { _id: null, total: { $sum: "$amount" } } },
+                ]),
+                WalletTransaction.aggregate([
+                    {
+                        $match: {
+                            user: user._id,
+                            category: "refund",
+                            status: "success",
+                        },
+                    },
+                    { $group: { _id: null, total: { $sum: "$amount" } } },
+                ]),
+            ]);
+
+        res.json({
+            success: true,
+            summary: {
+                balance: user.walletBalance,
+                totalAdded: addedResult[0]?.total || 0,
+                totalSpent: spentResult[0]?.total || 0,
+                totalWithdrawn: withdrawnResult[0]?.total || 0,
+                totalRefunded: refundResult[0]?.total || 0,
+            },
+        });
+    } catch (error) {
+        console.error("Wallet summary error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch wallet summary",
+        });
+    }
+};
+
 const nodemailer = require("nodemailer");
 
 exports.forgotPassword = async (req, res) => {

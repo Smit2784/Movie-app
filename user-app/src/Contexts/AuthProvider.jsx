@@ -217,6 +217,61 @@ export const api = {
         return response.json();
     },
 
+    addMoneyToWallet: async (data, token) => {
+        const response = await fetch(`${API_BASE_URL}/user/wallet/add`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || "Failed to add money");
+        }
+        return result;
+    },
+
+    withdrawFromWallet: async (data, token) => {
+        const response = await fetch(`${API_BASE_URL}/user/wallet/withdraw`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || "Failed to withdraw money");
+        }
+        return result;
+    },
+
+    getWalletTransactions: async (token, page = 1, category = "all") => {
+        const params = new URLSearchParams({ page, limit: 15, category });
+        const response = await fetch(
+            `${API_BASE_URL}/user/wallet/transactions?${params}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+        return response.json();
+    },
+
+    getWalletSummary: async (token) => {
+        const response = await fetch(`${API_BASE_URL}/user/wallet/summary`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.json();
+    },
+
+
     walletPayment: async (bookingData, token) => {
         try {
             // Add timeout to prevent hanging

@@ -26,6 +26,7 @@ const NotFound = React.lazy(() => import("./Pages/NotFound.jsx"));
 const PrivacyPolicy = React.lazy(() => import("./Pages/PrivacyPolicy.jsx"));
 const TermsOfService = React.lazy(() => import("./Pages/TermsOfService.jsx"));
 const LatestOffers = React.lazy(() => import("./Pages/LatestOffers.jsx"));
+const WalletPage = React.lazy(() => import("./Pages/Wallet.jsx"));
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -135,6 +136,7 @@ const AppRouter = () => {
             <Route path="movie/:id" element={<MovieDetailsWithNavigation />} />
             <Route path="bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
             <Route path="profile" element={<ProtectedRoute><UpdateProfileWithNavigation /></ProtectedRoute>} />
+            <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
             <Route path="booking/:showId" element={<ProtectedRoute><BookingPageWithNavigation /></ProtectedRoute>} />
             <Route path="payment" element={<ProtectedRoute><PaymentPageWithNavigation /></ProtectedRoute>} />
             <Route path="payment-success" element={<ProtectedRoute><PaymentSuccessWithNavigation /></ProtectedRoute>} />

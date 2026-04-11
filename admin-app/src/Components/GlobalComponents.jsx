@@ -13,7 +13,7 @@ export const ScrollToTop = () => {
     return null;
 };
 
-export const ScrollToTopButton = () => {
+export default function ScrollToTopButton() {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
