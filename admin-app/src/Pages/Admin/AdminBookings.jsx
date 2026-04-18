@@ -73,7 +73,7 @@ const AdminBookings = ({ onBack }) => {
                         size={18}
                         className="group-hover:-translate-x-1 transition-transform"
                     />
-                    <span>Dashboard</span>
+                    <span>Back to Dashboard</span>
                 </button>
 
                 <div className="flex items-center gap-6 animate-fadeIn">

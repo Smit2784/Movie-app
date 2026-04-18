@@ -112,7 +112,7 @@ const UserList = ({ onBack }) => {
                         size={18}
                         className="group-hover:-translate-x-1 transition-transform"
                     />
-                    <span>Back to Overview</span>
+                    <span>Back to Dashboard</span>
                 </button>
 
                 <div className="flex items-center gap-4">
