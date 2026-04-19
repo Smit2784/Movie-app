@@ -300,12 +300,13 @@ const ManageTheaters = ({ onBack }) => {
                                         placeholder="350"
                                         className={`w-full p-4 bg-slate-50 border-2 ${errors.capacity ? "border-red-500" : "border-transparent"} rounded-2xl focus:bg-white focus:border-emerald-500 outline-none transition-all font-bold text-slate-700`}
                                         value={newTheater.capacity}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
+                                            const val = e.target.value.slice(0, 3);
                                             setNewTheater({
                                                 ...newTheater,
-                                                capacity: e.target.value,
-                                            })
-                                        }
+                                                capacity: val,
+                                            });
+                                        }}
                                         required
                                     />
                                     {errors.capacity && (

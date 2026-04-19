@@ -210,6 +210,7 @@ exports.createMovie = async (req, res) => {
             director,
             cast,
             price,
+            trailerUrl,
         } = req.body;
 
         const movie = new Movie({
@@ -225,6 +226,7 @@ exports.createMovie = async (req, res) => {
                 ? cast
                 : cast.split(",").map((c) => c.trim()),
             price: Number(price),
+            trailerUrl: trailerUrl || '',
         });
 
         await movie.save();

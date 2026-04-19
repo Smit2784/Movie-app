@@ -13,6 +13,7 @@ import {
     Users as UsersIcon,
     IndianRupee,
     Calendar as CalendarIcon,
+    Youtube,
 } from "lucide-react";
 import { Pagination } from "../../Components/Pagination";
 import {
@@ -35,6 +36,7 @@ const ManageMovies = ({ onBack }) => {
         director: "",
         cast: "",
         price: "",
+        trailerUrl: "",
     });
     const [errors, setErrors] = useState({});
 
@@ -48,7 +50,7 @@ const ManageMovies = ({ onBack }) => {
 
     const fetchMovies = async () => {
         try {
-            const res = await fetch("https://localhost:5000/api/movies");
+            const res = await fetch("http://localhost:5000/api/movies");
             const data = await res.json();
             setMovies(data);
             setCurrentPage(1); // Reset page on fetch
@@ -75,6 +77,7 @@ const ManageMovies = ({ onBack }) => {
                 ? movie.cast.join(", ")
                 : movie.cast,
             price: movie.price,
+            trailerUrl: movie.trailerUrl || "",
         });
         setErrors({});
     };
@@ -93,6 +96,7 @@ const ManageMovies = ({ onBack }) => {
             director: "",
             cast: "",
             price: "",
+            trailerUrl: "",
         });
         setErrors({});
     };
@@ -401,6 +405,15 @@ const ManageMovies = ({ onBack }) => {
                                 value={newMovie.cast}
                                 onChange={(val) =>
                                     setNewMovie({ ...newMovie, cast: val })
+                                }
+                            />
+
+                            <InputField
+                                icon={<Youtube size={16} />}
+                                placeholder="YouTube Trailer URL"
+                                value={newMovie.trailerUrl}
+                                onChange={(val) =>
+                                    setNewMovie({ ...newMovie, trailerUrl: val })
                                 }
                             />
 

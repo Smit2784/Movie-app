@@ -23,22 +23,26 @@ const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
 
     useEffect(() => {
         const getMovie = async () => {
-            if (!movie && id) {
+            if (id) {
                 try {
                     setFetchingMovie(true);
                     const data = await api.getMovie(id);
                     setMovie(data);
                 } catch (error) {
                     console.error("Failed to fetch movie:", error);
+                    if (propMovie) setMovie(propMovie);
                 } finally {
                     setFetchingMovie(false);
                 }
+            } else if (propMovie) {
+                setMovie(propMovie);
+                setFetchingMovie(false);
             } else {
                 setFetchingMovie(false);
             }
         };
         getMovie();
-    }, [id, movie]);
+    }, [id]);
 
     const isUpcoming = movie ? new Date(movie.releaseDate) > new Date() : false;
 
@@ -307,6 +311,33 @@ const MovieDetails = ({ movie: propMovie, onBack, onBookNow }) => {
                                     className="w-full h-96 lg:h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 />
                                 <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent"></div>
+
+                                {/* YouTube Trailer Overlay */}
+                                {movie.trailerUrl && (
+                                    <a
+                                        href={movie.trailerUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 group-hover:bg-black/60 transition-all duration-500 cursor-pointer"
+                                        title="Watch Trailer"
+                                    >
+                                        <div className="opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-500 ease-out flex flex-col items-center gap-3">
+                                            {/* YouTube Play Button */}
+                                            <div className="relative">
+                                                <div className="w-20 h-14 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-600/50 group-hover:animate-pulse">
+                                                    <svg className="w-10 h-10 text-white ml-1" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M8 5v14l11-7z"/>
+                                                    </svg>
+                                                </div>
+                                                {/* Ripple effect */}
+                                                <div className="absolute inset-0 w-20 h-20 bg-red-600/30 rounded-2xl animate-ping" style={{animationDuration: '2s'}}></div>
+                                            </div>
+                                            <span className="text-white font-bold text-sm tracking-wider uppercase bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+                                                ▶ Watch Trailer
+                                            </span>
+                                        </div>
+                                    </a>
+                                )}
 
                                 {!isUpcoming && (
                                     <div className="absolute top-6 right-6 bg-black/70 backdrop-blur-md text-white px-4 py-2 rounded-2xl border border-white/20">

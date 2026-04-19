@@ -12,7 +12,8 @@ const movieSchema = new mongoose.Schema({
   language: { type: String, required: true },
   director: { type: String, required: true },
   cast: [{ type: String, required: true }],
-  price: { type: Number, required: true }
+  price: { type: Number, required: true },
+  trailerUrl: { type: String, default: '' }
 }, {
   timestamps: true
 });
