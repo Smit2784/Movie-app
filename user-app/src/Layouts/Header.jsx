@@ -3,13 +3,13 @@ import {
     User,
     LogOut,
     ChevronDown,
-    LayoutDashboard,
     Ticket,
     Clapperboard,
     Info,
     PhoneCall,
     CalendarDays,
     Wallet,
+    Gift,
 } from "lucide-react";
 import logo from "../logo.png";
 import { useAuth } from "../Contexts/AuthProvider";
@@ -219,7 +219,19 @@ const Header = () => {
                                                             "/wallet",
                                                         )}
                                                     />
-
+                                                    <DropdownItem
+                                                        to="/giftcards"
+                                                        icon={
+                                                            <Gift size={18} />
+                                                        }
+                                                        label="Gift Cards"
+                                                        onClick={() =>
+                                                            setIsMenuOpen(false)
+                                                        }
+                                                        isActive={isActive(
+                                                            "/giftcards",
+                                                        )}
+                                                    />
                                                     <button
                                                         onClick={() => {
                                                             logout();

@@ -63,7 +63,7 @@ const FILTER_OPTIONS = [
     { value: "all", label: "All" },
     { value: "add_money", label: "Added" },
     { value: "booking_payment", label: "Spent" },
-    { value: "withdrawal", label: "Withdrawn" },
+    // { value: "withdrawal", label: "Withdrawn" },  // Withdraw feature disabled
     { value: "refund", label: "Refunds" },
 ];
 
@@ -85,7 +85,7 @@ const WalletPage = () => {
     const navigate = useNavigate();
 
     // State
-    const [activeTab, setActiveTab] = useState("overview"); // overview, add, withdraw
+    const [activeTab, setActiveTab] = useState("add"); // overview, add, withdraw
     const [summary, setSummary] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [pagination, setPagination] = useState({
@@ -114,13 +114,13 @@ const WalletPage = () => {
     const [accountNumber, setAccountNumber] = useState("");
     const [fieldErrors, setFieldErrors] = useState({});
 
-    // Withdraw State
-    const [withdrawAmount, setWithdrawAmount] = useState("");
-    const [upiId, setUpiId] = useState("");
-    const [withdrawLoading, setWithdrawLoading] = useState(false);
-    const [withdrawSuccess, setWithdrawSuccess] = useState(false);
-    const [withdrawError, setWithdrawError] = useState("");
-    const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
+    // Withdraw State (commented out – withdraw feature disabled)
+    // const [withdrawAmount, setWithdrawAmount] = useState("");
+    // const [upiId, setUpiId] = useState("");
+    // const [withdrawLoading, setWithdrawLoading] = useState(false);
+    // const [withdrawSuccess, setWithdrawSuccess] = useState(false);
+    // const [withdrawError, setWithdrawError] = useState("");
+    // const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
 
     // Load data
     const loadSummary = useCallback(async () => {
@@ -258,43 +258,43 @@ const WalletPage = () => {
         }
     };
 
-    // Withdraw Money Handler
-    const handleWithdraw = async () => {
-        const amount = Number(withdrawAmount);
-        if (!amount || amount < 200) {
-            setWithdrawError("Minimum withdrawal is ₹200");
-            return;
-        }
-        if (amount > walletBalance) {
-            setWithdrawError("Insufficient balance");
-            return;
-        }
-        if (!upiId || !upiId.includes("@")) {
-            setWithdrawError("Enter a valid UPI ID (e.g. name@upi)");
-            return;
-        }
-
-        setWithdrawLoading(true);
-        setWithdrawError("");
-        try {
-            await api.withdrawFromWallet({ amount, upiId }, token);
-            setWithdrawSuccess(true);
-            setWithdrawAmount("");
-            setUpiId("");
-            setShowWithdrawConfirm(false);
-            await refreshWalletBalance();
-            await loadSummary();
-            await loadTransactions(1, txFilter);
-            setTimeout(() => {
-                setWithdrawSuccess(false);
-                setActiveTab("overview");
-            }, 2500);
-        } catch (error) {
-            setWithdrawError(error.message);
-        } finally {
-            setWithdrawLoading(false);
-        }
-    };
+    // Withdraw Money Handler (commented out – withdraw feature disabled)
+    // const handleWithdraw = async () => {
+    //     const amount = Number(withdrawAmount);
+    //     if (!amount || amount < 200) {
+    //         setWithdrawError("Minimum withdrawal is ₹200");
+    //         return;
+    //     }
+    //     if (amount > walletBalance) {
+    //         setWithdrawError("Insufficient balance");
+    //         return;
+    //     }
+    //     if (!upiId || !upiId.includes("@")) {
+    //         setWithdrawError("Enter a valid UPI ID (e.g. name@upi)");
+    //         return;
+    //     }
+    //
+    //     setWithdrawLoading(true);
+    //     setWithdrawError("");
+    //     try {
+    //         await api.withdrawFromWallet({ amount, upiId }, token);
+    //         setWithdrawSuccess(true);
+    //         setWithdrawAmount("");
+    //         setUpiId("");
+    //         setShowWithdrawConfirm(false);
+    //         await refreshWalletBalance();
+    //         await loadSummary();
+    //         await loadTransactions(1, txFilter);
+    //         setTimeout(() => {
+    //             setWithdrawSuccess(false);
+    //             setActiveTab("overview");
+    //         }, 2500);
+    //     } catch (error) {
+    //         setWithdrawError(error.message);
+    //     } finally {
+    //         setWithdrawLoading(false);
+    //     }
+    // };
 
     // Filter transactions
     const handleFilterChange = (category) => {
@@ -434,13 +434,14 @@ const WalletPage = () => {
                                         color="text-rose-600"
                                         bg="bg-rose-50"
                                     />
-                                    <StatBadge
+                                    {/* Withdrawn stat badge – withdraw feature disabled */}
+                                    {/* <StatBadge
                                         label="Withdrawn"
                                         value={summary.totalWithdrawn}
                                         icon={<ArrowUpFromLine size={14} />}
                                         color="text-orange-600"
                                         bg="bg-orange-50"
-                                    />
+                                    /> */}
                                     <StatBadge
                                         label="Refunded"
                                         value={summary.totalRefunded}
@@ -469,7 +470,8 @@ const WalletPage = () => {
                                 <Plus size={18} />
                                 Add Money
                             </button>
-                            <button
+                            {/* Withdraw button – withdraw feature disabled */}
+                            {/* <button
                                 onClick={() => {
                                     setActiveTab("withdraw");
                                     setWithdrawError("");
@@ -484,7 +486,7 @@ const WalletPage = () => {
                             >
                                 <ArrowUpFromLine size={18} />
                                 Withdraw
-                            </button>
+                            </button> */}
                             <button
                                 onClick={() => setActiveTab("overview")}
                                 className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm transition-all duration-300 ${
@@ -965,207 +967,7 @@ const WalletPage = () => {
                     </div>
                 )}
 
-                {/* WITHDRAW TAB */}
-                {activeTab === "withdraw" && (
-                    <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
-                        {withdrawSuccess ? (
-                            <SuccessCard
-                                title="Withdrawal Initiated!"
-                                message="Amount will be credited to your UPI within 24 hours"
-                                icon={
-                                    <CheckCircle2
-                                        size={48}
-                                        className="text-orange-400"
-                                    />
-                                }
-                            />
-                        ) : (
-                            <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-                                <h2 className="text-xl font-black text-slate-800 flex items-center gap-3 mb-6">
-                                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                                        <ArrowUpFromLine
-                                            size={20}
-                                            className="text-orange-500"
-                                        />
-                                    </div>
-                                    Withdraw Money
-                                </h2>
-
-                                {/* Amount Input */}
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">
-                                    Withdrawal Amount
-                                </p>
-                                <div className="relative mb-4">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-black text-slate-400">
-                                        ₹
-                                    </span>
-                                    <input
-                                        type="number"
-                                        value={withdrawAmount}
-                                        onChange={(e) => {
-                                            setWithdrawAmount(e.target.value);
-                                            setWithdrawError("");
-                                            setShowWithdrawConfirm(false);
-                                        }}
-                                        placeholder="Enter amount"
-                                        min="200"
-                                        max={walletBalance}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-2xl font-black text-slate-900 placeholder:text-slate-300 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                                    />
-                                </div>
-                                <p className="text-xs text-slate-400 font-bold mb-6">
-                                    Available:{" "}
-                                    <span className="text-slate-800">
-                                        ₹
-                                        {walletBalance?.toLocaleString("en-IN")}
-                                    </span>{" "}
-                                    • Min withdrawal:{" "}
-                                    <span className="text-orange-500">
-                                        ₹200
-                                    </span>
-                                </p>
-
-                                {/* UPI ID */}
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">
-                                    UPI ID
-                                </p>
-                                <input
-                                    type="text"
-                                    value={upiId}
-                                    onChange={(e) => {
-                                        setUpiId(e.target.value);
-                                        setWithdrawError("");
-                                    }}
-                                    placeholder="yourname@upi"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 placeholder:text-slate-300 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all mb-6"
-                                />
-
-                                {/* Info */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex gap-3">
-                                    <ShieldCheck
-                                        size={16}
-                                        className="text-blue-500 mt-0.5 shrink-0"
-                                    />
-                                    <div className="text-xs text-slate-500 space-y-1">
-                                        <p>
-                                            Withdrawals are processed within{" "}
-                                            <span className="text-blue-600 font-bold">
-                                                24 hours
-                                            </span>
-                                        </p>
-                                        <p>
-                                            Amount will be credited to the UPI
-                                            ID provided
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Error */}
-                                {withdrawError && (
-                                    <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 mb-4 flex items-center gap-3">
-                                        <XCircle
-                                            size={18}
-                                            className="text-rose-500 shrink-0"
-                                        />
-                                        <p className="text-sm font-bold text-rose-600">
-                                            {withdrawError}
-                                        </p>
-                                    </div>
-                                )}
-
-                                {/* Confirmation Step */}
-                                {showWithdrawConfirm ? (
-                                    <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 mb-4">
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <AlertCircle
-                                                size={18}
-                                                className="text-orange-500"
-                                            />
-                                            <p className="text-sm font-black text-orange-600">
-                                                Confirm Withdrawal
-                                            </p>
-                                        </div>
-                                        <p className="text-sm text-slate-600 mb-4">
-                                            Are you sure you want to withdraw{" "}
-                                            <span className="font-black text-slate-900">
-                                                ₹
-                                                {Number(
-                                                    withdrawAmount,
-                                                ).toLocaleString()}
-                                            </span>{" "}
-                                            to{" "}
-                                            <span className="font-black text-slate-900">
-                                                {upiId}
-                                            </span>
-                                            ?
-                                        </p>
-                                        <div className="flex gap-3">
-                                            <button
-                                                onClick={handleWithdraw}
-                                                disabled={withdrawLoading}
-                                                className="flex-1 py-3 rounded-xl font-black text-sm bg-orange-500 text-white hover:bg-orange-600 transition-all flex items-center justify-center gap-2"
-                                            >
-                                                {withdrawLoading ? (
-                                                    <>
-                                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                                        Processing...
-                                                    </>
-                                                ) : (
-                                                    "Yes, Withdraw"
-                                                )}
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    setShowWithdrawConfirm(
-                                                        false,
-                                                    )
-                                                }
-                                                className="flex-1 py-3 rounded-xl font-black text-sm bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
-                                            >
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <button
-                                        onClick={() => {
-                                            // Validate first
-                                            const amount =
-                                                Number(withdrawAmount);
-                                            if (!amount || amount < 200) {
-                                                setWithdrawError(
-                                                    "Minimum withdrawal is ₹200",
-                                                );
-                                                return;
-                                            }
-                                            if (amount > walletBalance) {
-                                                setWithdrawError(
-                                                    "Insufficient balance",
-                                                );
-                                                return;
-                                            }
-                                            if (
-                                                !upiId ||
-                                                !upiId.includes("@")
-                                            ) {
-                                                setWithdrawError(
-                                                    "Enter a valid UPI ID (e.g. name@upi)",
-                                                );
-                                                return;
-                                            }
-                                            setShowWithdrawConfirm(true);
-                                        }}
-                                        disabled={!withdrawAmount || !upiId}
-                                        className="w-full py-4 rounded-2xl font-black text-base bg-linear-to-r from-orange-500 to-amber-600 text-white shadow-[0_10px_30px_rgba(249,115,22,0.2)] hover:shadow-[0_15px_40px_rgba(249,115,22,0.3)] transition-all duration-300 disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                    >
-                                        <ArrowUpFromLine size={20} />
-                                        Proceed to Withdraw
-                                    </button>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
+                {/* WITHDRAW TAB – withdraw feature disabled (entire block removed) */}
 
                 {/* OVERVIEW / HISTORY TAB */}
                 {activeTab === "overview" && (

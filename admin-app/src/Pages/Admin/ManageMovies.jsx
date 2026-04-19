@@ -48,7 +48,7 @@ const ManageMovies = ({ onBack }) => {
 
     const fetchMovies = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/movies");
+            const res = await fetch("https://localhost:5000/api/movies");
             const data = await res.json();
             setMovies(data);
             setCurrentPage(1); // Reset page on fetch

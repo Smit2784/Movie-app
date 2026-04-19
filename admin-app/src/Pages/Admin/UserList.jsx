@@ -390,12 +390,12 @@ const UserList = ({ onBack }) => {
                                                                                 color: "text-orange-700",
                                                                                 bg: "hover:bg-orange-50",
                                                                             },
-                                                                            {
-                                                                                value: "admin",
-                                                                                label: "ADMIN",
-                                                                                color: "text-purple-700",
-                                                                                bg: "hover:bg-purple-50",
-                                                                            },
+                                                                            // {
+                                                                            //     value: "admin",
+                                                                            //     label: "ADMIN",
+                                                                            //     color: "text-purple-700",
+                                                                            //     bg: "hover:bg-purple-50",
+                                                                            // },
                                                                         ].map(
                                                                             (
                                                                                 option,

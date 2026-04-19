@@ -1,6 +1,7 @@
 const Booking = require("../models/Booking");
 const Show = require("../models/Show");
 const User = require("../models/User");
+const WalletTransaction = require("../models/WalletTransaction");
 const sendBookingMail = require("../utils/sendBookingMail");
 const sendCancellationMail = require("../utils/sendCancellationMail");
 
@@ -162,6 +163,18 @@ exports.walletPayment = async (req, res) => {
             populate: [{ path: "movie" }, { path: "theater" }],
         });
 
+        // Create wallet transaction record for booking payment
+        await WalletTransaction.create({
+            user: req.user.userId,
+            type: "debit",
+            amount: totalAmount,
+            category: "booking_payment",
+            description: `Booking payment for ${populatedBooking.show.movie.title} - ${populatedBooking.seats.length} seat(s)`,
+            balanceAfter: updatedUser.walletBalance,
+            status: "success",
+            reference: `BKG-${savedBooking._id}`,
+        });
+
         // SEND BOOKING CONFIRMATION MAIL
         const user = await User.findById(req.user.userId);
 
@@ -258,6 +271,18 @@ exports.splitPayment = async (req, res) => {
             populate: [{ path: "movie" }, { path: "theater" }],
         });
 
+        // Create wallet transaction record for the wallet portion of split payment
+        await WalletTransaction.create({
+            user: req.user.userId,
+            type: "debit",
+            amount: walletAmount,
+            category: "booking_payment",
+            description: `Split payment (wallet portion) for ${populatedBooking.show.movie.title} - ${populatedBooking.seats.length} seat(s)`,
+            balanceAfter: updatedUser.walletBalance,
+            status: "success",
+            reference: `BKG-SPLIT-${savedBooking._id}`,
+        });
+
         // SEND BOOKING CONFIRMATION MAIL
         const user = await User.findById(req.user.userId);
 
@@ -336,6 +361,15 @@ exports.cancelBooking = async (req, res) => {
             });
         }
 
+        // Cancellation cutoff: must cancel at least 2 hours before showtime
+        const hoursUntilShow = (showDateTime - now) / (1000 * 60 * 60);
+        if (hoursUntilShow < 2) {
+            const minutesLeft = Math.floor((showDateTime - now) / (1000 * 60));
+            return res.status(400).json({
+                message: `Cancellation is not allowed within 2 hours of showtime. Show starts in ${minutesLeft} minute(s).`,
+            });
+        }
+
         const show = await Show.findById(booking.show._id);
         if (show) {
             show.bookedSeats = show.bookedSeats.filter(
@@ -362,8 +396,20 @@ exports.cancelBooking = async (req, res) => {
         setTimeout(
             async () => {
                 try {
-                    await User.findByIdAndUpdate(req.user.userId, {
+                    const refundedUser = await User.findByIdAndUpdate(req.user.userId, {
                         $inc: { walletBalance: booking.totalAmount },
+                    }, { new: true });
+
+                    // Create wallet transaction record for refund
+                    await WalletTransaction.create({
+                        user: req.user.userId,
+                        type: "credit",
+                        amount: booking.totalAmount,
+                        category: "refund",
+                        description: `Refund for cancelled booking - ${booking.show.movie.title}`,
+                        balanceAfter: refundedUser.walletBalance,
+                        status: "success",
+                        reference: `RFD-${booking._id}`,
                     });
                 } catch (error) {
                     console.error("Error processing wallet refund:", error);

@@ -314,7 +314,7 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                             >
                                                 📱 UPI
                                             </button>
-                                            <button
+                                            {/* <button
                                                 type="button"
                                                 onClick={() =>
                                                     setPaymentMethod(
@@ -329,7 +329,7 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                                 }`}
                                             >
                                                 💰 Wallets
-                                            </button>
+                                            </button> */}
                                         </div>
 
                                         {paymentMethod === "card" && (
@@ -546,7 +546,7 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                                 </div>
                                             </div>
                                         )}
-                                        {paymentMethod ===
+                                        {/* {paymentMethod ===
                                             "wallet-external" && (
                                             <div className="space-y-6">
                                                 <div className="text-center py-8">
@@ -628,8 +628,7 @@ const PaymentPage = ({ booking, onBack, onPaymentComplete }) => {
                                                     ))}
                                                 </div>
                                             </div>
-                                        )}
-
+                                        )} */}
                                         <button
                                             type="submit"
                                             disabled={isProcessing}

@@ -214,6 +214,10 @@ const MyBookings = () => {
                                 );
                                 const hasShowStarted =
                                     showDateTime <= new Date();
+                                const hoursUntilShow =
+                                    (showDateTime - new Date()) / (1000 * 60 * 60);
+                                const isWithinCutoff =
+                                    !hasShowStarted && hoursUntilShow < 2;
 
                                 return (
                                     <div
@@ -319,7 +323,8 @@ const MyBookings = () => {
                                                 {/* Cancel Button */}
 
                                                 {!isCancelled &&
-                                                    !hasShowStarted && (
+                                                    !hasShowStarted &&
+                                                    !isWithinCutoff && (
                                                         <button
                                                             onClick={() =>
                                                                 handleCancelBooking(
@@ -356,7 +361,8 @@ const MyBookings = () => {
                                                     }
                                                     className={`${
                                                         !isCancelled &&
-                                                        !hasShowStarted
+                                                        !hasShowStarted &&
+                                                        !isWithinCutoff
                                                             ? "flex-1"
                                                             : "w-full"
                                                     } bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105`}
@@ -387,6 +393,15 @@ const MyBookings = () => {
                                                         ℹ️ Show has started.
                                                         Cancellation is no
                                                         longer available.
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {/* Within 2-hour cutoff */}
+                                            {!isCancelled && isWithinCutoff && (
+                                                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                                    <p className="text-amber-700 text-sm font-medium">
+                                                        ⏰ Cancellation is not allowed within 2 hours of showtime. Show starts at {booking.show.time}.
                                                     </p>
                                                 </div>
                                             )}
