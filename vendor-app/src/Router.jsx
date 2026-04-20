@@ -17,6 +17,7 @@ const ManageTheaters = React.lazy(
     () => import("./Pages/Vendor/ManageTheaters.jsx"),
 );
 const VendorBookings = React.lazy(() => import("./Pages/Vendor/VendorBookings.jsx"));
+const VendorSuggestions = React.lazy(() => import("./Pages/Vendor/VendorSuggestions.jsx"));
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -68,6 +69,14 @@ const AppRouter = () => {
                 element={
                     <ProtectedRoute>
                         <VendorBookings onBack={() => navigate("/dashboard")} />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/suggestions"
+                element={
+                    <ProtectedRoute>
+                        <VendorSuggestions onBack={() => navigate("/dashboard")} />
                     </ProtectedRoute>
                 }
             />

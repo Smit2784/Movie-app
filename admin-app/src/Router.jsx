@@ -20,6 +20,9 @@ const UserList = React.lazy(() => import("./Pages/Admin/UserList.jsx"));
 const AdminBookings = React.lazy(
     () => import("./Pages/Admin/AdminBookings.jsx"),
 );
+const AdminSuggestions = React.lazy(
+    () => import("./Pages/Admin/AdminSuggestions.jsx"),
+);
 // const ManageShows = React.lazy(() => import("./Pages/Admin/ManageShows.jsx"));
 // const ManageTheaters = React.lazy(
 //     () => import("./Pages/Admin/ManageTheaters.jsx"),
@@ -101,6 +104,14 @@ const AppRouter = () => {
                 element={
                     <ProtectedRoute>
                         <AdminBookings onBack={() => navigate("/dashboard")} />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/suggestions"
+                element={
+                    <ProtectedRoute>
+                        <AdminSuggestions onBack={() => navigate("/dashboard")} />
                     </ProtectedRoute>
                 }
             />

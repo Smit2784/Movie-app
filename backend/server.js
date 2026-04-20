@@ -11,6 +11,7 @@ const showRoutes = require("./routes/showRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const giftCardRoutes = require("./routes/giftCardRoutes");
 const ratingRoutes = require("./routes/ratingRoutes");
+const suggestionRoutes = require("./routes/suggestionRoutes");
 
 // Initialize app
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api", showRoutes);
 app.use("/api", bookingRoutes);
 app.use("/api", giftCardRoutes); // Routes already have /gift-cards prefix inside
 app.use("/api", ratingRoutes);
+app.use("/api", suggestionRoutes);
 
 // Error handling middleware
 app.use((error, req, res, next) => {

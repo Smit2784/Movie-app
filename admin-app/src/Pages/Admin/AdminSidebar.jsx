@@ -13,6 +13,7 @@ import {
     X,
     ChevronRight,
     ShieldCheck,
+    Lightbulb,
 } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthProvider.jsx";
 
@@ -32,6 +33,7 @@ const navItems = [
     // { label: "Theaters", path: "/theaters", icon: <Building2 size={18} /> },
     { label: "Users", path: "/users", icon: <Users size={18} /> },
     { label: "Bookings", path: "/bookings", icon: <BookOpen size={18} /> },
+    { label: "Suggestions", path: "/suggestions", icon: <Lightbulb size={18} /> },
 ];
 
 const AdminSidebar = ({ collapsed, setCollapsed }) => {
