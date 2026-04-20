@@ -82,6 +82,22 @@ const ManageShows = ({ onBack }) => {
         if (!newShow.date) newErrors.date = "Date is required";
         if (!newShow.time) newErrors.time = "Time is required";
 
+        // Validate that the show is not scheduled in the past
+        if (newShow.date && newShow.time) {
+            const now = new Date();
+            const todayStr = now.toISOString().split("T")[0];
+            if (newShow.date < todayStr) {
+                newErrors.date = "Cannot schedule a show for a past date";
+            } else if (newShow.date === todayStr) {
+                const [showH, showM] = newShow.time.split(":").map(Number);
+                const currentH = now.getHours();
+                const currentM = now.getMinutes();
+                if (showH < currentH || (showH === currentH && showM <= currentM)) {
+                    newErrors.time = "Cannot schedule a show for a time that has already passed";
+                }
+            }
+        }
+
         // Price is optional — if empty, backend defaults to movie base price
         if (newShow.price) {
             const priceError = validatePositiveNumber(newShow.price, "Price");

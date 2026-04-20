@@ -63,6 +63,7 @@ const FILTER_OPTIONS = [
     { value: "all", label: "All" },
     { value: "add_money", label: "Added" },
     { value: "booking_payment", label: "Spent" },
+    { value: "gift_card", label: "Gift Cards" },
     // { value: "withdrawal", label: "Withdrawn" },  // Withdraw feature disabled
     { value: "refund", label: "Refunds" },
 ];

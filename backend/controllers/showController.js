@@ -23,10 +23,24 @@ exports.getShows = async (req, res) => {
             };
         }
 
-        const shows = await Show.find(query)
+        let shows = await Show.find(query)
             .populate("movie")
             .populate("theater")
             .sort({ time: 1 });
+
+        // Filter out past shows when querying today's date
+        if (date) {
+            const now = new Date();
+            const todayStr = now.toISOString().split("T")[0];
+            if (date === todayStr) {
+                const currentHours = now.getHours();
+                const currentMinutes = now.getMinutes();
+                shows = shows.filter((show) => {
+                    const [showH, showM] = show.time.split(":").map(Number);
+                    return showH > currentHours || (showH === currentHours && showM > currentMinutes);
+                });
+            }
+        }
 
         res.json(shows);
     } catch (error) {
@@ -96,6 +110,31 @@ exports.createShow = async (req, res) => {
             return res.status(403).json({
                 message: "Not authorized to add shows to this theater",
             });
+        }
+
+        // Reject shows scheduled in the past
+        const showDate = new Date(date);
+        const now = new Date();
+        const todayStr = now.toISOString().split("T")[0];
+        const showDateStr = showDate.toISOString().split("T")[0];
+
+        if (showDateStr < todayStr) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot schedule a show for a past date.",
+            });
+        }
+
+        if (showDateStr === todayStr && time) {
+            const [showH, showM] = time.split(":").map(Number);
+            const currentH = now.getHours();
+            const currentM = now.getMinutes();
+            if (showH < currentH || (showH === currentH && showM <= currentM)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Cannot schedule a show for a time that has already passed today.",
+                });
+            }
         }
 
         // Enforce minimum price: show price must be >= movie's base price 

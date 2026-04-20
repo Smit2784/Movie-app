@@ -15,6 +15,23 @@ exports.createBooking = async (req, res) => {
         const { showId, seats, totalAmount } = req.body;
         const requestedSeatsStr = seats.map((seat) => String(seat));
 
+        // Reject booking for past shows
+        const showCheck = await Show.findById(showId);
+        if (showCheck) {
+            const now = new Date();
+            const showDate = new Date(showCheck.date);
+            const todayStr = now.toISOString().split("T")[0];
+            const showDateStr = showDate.toISOString().split("T")[0];
+            if (showDateStr < todayStr) {
+                return res.status(400).json({ success: false, message: "Cannot book a show that has already passed." });
+            }
+            if (showDateStr === todayStr && showCheck.time) {
+                const [sH, sM] = showCheck.time.split(":").map(Number);
+                if (sH < now.getHours() || (sH === now.getHours() && sM <= now.getMinutes())) {
+                    return res.status(400).json({ success: false, message: "Cannot book a show that has already started." });
+                }
+            }
+        }
         const updatedShow = await Show.findOneAndUpdate(
             {
                 _id: showId,
@@ -107,6 +124,23 @@ exports.walletPayment = async (req, res) => {
 
         const requestedSeatsStr = seats.map((seat) => String(seat));
 
+        // Reject booking for past shows
+        const showCheck = await Show.findById(showId);
+        if (showCheck) {
+            const now = new Date();
+            const showDate = new Date(showCheck.date);
+            const todayStr = now.toISOString().split("T")[0];
+            const showDateStr = showDate.toISOString().split("T")[0];
+            if (showDateStr < todayStr) {
+                return res.status(400).json({ success: false, message: "Cannot book a show that has already passed." });
+            }
+            if (showDateStr === todayStr && showCheck.time) {
+                const [sH, sM] = showCheck.time.split(":").map(Number);
+                if (sH < now.getHours() || (sH === now.getHours() && sM <= now.getMinutes())) {
+                    return res.status(400).json({ success: false, message: "Cannot book a show that has already started." });
+                }
+            }
+        }
         const updatedUser = await User.findOneAndUpdate(
             {
                 _id: req.user.userId,
@@ -214,6 +248,24 @@ exports.splitPayment = async (req, res) => {
             paymentMethod,
         } = req.body;
         const requestedSeatsStr = seats.map((seat) => String(seat));
+
+        // Reject booking for past shows
+        const showCheck = await Show.findById(showId);
+        if (showCheck) {
+            const now = new Date();
+            const showDate = new Date(showCheck.date);
+            const todayStr = now.toISOString().split("T")[0];
+            const showDateStr = showDate.toISOString().split("T")[0];
+            if (showDateStr < todayStr) {
+                return res.status(400).json({ success: false, message: "Cannot book a show that has already passed." });
+            }
+            if (showDateStr === todayStr && showCheck.time) {
+                const [sH, sM] = showCheck.time.split(":").map(Number);
+                if (sH < now.getHours() || (sH === now.getHours() && sM <= now.getMinutes())) {
+                    return res.status(400).json({ success: false, message: "Cannot book a show that has already started." });
+                }
+            }
+        }
 
         const updatedUser = await User.findOneAndUpdate(
             {

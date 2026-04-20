@@ -362,7 +362,8 @@ exports.getWalletSummary = async (req, res) => {
                     {
                         $match: {
                             user: user._id,
-                            category: "booking_payment",
+                            category: { $in: ["booking_payment", "gift_card"] },
+                            type: "debit",
                             status: "success",
                         },
                     },

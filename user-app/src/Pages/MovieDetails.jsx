@@ -631,43 +631,65 @@ const ShowTimes = ({ shows, onShowSelect, selectedDate, onDateChange }) => {
                                     show.availableSeats > 0 &&
                                     show.availableSeats <= 10;
 
+                                // Check if this show's time has already passed (for today)
+                                const now = new Date();
+                                const todayStr = now.toISOString().split("T")[0];
+                                const showDateStr = selectedDate || new Date(show.date).toISOString().split("T")[0];
+                                let isExpired = false;
+                                if (showDateStr === todayStr && show.time) {
+                                    const [showH, showM] = show.time.split(":").map(Number);
+                                    if (showH < now.getHours() || (showH === now.getHours() && showM <= now.getMinutes())) {
+                                        isExpired = true;
+                                    }
+                                }
+
+                                const isDisabled = isSoldOut || isExpired;
+
                                 return (
                                     <button
                                         key={show._id}
-                                        disabled={isSoldOut}
+                                        disabled={isDisabled}
                                         onClick={() => onShowSelect(show)}
                                         className={`relative group p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-105 ${
-                                            isSoldOut
-                                                ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
-                                                : "bg-white border-purple-200 hover:border-purple-400 hover:shadow-lg active:scale-95"
+                                            isExpired
+                                                ? "bg-gray-50 border-gray-200 text-gray-300 cursor-not-allowed opacity-60"
+                                                : isSoldOut
+                                                    ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
+                                                    : "bg-white border-purple-200 hover:border-purple-400 hover:shadow-lg active:scale-95"
                                         }`}
                                     >
                                         <div className="text-center">
                                             <div
                                                 className={`text-lg font-bold mb-1 ${
-                                                    isSoldOut
-                                                        ? "text-gray-400"
-                                                        : "text-gray-800"
+                                                    isExpired
+                                                        ? "text-gray-300 line-through"
+                                                        : isSoldOut
+                                                            ? "text-gray-400"
+                                                            : "text-gray-800"
                                                 }`}
                                             >
                                                 {show.time}
                                             </div>
                                             <div
                                                 className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                                    isSoldOut
-                                                        ? "bg-gray-200 text-gray-500"
-                                                        : isLowSeats
-                                                          ? "bg-orange-100 text-orange-700"
-                                                          : "bg-green-100 text-green-700"
+                                                    isExpired
+                                                        ? "bg-gray-100 text-gray-400"
+                                                        : isSoldOut
+                                                            ? "bg-gray-200 text-gray-500"
+                                                            : isLowSeats
+                                                              ? "bg-orange-100 text-orange-700"
+                                                              : "bg-green-100 text-green-700"
                                                 }`}
                                             >
-                                                {isSoldOut
-                                                    ? "Sold Out"
-                                                    : `${show.availableSeats} seats`}
+                                                {isExpired
+                                                    ? "Expired"
+                                                    : isSoldOut
+                                                        ? "Sold Out"
+                                                        : `${show.availableSeats} seats`}
                                             </div>
                                         </div>
 
-                                        {!isSoldOut && (
+                                        {!isDisabled && (
                                             <div className="absolute inset-0 bg-linear-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                                         )}
                                     </button>

@@ -1,5 +1,6 @@
 const GiftCard = require("../models/GiftCard");
 const User = require("../models/User");
+const WalletTransaction = require("../models/WalletTransaction");
 
 const generateGiftCardCode = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -37,7 +38,11 @@ exports.purchaseGiftCard = async (req, res) => {
             if (!existingCard) isUnique = true;
         }
 
-        await User.findByIdAndUpdate(req.user.userId, { $inc: { walletBalance: -amount } });
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            { $inc: { walletBalance: -amount } },
+            { new: true }
+        );
 
         const giftCard = new GiftCard({
             code,
@@ -50,6 +55,18 @@ exports.purchaseGiftCard = async (req, res) => {
         });
 
         await giftCard.save();
+
+        // Create wallet transaction record for the purchase (debit)
+        await WalletTransaction.create({
+            user: req.user.userId,
+            type: "debit",
+            amount: amount,
+            category: "gift_card",
+            description: `Gift card purchased for ${recipientName} (₹${amount})`,
+            balanceAfter: updatedUser.walletBalance,
+            status: "success",
+            reference: `GC-PUR-${giftCard.code}`,
+        });
 
         res.json({
             success: true,
@@ -74,7 +91,23 @@ exports.redeemGiftCard = async (req, res) => {
         giftCard.redeemedAt = new Date();
         await giftCard.save();
 
-        await User.findByIdAndUpdate(req.user.userId, { $inc: { walletBalance: giftCard.amount } });
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            { $inc: { walletBalance: giftCard.amount } },
+            { new: true }
+        );
+
+        // Create wallet transaction record for the redemption (credit)
+        await WalletTransaction.create({
+            user: req.user.userId,
+            type: "credit",
+            amount: giftCard.amount,
+            category: "gift_card",
+            description: `Gift card redeemed (Code: ${giftCard.code}) - ₹${giftCard.amount} added`,
+            balanceAfter: updatedUser.walletBalance,
+            status: "success",
+            reference: `GC-RDM-${giftCard.code}`,
+        });
 
         res.json({
             success: true,
